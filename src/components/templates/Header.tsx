@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import Link from 'next/link';
-import { Box, Container, Divider, Heading } from '@chakra-ui/react';
+import { Box, Divider, Heading } from '@chakra-ui/react';
 
 import GuideMenu from '../oraganisms/GuideMenu';
 

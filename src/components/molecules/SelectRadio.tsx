@@ -1,5 +1,5 @@
 import { Radio, RadioGroup, Stack } from '@chakra-ui/react';
-import React, { FC, ReactText } from 'react';
+import React, { FC } from 'react';
 
 type Props = {
   value: string;

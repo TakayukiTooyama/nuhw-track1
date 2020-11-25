@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import Head from 'next/head';
 import { AppProps } from 'next/app';
 import { ReactQueryConfig, ReactQueryConfigProvider } from 'react-query';
