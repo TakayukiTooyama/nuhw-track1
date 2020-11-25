@@ -8,18 +8,31 @@
     "type-check": "tsc"
   },
   "dependencies": {
+    "@chakra-ui/icons": "^1.0.0",
+    "@chakra-ui/react": "^1.0.0",
+    "@emotion/react": "^11.1.1",
+    "@emotion/styled": "^11.0.0",
+    "date-fns": "^2.16.1",
     "firebase": "^8.0.2",
+    "formik": "^2.2.5",
+    "framer-motion": "^2.9.4",
+    "ky": "^0.25.0",
     "next": "^10.0.2",
     "react": "^17.0.1",
+    "react-datepicker": "^3.3.0",
     "react-dom": "^17.0.1",
-    "react-icons": "^3.11.0"
+    "react-icons": "^3.11.0",
+    "react-query": "^2.26.2",
+    "react-table": "^7.6.2",
+    "recoil": "^0.1.2",
+    "yup": "^0.30.0"
   },
   "devDependencies": {
     "@types/node": "^12.12.21",
     "@types/react": "^16.9.16",
     "@types/react-dom": "^16.9.4",
-    "postcss-preset-env": "^6.7.0",
-    "tailwindcss": "^1.9.6",
+    "@types/yup": "^0.29.9",
+    "react-query-devtools": "^2.6.3",
     "typescript": "4.0"
   },
   "license": "MIT"

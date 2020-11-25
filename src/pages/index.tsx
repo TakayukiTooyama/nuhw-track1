@@ -1,9 +1,13 @@
-import Layout from '../components/Layout';
+import React from 'react';
+import Home from '../components/templates/Home';
+import Layout from '../components/templates/Layout';
 
-const IndexPage = () => (
-  <Layout title="Home">
-    <h1 className="bg-black">Hello Next.js 👋</h1>
-  </Layout>
-);
+const HomePage = () => {
+  return (
+    <Layout title="Home" bg="blue.50">
+      <Home />
+    </Layout>
+  );
+};
 
-export default IndexPage;
+export default HomePage;
