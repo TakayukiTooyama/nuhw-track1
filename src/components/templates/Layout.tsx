@@ -27,7 +27,9 @@ const Layout: FC<Props> = ({
       </Head>
       {noHeader ? null : <Header avatar={user?.photoURL!} />}
       <Box bg={bg}>
-        <Container pt="48px">{children}</Container>
+        <Container pt={12} pb={16} zIndex={2}>
+          {children}
+        </Container>
       </Box>
     </>
   );

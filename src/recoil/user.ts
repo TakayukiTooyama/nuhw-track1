@@ -32,16 +32,20 @@ export const selectedDateState = atom<Date | null>({
 });
 
 //選択している日付をIDに変換
-export const selectedDateIdState = selector<string>({
+export const selectedDateIdState = selector<number>({
   key: 'dateId',
   get: ({ get }) => {
     const date = get(selectedDateState);
-    return (
-      date!.getFullYear() +
-      '-' +
-      ('00' + (date!.getMonth() + 1)).slice(2) +
-      '-' +
-      ('00' + date!.getDate()).slice(2)
+    return Number(
+      date?.getFullYear() +
+        ('00' + (date?.getMonth()! + 1)).slice(2) +
+        ('00' + date?.getDate()).slice(2)
     );
   },
+});
+
+//追加したメニューの名前を保持 → 履歴と比較するため
+export const addedMenuName = atom<string[]>({
+  key: 'menuNames',
+  default: [],
 });

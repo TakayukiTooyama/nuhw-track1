@@ -9,6 +9,10 @@ service cloud.firestore {
 
       match /practices/{practiceId} {
         allow read, write: if isUserAuth(userId);
+
+        match /menus/{menuId} {
+          allow read, write: if isUserAuth(userId);
+        }
       }
       match /weights/{weightId} {
         allow read, write: if isUserAuth(userId);

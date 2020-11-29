@@ -4,7 +4,7 @@ export const useStringChangeEvent = (
   update: React.Dispatch<React.SetStateAction<string>>
 ) => {
   return useCallback(
-    (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+    (e: React.ChangeEvent<HTMLInputElement>) => {
       update(e.target.value);
     },
     [update]

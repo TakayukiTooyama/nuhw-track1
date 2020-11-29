@@ -16,22 +16,23 @@ export type UserInfo = {
 
 export type User = UserAuth & UserInfo;
 
-//練習タイム
+//練習メニュー
 export type Recode = {
-  id: string;
-  recode: string;
+  recodeId: number;
+  value: string;
+  editting: boolean;
 };
 
 export type Menu = {
-  id: string;
-  title: string;
+  dateId: number;
+  menuId: string;
+  name: string;
   recodes: Recode[];
 };
 
-export type Practice = {
-  id: string;
-  date: Date;
-  menus: Menu[];
+export type TimeStamp = {
+  created_at: TimeStamp;
+  updated_at: TimeStamp;
 };
 
 //ウエイト
