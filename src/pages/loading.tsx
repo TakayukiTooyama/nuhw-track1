@@ -1,9 +1,11 @@
 import React, { useEffect } from 'react';
 import Router from 'next/router';
-import { useAuthentication } from '../hooks/useAuthentication';
 import { Center, Text } from '@chakra-ui/react';
 
-const Loading = () => {
+import { useAuthentication } from '../hooks/useAuthentication';
+import { NextPage } from 'next';
+
+const Loading: NextPage = () => {
   const { user } = useAuthentication();
 
   useEffect(() => {

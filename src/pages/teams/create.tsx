@@ -1,10 +1,10 @@
+import { NextPage } from 'next';
 import React from 'react';
-import { Title } from '../../components/molecules';
+import { Title } from '../../components/molecules/index';
 
-import { Layout } from '../../components/templates';
-import { TeamCreate } from '../../containers/templates';
+import { Layout, TeamCreate } from '../../components/templates';
 
-const CreateTeams = () => {
+const CreateTeams: NextPage = () => {
   return (
     <>
       <Title title="団体作成" />

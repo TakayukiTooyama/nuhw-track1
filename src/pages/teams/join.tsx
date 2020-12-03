@@ -1,10 +1,10 @@
+import { NextPage } from 'next';
 import React from 'react';
+
 import { Title } from '../../components/molecules';
+import { Layout, TeamJoin } from '../../components/templates';
 
-import { Layout } from '../../components/templates';
-import { TeamJoin } from '../../containers/templates';
-
-const TeamsJoinPage = () => {
+const TeamsJoinPage: NextPage = () => {
   return (
     <>
       <Title title="団体参加" />

@@ -1,13 +1,14 @@
 import React, { useCallback } from 'react';
+import { NextPage } from 'next';
 import Router from 'next/router';
 import { Button, Text } from '@chakra-ui/react';
 import { FaSchool } from 'react-icons/fa';
 import { AiOutlineUserAdd } from 'react-icons/ai';
 
-import { Layout } from '../../components/templates';
 import { Title } from '../../components/molecules';
+import { Layout } from '../../components/templates';
 
-const Teams = () => {
+const Teams: NextPage = () => {
   const goToRoute = useCallback((route: string) => {
     Router.push(route);
   }, []);

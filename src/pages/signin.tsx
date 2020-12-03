@@ -1,8 +1,9 @@
+import { NextPage } from 'next';
 import Head from 'next/head';
 import React from 'react';
-import { SignIn } from '../containers/templates';
+import { SignIn } from '../components/templates';
 
-const SignInPage = () => {
+const SignInPage: NextPage = () => {
   return (
     <>
       <Head>

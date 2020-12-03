@@ -1,8 +1,9 @@
+import { NextPage } from 'next';
 import React from 'react';
-import Home from '../components/templates/Home';
-import Layout from '../components/templates/Layout';
 
-const HomePage = () => {
+import { Home, Layout } from '../components/templates';
+
+const HomePage: NextPage = () => {
   return (
     <Layout title="Home" bg="blue.50">
       <Home />

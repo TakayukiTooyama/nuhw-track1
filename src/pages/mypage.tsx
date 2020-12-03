@@ -1,8 +1,9 @@
+import { NextPage } from 'next';
 import React from 'react';
-import Layout from '../components/templates/Layout';
-import ProfileDetail from '../components/templates/ProfileDetail';
 
-const Mypage = () => {
+import { Layout, ProfileDetail } from '../components/templates';
+
+const Mypage: NextPage = () => {
   return (
     <Layout title="プロフィール">
       <ProfileDetail />

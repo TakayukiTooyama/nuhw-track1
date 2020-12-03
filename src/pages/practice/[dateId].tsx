@@ -1,14 +1,13 @@
+import { NextPage } from 'next';
 import React from 'react';
+import { Layout, PracticeViewDetail } from '../../components/templates';
 
-import Layout from '../../components/templates/Layout';
-import PracitceDetail from '../../containers/templates/PracitceDetail';
-
-const Practice = () => {
+const PracticeView: NextPage = () => {
   return (
-    <Layout title="練習タイム" bg="orange.50">
-      <PracitceDetail />
+    <Layout title="練習タイム">
+      <PracticeViewDetail />
     </Layout>
   );
 };
 
-export default Practice;
+export default PracticeView;

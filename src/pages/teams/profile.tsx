@@ -1,9 +1,10 @@
 import React from 'react';
-import { Title } from '../../components/molecules';
-import { Layout } from '../../components/templates';
-import { ProfileCreate } from '../../containers/templates';
+import { NextPage } from 'next';
 
-const Profile = () => {
+import { Title } from '../../components/molecules';
+import { Layout, ProfileCreate } from '../../components/templates';
+
+const Profile: NextPage = () => {
   return (
     <>
       <Title title="プロフィール作成" />
