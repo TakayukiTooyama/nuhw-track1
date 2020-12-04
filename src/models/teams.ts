@@ -1,4 +1,4 @@
-import { Menu as PracticeMenu, Tournaments, Weight } from './users';
+import { Menu as PracticeMenu, Tournaments, WeightMenu } from './users';
 
 //選択されている団体名のIDと名前
 export type TeamInfo = Pick<Team, 'teamId' | 'teamName'>;
@@ -16,7 +16,7 @@ export type TeamPractice = PracticeMenu & {
 };
 
 //チームのウエイト記録
-export type TeamWeight = Weight & {
+export type TeamWeight = WeightMenu & {
   group: string;
 };
 

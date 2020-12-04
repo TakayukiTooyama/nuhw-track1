@@ -15,3 +15,4 @@ export { default as PracticeViewDetail } from './practice/PracticeViewDetail';
 export { default as PracticeEditDetail } from './practice/PracticeEditDetail';
 
 //ウエイト
+export { default as WeightEditDetail } from './weight/WeightEditDetail';

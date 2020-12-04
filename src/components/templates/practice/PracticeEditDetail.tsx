@@ -37,7 +37,7 @@ const PracticeEditDetail: FC = () => {
 
   //ページ訪問時 & 選択された日付が変わった時
   useEffect(() => {
-    fetchPractices();
+    fetchPracticeData();
   }, [user, dateId]);
 
   useEffect(() => {
@@ -45,7 +45,7 @@ const PracticeEditDetail: FC = () => {
   }, [name]);
 
   //firestoreから選択された日付のデータを取ってくる処理
-  const fetchPractices = async () => {
+  const fetchPracticeData = async () => {
     if (user === null || user === undefined) return;
     const practicesRef = db
       .collection('users')

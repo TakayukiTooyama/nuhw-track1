@@ -12,6 +12,7 @@ const ProfileDetail: FC = () => {
 
   useEffect(() => {
     const fetchUserInfo = async () => {
+      if (userAuth === null) return;
       await db
         .collection('users')
         .doc(userAuth?.uid)
@@ -21,9 +22,7 @@ const ProfileDetail: FC = () => {
           setUser(data);
         });
     };
-    if (userAuth) {
-      fetchUserInfo();
-    }
+    fetchUserInfo();
   }, [userAuth]);
 
   return (
@@ -36,7 +35,7 @@ const ProfileDetail: FC = () => {
       />
       <Box mb={4}></Box>
       <Stack spacing={6}>
-        <Text fontSize="2xl">{userAuth?.displayName}</Text>
+        <Text fontSize="2xl">{userAuth?.displayName!}</Text>
         <Divider />
         <Text>{user?.teamInfo.teamName}</Text>
         <Text>{user?.grade}</Text>

@@ -16,6 +16,11 @@ export type UserInfo = {
 
 export type User = UserAuth & UserInfo;
 
+export type TimeStamp = {
+  created_at: TimeStamp;
+  updated_at: TimeStamp;
+};
+
 //練習メニュー
 export type Recode = {
   recodeId: number;
@@ -30,25 +35,18 @@ export type Menu = {
   recodes: Recode[];
 };
 
-export type TimeStamp = {
-  created_at: TimeStamp;
-  updated_at: TimeStamp;
-};
-
 //ウエイト
-export type TrainingMenu = {
-  title: string;
-};
-
-type WeightMenu = {
-  weightName: string;
+export type WeightMenu = {
+  dateId: number;
+  menuId: string;
+  name: string;
   rm: number;
-  recodes: number[];
+  recodes: Recode[];
 };
 
-export type Weight = {
-  date: Date;
-  menus: WeightMenu[];
+export type WeightName = {
+  id: string;
+  name: string;
 };
 
 //大会結果
