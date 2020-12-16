@@ -1,14 +1,10 @@
 import { ChevronDownIcon } from '@chakra-ui/icons';
 import { Button, Menu, MenuButton, MenuItem, MenuList } from '@chakra-ui/react';
 import React, { FC, useState } from 'react';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { db } from '../../../lib/firebase';
+import { useSetRecoilState } from 'recoil';
 
 import { TournamentData } from '../../../models/users';
-import {
-  selectedTournamentDataState,
-  userAuthState,
-} from '../../../recoil/users/user';
+import { selectedTournamentDataState } from '../../../recoil/users/user';
 
 type Props = {
   dataList: TournamentData[];
@@ -16,7 +12,6 @@ type Props = {
 
 const SelectMenu: FC<Props> = ({ dataList }) => {
   //Global State
-  const user = useRecoilValue(userAuthState);
   const setSelectedTournamentData = useSetRecoilState(
     selectedTournamentDataState
   );
@@ -25,13 +20,6 @@ const SelectMenu: FC<Props> = ({ dataList }) => {
   const [label, setLabel] = useState('選択してください');
 
   const dataListOnClick = (data: TournamentData) => {
-    if (user === null) return;
-    const tournamentsRef = db
-      .collection('users')
-      .doc(user.uid)
-      .collection('tournaments');
-    const id = tournamentsRef.doc().id;
-
     setLabel(data.name);
     setSelectedTournamentData(data);
   };

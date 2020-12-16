@@ -20,7 +20,6 @@ type Data = {
 const GraphDailyAverage: FC<Props> = ({ data, insertStr, label }) => {
   const selectedName = useRecoilValue(selectedMakedMenuNameState);
   const [xLabel, setXLabel] = useState<string[]>([]);
-  const name = data[0].name;
   const [dataList, setDataList] = useState<Data[]>([]);
   const [options, setOptions] = useState({});
 
