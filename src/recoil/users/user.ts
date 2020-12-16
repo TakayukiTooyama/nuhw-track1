@@ -1,12 +1,17 @@
 import { atom, selector } from 'recoil';
-import { UserAuth, User, UserInfo } from '../../models/users';
+import {
+  UserAuth,
+  User,
+  UserInfo,
+  TournamentData,
+  TournamentMenu,
+} from '../../models/users';
+import moment from 'moment';
 
 //ユーザーデータを保持
-export const userAuthState = atom<
-  firebase.default.User | UserAuth | null | undefined
->({
+export const userAuthState = atom<UserAuth | null>({
   key: 'userAuth',
-  default: undefined,
+  default: null,
 });
 
 export const userInfoState = atom<UserInfo | null>({
@@ -29,11 +34,7 @@ export const loadingState = atom<boolean>({
 const today = new Date();
 export const formatTodaysDateState = atom<number>({
   key: 'today',
-  default: Number(
-    today.getFullYear() +
-      ('0' + (today.getMonth() + 1)).slice(-2) +
-      ('0' + today.getDate()).slice(-2)
-  ),
+  default: Number(moment(today).format('YYYYMMDD')),
 });
 
 //選択している日付を保持
@@ -84,8 +85,38 @@ export const makedMenuNameListState = atom<string[]>({
   default: [],
 });
 
-//表示するセット数＆本数
+//表示するset数＆本数
 export const NumberToDisplay = atom<string>({
   key: 'displayNumber',
   default: '5',
+});
+
+/*======tournament======*/
+// export const TournamentMenusState = atom<TournamentMenu[]>({
+//   key: 'menus',
+//   default: [],
+// });
+
+//選択している大会のIDを保持
+export const selectedTournamentDataState = atom<TournamentData>({
+  key: 'tournamentName',
+  default: {
+    id: '',
+    name: '選択してください',
+    venue: '',
+    startDate: '',
+    endDate: '',
+  },
+});
+
+//選択しているmenuId
+export const selectedMenuId = atom<string>({
+  key: 'menuId',
+  default: '',
+});
+
+//出場した大会のIDリストを保持
+export const ParticipatedTournamentIds = atom<string[]>({
+  key: 'tournamentIds',
+  default: [],
 });

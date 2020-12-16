@@ -3,50 +3,53 @@ import Router from 'next/router';
 import {
   Box,
   Button,
+  Divider,
   Flex,
   Heading,
+  HStack,
   Input,
-  Menu,
-  MenuItem,
-  MenuList,
+  InputGroup,
+  InputRightElement,
   Stack,
+  Text,
 } from '@chakra-ui/react';
 import { useRecoilValue } from 'recoil';
 
 import DatePicker from '../../molecules/common/DatePicker';
-import { selectedDateIdState, userAuthState } from '../../../recoil/users/user';
+import {
+  selectedDateIdState,
+  userAuthState,
+  userInfoState,
+} from '../../../recoil/users/user';
 import { WeightMenu, WeightName } from '../../../models/users';
 import { db } from '../../../lib/firebase';
-import { selectedTeamInfo } from '../../../recoil/teams/team';
+import { WeightEditMenu } from '../../oraganisms';
 
 const WeightEditDetail: FC = () => {
   //Global State
   const user = useRecoilValue(userAuthState);
-  const team = useRecoilValue(selectedTeamInfo);
+  const userInfo = useRecoilValue(userInfoState);
   const dateId = useRecoilValue(selectedDateIdState);
 
   //Local State
   const [menus, setMenus] = useState<WeightMenu[]>([]),
     [name, setName] = useState(''),
     [weightNameList, setWeightNameList] = useState<WeightName[]>([]),
+    [filterNameList, setFilterNameList] = useState<WeightName[]>([]),
     [toggleMenu, setToggleMenu] = useState(false),
-    [errorMessage, setErrorMessage] = useState(''),
-    [rm, setRm] = useState(0);
+    [isLoading, setIsLoading] = useState(false),
+    [rm, setRm] = useState(3);
 
   //ページ訪問時 & 選択された日付が変わった時
   useEffect(() => {
     fetchWeightData();
     fetchTeamWeightMenu();
-  }, [user, dateId]);
-
-  //名前入力が始まったら一度エラーメッセージをリセット
-  useEffect(() => {
-    setErrorMessage('');
-  }, [name]);
+  }, [userInfo, dateId]);
 
   //firestoreから選択された日付のデータを取ってくる処理
   const fetchWeightData = async () => {
-    if (user === null || user === undefined) return;
+    if (user === null) return;
+    if (userInfo === null) return;
     const WeightsRef = db
       .collection('users')
       .doc(user.uid)
@@ -65,13 +68,11 @@ const WeightEditDetail: FC = () => {
 
   //チーム内のウエイトメニューを取得
   const fetchTeamWeightMenu = async () => {
-    //ここがまだ入っていない
-    if (team === null) return;
+    if (userInfo === null) return;
     const teamWeithMenusRef = db
       .collection('teams')
-      .doc(team.teamId)
-      .collection('weights');
-    console.log('hello');
+      .doc(userInfo.teamInfo.teamId)
+      .collection('weightMenus');
     await teamWeithMenusRef.get().then((snapshot) => {
       let menuList: WeightName[] = [];
       snapshot.forEach((doc) => {
@@ -79,34 +80,41 @@ const WeightEditDetail: FC = () => {
         menuList.push(data);
       });
       setWeightNameList(menuList);
+      setFilterNameList(menuList);
     });
   };
 
   //メニュー追加処理
-  //ここ変更
-  const addMenu = async (e: React.KeyboardEvent<HTMLElement>) => {
-    if (user === null || user === undefined) return;
-    if (e.key === 'Enter') {
-      const weightsRef = db
-        .collection('users')
-        .doc(user.uid)
-        .collection('weights');
-      const menuId = weightsRef.doc().id;
-      const newData = { dateId, menuId, name, rm, recodes: [] };
-      await weightsRef
-        .doc(menuId)
-        .set(newData)
-        .then(() => {
-          setMenus((prev) => [...prev, newData]);
-          setToggleMenu(false);
-          setName('');
-        });
-    }
+  const addMenu = async (selectedName: string) => {
+    if (user === null) return;
+    setIsLoading(true);
+    setToggleMenu(false);
+    const weightsRef = db
+      .collection('users')
+      .doc(user.uid)
+      .collection('weights');
+    const menuId = weightsRef.doc().id;
+    const newData = {
+      dateId,
+      menuId,
+      name: selectedName,
+      rm: rm,
+      setCount: 3,
+      recodes: [],
+    };
+    await weightsRef
+      .doc(menuId)
+      .set(newData)
+      .then(() => {
+        setMenus((prev) => [...prev, newData]);
+        setName('');
+        setIsLoading(false);
+      });
   };
 
   //メニュー削除処理
   const deleteMenu = async (menuId: string) => {
-    if (user === null || user === undefined) return;
+    if (user === null) return;
     const weightsRef = db
       .collection('users')
       .doc(user.uid)
@@ -121,6 +129,9 @@ const WeightEditDetail: FC = () => {
   //メニューの名前入力処理
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
+    if (e.target.value === '') {
+      setFilterNameList(weightNameList);
+    }
   };
 
   //入力処理を離れる時の処理
@@ -129,15 +140,19 @@ const WeightEditDetail: FC = () => {
     setName('');
   };
 
-  // //検索されたウエイトメニューだけを表示させる処理
-  // const searchMenu = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const update = weightNameList.filter((item) => {
-  //     return (
-  //       item.name.toLowerCase().search(e.target.value.toLowerCase()) !== -1
-  //     );
-  //   });
-  //   setWeightNameList(update);
-  // };
+  /*
+    検索されたウエイトメニューだけを表示させる処理
+    本当は入力したタイミングで変更したいが全角だと上手くいかないため
+    Enterクリック時にしている
+  */
+  const searchMenu = (e: React.KeyboardEvent<HTMLElement>) => {
+    if (e.key === 'Enter') {
+      const update = weightNameList.filter(
+        (item) => item.name.indexOf(name) !== -1
+      );
+      setFilterNameList(update);
+    }
+  };
 
   return (
     <>
@@ -145,7 +160,7 @@ const WeightEditDetail: FC = () => {
       <Box mb={8}></Box>
 
       <Flex justify="space-between" align="center">
-        <DatePicker />
+        <DatePicker bg="blue.400" />
         <Button
           size="sm"
           shadow="base"
@@ -157,41 +172,84 @@ const WeightEditDetail: FC = () => {
       <Box mb={8}></Box>
 
       <Stack spacing={4}>
-        {/* {menus &&
+        {menus &&
           menus.map((menu) => (
             <WeightEditMenu
               key={menu.menuId}
               items={menu}
-              menus={menus}
               setMenus={setMenus}
               deleteMenu={deleteMenu}
             />
-          ))} */}
+          ))}
       </Stack>
       <Box mb={8}></Box>
       {toggleMenu ? (
-        <>
-          <Input
-            autoFocus
-            maxW="255px"
-            bg="white"
-            placeholder="メニュー検索"
-            // onChange={searchMenu}
-            onBlur={handleBlur}
-          />
-          <Menu isOpen>
-            <MenuList isOpen>
-              {weightNameList &&
-                weightNameList.map((item) => (
-                  <MenuItem isOpen key={item.id}>
-                    {item.name}
-                  </MenuItem>
+        <Box w="100%">
+          <Stack>
+            <InputGroup bg="white" borderRadius="5px" w="70%">
+              <Input value={rm} readOnly={true} textAlign="center" />
+              <InputRightElement children="RM" />
+            </InputGroup>
+            <HStack spacing={1}>
+              <Button shadow="base" onClick={() => setRm((prev) => prev + 10)}>
+                10RM
+              </Button>
+              <Button shadow="base" onClick={() => setRm((prev) => prev + 1)}>
+                ＋1
+              </Button>
+              <Button shadow="base" onClick={() => setRm((prev) => prev - 1)}>
+                −1
+              </Button>
+            </HStack>
+          </Stack>
+          <Box mt={4}>
+            <Input
+              w="70%"
+              bg="white"
+              placeholder="メニュー検索"
+              onChange={handleChange}
+              onKeyDown={searchMenu}
+              onDoubleClick={handleBlur}
+            />
+            <Box mb={1}></Box>
+            <Stack
+              w="70%"
+              maxW="300px"
+              border="1px solid"
+              borderColor="gray.200"
+              spacing={0}
+            >
+              {filterNameList &&
+                filterNameList.map((item) => (
+                  <Box
+                    key={item.id}
+                    bg="white"
+                    textAlign="center"
+                    h="35px"
+                    lineHeight="35px"
+                    _hover={{ bg: 'gray.100' }}
+                    onClick={() => addMenu(item.name)}
+                  >
+                    <Text color="gray.400">{item.name}</Text>
+                    <Divider />
+                  </Box>
                 ))}
-            </MenuList>
-          </Menu>
-        </>
+            </Stack>
+            <Button
+              shadow="base"
+              color="gray.400"
+              onClick={() => Router.push('/weight/createWeightMenu')}
+            >
+              追加したいメニューがない場合
+            </Button>
+          </Box>
+        </Box>
       ) : (
-        <Button shadow="base" onClick={() => setToggleMenu(true)}>
+        <Button
+          shadow="base"
+          onClick={() => setToggleMenu(true)}
+          isLoading={isLoading}
+        >
           ウエイトメニューを追加
         </Button>
       )}

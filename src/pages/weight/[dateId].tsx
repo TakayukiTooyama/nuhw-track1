@@ -1,14 +1,14 @@
 import { NextPage } from 'next';
 import React from 'react';
 
-import { Layout, WeightEditDetail } from '../../components/templates';
+import { Layout, WeightViewDetail } from '../../components/templates';
 
-const Weight: NextPage = () => {
+const WeightView: NextPage = () => {
   return (
     <Layout title="ウエイト管理" bg="blue.50">
-      <WeightEditDetail />
+      <WeightViewDetail />
     </Layout>
   );
 };
 
-export default Weight;
+export default WeightView;

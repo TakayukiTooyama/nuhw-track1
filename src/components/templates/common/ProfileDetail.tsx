@@ -15,7 +15,7 @@ const ProfileDetail: FC = () => {
       if (userAuth === null) return;
       await db
         .collection('users')
-        .doc(userAuth?.uid)
+        .doc(userAuth.uid)
         .get()
         .then((doc) => {
           const data = doc.data() as User;
@@ -30,12 +30,12 @@ const ProfileDetail: FC = () => {
       <Image
         borderRadius="full"
         boxSize="150px"
-        alt={userAuth?.displayName!}
-        src={userAuth?.photoURL!}
+        alt={userAuth?.displayName}
+        src={userAuth?.photoURL}
       />
       <Box mb={4}></Box>
       <Stack spacing={6}>
-        <Text fontSize="2xl">{userAuth?.displayName!}</Text>
+        <Text fontSize="2xl">{userAuth?.displayName}</Text>
         <Divider />
         <Text>{user?.teamInfo.teamName}</Text>
         <Text>{user?.grade}</Text>

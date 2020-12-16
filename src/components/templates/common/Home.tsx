@@ -30,17 +30,32 @@ const Home: FC = () => {
   return (
     <>
       <Flex direction="column">
-        {contents.map((item) => (
-          <Button
-            key={item.id}
-            {...buttonStyles}
-            bg={item.color}
-            rightIcon={<AiOutlineRight />}
-            onClick={() => goToItemPage(`/${item.id}/${selectedDateId}`)}
-          >
-            <Text fontSize="2xl">{item.name}</Text>
-          </Button>
-        ))}
+        {contents.map((item) => {
+          if (item.id === 'tournament') {
+            return (
+              <Button
+                key={item.id}
+                {...buttonStyles}
+                bg={item.color}
+                rightIcon={<AiOutlineRight />}
+                onClick={() => goToItemPage(`/${item.id}/search`)}
+              >
+                <Text fontSize="2xl">{item.name}</Text>
+              </Button>
+            );
+          }
+          return (
+            <Button
+              key={item.id}
+              {...buttonStyles}
+              bg={item.color}
+              rightIcon={<AiOutlineRight />}
+              onClick={() => goToItemPage(`/${item.id}/${selectedDateId}`)}
+            >
+              <Text fontSize="2xl">{item.name}</Text>
+            </Button>
+          );
+        })}
       </Flex>
     </>
   );

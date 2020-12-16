@@ -14,7 +14,9 @@ export function TableHead(props: BoxProps) {
 }
 
 export function TableRow(props: BoxProps) {
-  return <Box as="tr" {...props} />;
+  return (
+    <Box as="tr" cursor="pointer" _hover={{ bg: 'gray.100' }} {...props} />
+  );
 }
 
 export function TableHeader(props: BoxProps) {

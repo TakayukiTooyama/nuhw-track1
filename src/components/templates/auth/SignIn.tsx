@@ -14,7 +14,7 @@ import { useRecoilState } from 'recoil';
 import { loadingState } from '../../../recoil/users/user';
 import { useAuthentication } from '../../../hooks/useAuthentication';
 import { auth, db, provider } from '../../../lib/firebase';
-import { User } from '../../../models/users';
+import { UserInfo } from '../../../models/users';
 
 const topBox = {
   h: { base: '45vh', md: '100vh' },
@@ -65,11 +65,11 @@ const SignIn: FC = () => {
       .doc(uid)
       .get()
       .then((doc) => {
-        const data = doc.data() as User;
-        if (data === undefined) {
-          Router.push('/teams');
-        } else {
+        const data = doc.data() as UserInfo;
+        if (data && data.teamInfo) {
           Router.push('/');
+        } else {
+          Router.push('/teams');
         }
       });
   };
@@ -78,7 +78,7 @@ const SignIn: FC = () => {
     auth.getRedirectResult().then((result) => {
       if (result.user || auth.currentUser) {
         if (result.user !== null) {
-          fetchTeamInfo(result.user?.uid!);
+          fetchTeamInfo(result.user.uid);
         }
       } else {
         setLoading(true);

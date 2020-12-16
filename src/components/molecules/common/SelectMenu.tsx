@@ -1,27 +1,60 @@
-import React, { FC } from 'react';
-import { Button, Menu, MenuButton, MenuItem, MenuList } from '@chakra-ui/react';
 import { ChevronDownIcon } from '@chakra-ui/icons';
+import { Box, Button, Divider, Heading } from '@chakra-ui/react';
+import React, { FC, useState } from 'react';
+import { useSetRecoilState } from 'recoil';
+import { TournamentData } from '../../../models/users';
+import { selectedTournamentDataState } from '../../../recoil/users/user';
 
 type Props = {
-  label: string;
-  contents: string[];
-  setName: React.Dispatch<React.SetStateAction<string>>;
+  name: string;
+  dataList: TournamentData[];
 };
 
-const SelectMenu: FC<Props> = ({ label, contents, setName }) => {
+const SelectMenu: FC<Props> = ({ name, dataList }) => {
+  //Global State
+  const setSelectedData = useSetRecoilState(selectedTournamentDataState);
+
+  //Locla State
+  const [toggleMenu, setToggleMenu] = useState(false);
+
+  const selectedMenu = (data: TournamentData) => {
+    setSelectedData(data);
+    setToggleMenu(false);
+  };
+
   return (
-    <Menu>
-      <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
-        {label}
-      </MenuButton>
-      <MenuList>
-        {contents.map((item) => (
-          <MenuItem key={item} onClick={() => setName(item)}>
-            {item}
-          </MenuItem>
-        ))}
-      </MenuList>
-    </Menu>
+    <Box pos="relative">
+      <Button
+        rightIcon={<ChevronDownIcon fontSize="2xl" />}
+        w="100%"
+        textAlign="center"
+        bg="green.50"
+        onClick={() => setToggleMenu(!toggleMenu)}
+      >
+        <Heading fontSize={['xl', '2xl']}>{name}</Heading>
+      </Button>
+      <Divider />
+      {toggleMenu
+        ? dataList.map((data) => (
+            <Box
+              key={data.id}
+              pos="absolute"
+              zIndex={1}
+              shadow="base"
+              w="100%"
+              mx="auto"
+              textAlign="center"
+              py={2}
+              bg="white"
+              cursor="pointer"
+              _hover={{ bg: 'gray.50' }}
+              onClick={() => selectedMenu(data)}
+            >
+              {data.name}
+            </Box>
+          ))
+        : null}
+    </Box>
   );
 };
 

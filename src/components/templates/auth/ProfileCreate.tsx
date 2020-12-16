@@ -4,17 +4,22 @@ import { Box, Stack } from '@chakra-ui/react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 import { db } from '../../../lib/firebase';
-import SelectMenu from '../../molecules/common/SelectMenu';
+import SelectMenu from '../../molecules/common/SelectMenu1';
 import { FormButton, SelectRadio } from '../../molecules/index';
 import { UserInfo } from '../../../models/users';
 import { selectedTeamInfo } from '../../../recoil/teams/team';
-import { userAuthState, userInfoState } from '../../../recoil/users/user';
+import {
+  ParticipatedTournamentIds,
+  userAuthState,
+  userInfoState,
+} from '../../../recoil/users/user';
 
 const ProfileCreate: FC = () => {
   //Global State
   const user = useRecoilValue(userAuthState);
   const teamInfo = useRecoilValue(selectedTeamInfo);
   const setUserInfo = useSetRecoilState(userInfoState);
+  const tournamentIds = useRecoilValue(ParticipatedTournamentIds);
 
   //Local State
   const [gender, setGender] = useState('男'),
@@ -33,16 +38,19 @@ const ProfileCreate: FC = () => {
     grade: string,
     gender: string
   ) => {
+    if (teamInfo === null) return;
     setIsLoading(true);
     const usersRef = db.collection('users');
     const newData: UserInfo = {
       blockName,
       grade,
       gender,
-      teamInfo: { teamId: teamInfo?.teamId!, teamName: teamInfo?.teamName! },
+      teamInfo: { teamId: teamInfo.teamId, teamName: teamInfo.teamName },
+      tournamentIds,
     };
+    if (user === null) return;
     await usersRef
-      .doc(user?.uid)
+      .doc(user.uid)
       .set(newData, { merge: true })
       .then(() => {
         setUserInfo(newData);

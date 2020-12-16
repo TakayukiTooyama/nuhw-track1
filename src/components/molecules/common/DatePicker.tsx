@@ -13,7 +13,11 @@ import Router from 'next/router';
 
 registerLocale('ja', ja);
 
-const DatePicker: FC = () => {
+type Props = {
+  bg: string;
+};
+
+const DatePicker: FC<Props> = ({ bg }) => {
   const [date, setDate] = useRecoilState(selectedDateState);
   const dateId = useRecoilValue(selectedDateIdState);
 
@@ -46,7 +50,7 @@ const DatePicker: FC = () => {
       onChange={(date: Date | null) => dateSet(date)}
       maxDate={addDays(new Date(), 0)}
       customInput={
-        <Button shadow="base" bg="orange.400">
+        <Button shadow="base" color="black" bg={bg}>
           {getFormatDate(date)}
         </Button>
       }

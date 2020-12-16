@@ -38,14 +38,13 @@ import {
   GraphMonthlyAverage,
   TableView,
 } from '../../oraganisms';
-import { insertStr } from '../../oraganisms/practice/PracticeEditRecode';
 
 type Comparison = {
   type: 'increase' | 'decrease';
   data: number;
 };
 
-const PracticeViewDetail: FC = () => {
+const WeightViewDetail: FC = () => {
   const user = useRecoilValue(userAuthState);
   const dateId = useRecoilValue(selectedDateIdState);
   const today = useRecoilValue(formatTodaysDateState);
@@ -59,6 +58,7 @@ const PracticeViewDetail: FC = () => {
   const [changeNumber, setChangeNumber] = useState(displayNumber);
   const [lastTime, setLastTime] = useState<Menu[]>([]);
   const [comparisonAry, setComparisonAry] = useState<Comparison[]>([]);
+  const [judgLastTime, setJudgLastTime] = useState(false);
 
   //選択されたメニューの名前によって表示されるmenusを変えるためフィルタリング
   const filterMenus = menus.filter((menu) => menu.name === selectedName);
@@ -93,12 +93,12 @@ const PracticeViewDetail: FC = () => {
 
   const fetchAnnualData = async () => {
     if (user === null) return;
-    const practicesRef = db
+    const weightsRef = db
       .collection('users')
       .doc(user.uid)
-      .collection('practices')
+      .collection('weights')
       .where('dateId', '>=', year);
-    await practicesRef.get().then((snapshot) => {
+    await weightsRef.get().then((snapshot) => {
       let menuData: Menu[] = [];
       let nameList: string[] = [];
       snapshot.forEach((doc) => {
@@ -143,8 +143,14 @@ const PracticeViewDetail: FC = () => {
           newAry.push({ type: 'decrease', data: Math.abs(number) });
         }
       }
-      setComparisonAry(newAry);
-      setLastTime([sortMenus[lastIndex], sortMenus[lastIndex - 1]]);
+      if (!sortMenus[lastIndex - 1]) {
+        setJudgLastTime(true);
+        setComparisonAry(newAry);
+        setLastTime([sortMenus[lastIndex]]);
+      } else {
+        setComparisonAry(newAry);
+        setLastTime([sortMenus[lastIndex], sortMenus[lastIndex - 1]]);
+      }
     } else {
       return;
     }
@@ -155,52 +161,23 @@ const PracticeViewDetail: FC = () => {
   };
 
   const format = (input: string) => {
-    const len = input.length;
-    if (len === 1) {
-      return '0"0' + input;
-    }
-    if (len === 2) {
-      return '0"' + input;
-    }
-    if (len > 2 && len < 5)
-      return input.slice(0, len - 2) + '"' + input.slice(len - 2, len);
-    if (len > 4 && len < 7)
-      return (
-        input.slice(0, len - 4) +
-        "'" +
-        input.slice(len - 4, len - 2) +
-        '"' +
-        input.slice(len - 2, len)
-      );
-    if (len > 6 && len < 9)
-      return (
-        input.slice(0, len - 6) +
-        ':' +
-        input.slice(len - 6, len - 4) +
-        "'" +
-        input.slice(len - 4, len - 2) +
-        '"' +
-        input.slice(len - 2, len)
-      );
-    return input;
+    return `${input}kg`;
   };
 
   return (
     <>
-      <Heading>練習タイム</Heading>
+      <Heading>ウエイト管理</Heading>
       <Box mb={8}></Box>
       <Flex justify="space-between" align="center">
         <StyleMenu>
           <MenuButton as={Button} rightIcon={<ChevronDownIcon />} shadow="base">
-            {selectedName === '選択してください'
-              ? selectedName
-              : `${selectedName}M`}
+            {selectedName}
           </MenuButton>
           <MenuList>
             {nameList.length > 0 &&
               sortNameList.map((item) => (
                 <MenuItem key={item} onClick={() => setSelectedName(item)}>
-                  {item}M
+                  {item}
                 </MenuItem>
               ))}
           </MenuList>
@@ -208,7 +185,7 @@ const PracticeViewDetail: FC = () => {
         <Button
           shadow="base"
           size="sm"
-          onClick={() => Router.push(`/practice/edit/${dateId}`)}
+          onClick={() => Router.push(`/weight/edit/${dateId}`)}
         >
           編集
         </Button>
@@ -231,33 +208,36 @@ const PracticeViewDetail: FC = () => {
                     <PinInputField />
                   </PinInput>
                 </Flex>
-                <TableView menus={lastTime} label="本目" firstHeaderLabel="M" />
+                <TableView
+                  menus={judgLastTime ? todaysData : lastTime}
+                  label="セット目"
+                  format={format}
+                />
                 <Box mb={12}></Box>
                 <Heading size="md" mb={4}>
                   前回比較
                 </Heading>
                 <StatGroup ml={6}>
-                  {comparisonAry.map((item, idx) => (
-                    <Stat
-                      key={idx.toString()}
-                      type={item.type}
-                      data={item.data}
-                      label="本目"
-                      idx={idx}
-                      format={format}
-                    />
-                  ))}
+                  {judgLastTime ? (
+                    <Text>前回の記録がありません</Text>
+                  ) : (
+                    comparisonAry.map((item, idx) => (
+                      <Stat
+                        key={idx.toString()}
+                        type={item.type}
+                        data={item.data}
+                        label="set"
+                        idx={idx}
+                        format={format}
+                      />
+                    ))
+                  )}
                 </StatGroup>
                 <Box mb={12}></Box>
                 <Heading size="md" mb={4}>
                   記録遷移グラフ
                 </Heading>
-                <GraphAllData
-                  data={todaysData}
-                  insertStr={insertStr}
-                  label="タイム"
-                  axisLabel="本目"
-                />
+                <GraphAllData data={todaysData} label="重量" axisLabel="set" />
               </>
             ) : (
               <Text>まだ登録されていません</Text>
@@ -268,75 +248,49 @@ const PracticeViewDetail: FC = () => {
               <>
                 <GraphAllData
                   data={threeMonthsData}
-                  insertStr={insertStr}
-                  label="タイム"
-                  axisLabel="本目"
+                  label="重量"
+                  axisLabel="set"
                 />
-                <GraphDailyAverage
-                  data={threeMonthsData}
-                  insertStr={insertStr}
-                  label="平均タイム"
-                />
+                <GraphDailyAverage data={threeMonthsData} label="重量" />
                 <TableView
                   menus={threeMonthsData}
-                  label="本目"
-                  firstHeaderLabel="M"
-                  format={insertStr}
+                  label="セット目"
+                  format={format}
                 />
               </>
             ) : (
               <Text>まだ登録されていません</Text>
             )}
           </TabPanel>
-          <TabPanel p={0} pt={4}>
+          <TabPanel p={0}>
             {sixMonthsData.length > 0 ? (
               <>
                 <GraphAllData
                   data={sixMonthsData}
-                  insertStr={insertStr}
-                  label="タイム"
-                  axisLabel="本目"
+                  label="重量"
+                  axisLabel="set"
                 />
-                <GraphDailyAverage
-                  data={sixMonthsData}
-                  insertStr={insertStr}
-                  label="平均タイム"
-                />
+                <GraphDailyAverage data={sixMonthsData} label="重量" />
                 <TableView
                   menus={sixMonthsData}
-                  label="本目"
-                  firstHeaderLabel="M"
-                  format={insertStr}
+                  label="セット目"
+                  format={format}
                 />
               </>
             ) : (
               <Text>まだ登録されていません</Text>
             )}
           </TabPanel>
-          <TabPanel p={0} pt={4}>
+          <TabPanel p={0}>
             {filterMenus.length > 0 ? (
               <>
-                <GraphAllData
-                  data={filterMenus}
-                  insertStr={insertStr}
-                  label="タイム"
-                  axisLabel="本目"
-                />
-                <GraphDailyAverage
-                  data={filterMenus}
-                  insertStr={insertStr}
-                  label="平均タイム"
-                />
-                <GraphMonthlyAverage
-                  data={filterMenus}
-                  insertStr={insertStr}
-                  label="平均タイム"
-                />
+                <GraphAllData data={filterMenus} label="重量" axisLabel="set" />
+                <GraphDailyAverage data={filterMenus} label="重量" />
+                <GraphMonthlyAverage data={filterMenus} label="平均重量" />
                 <TableView
                   menus={filterMenus}
-                  label="本目"
-                  firstHeaderLabel="M"
-                  format={insertStr}
+                  label="セット目"
+                  format={format}
                 />
               </>
             ) : (
@@ -349,4 +303,4 @@ const PracticeViewDetail: FC = () => {
   );
 };
 
-export default PracticeViewDetail;
+export default WeightViewDetail;

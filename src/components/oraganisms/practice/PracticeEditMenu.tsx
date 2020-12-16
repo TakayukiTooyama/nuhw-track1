@@ -51,7 +51,7 @@ const PracticeEditMenu: FC<Props> = ({
     e: React.KeyboardEvent<HTMLElement>,
     menuId: string
   ) => {
-    if (user === null || user === undefined) return;
+    if (user === null) return;
     if (isComposed) return;
     const practicesRef = db
       .collection('users')

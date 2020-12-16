@@ -14,7 +14,7 @@ type Props = {
 
 const Layout: FC<Props> = ({
   children,
-  title = '新潟医療福祉大学',
+  title = 'NUHW TRACK',
   noHeader = false,
   bg = 'white',
 }) => {
@@ -25,7 +25,7 @@ const Layout: FC<Props> = ({
       <Head>
         <title>{title}</title>
       </Head>
-      {noHeader ? null : <Header avatar={user?.photoURL!} />}
+      {noHeader ? null : <Header avatar={user?.photoURL} />}
       <Box bg={bg}>
         <Container pt={12} pb={16} zIndex={2}>
           {children}

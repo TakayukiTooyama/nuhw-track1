@@ -46,7 +46,7 @@ const PracticeEditDetail: FC = () => {
 
   //firestoreから選択された日付のデータを取ってくる処理
   const fetchPracticeData = async () => {
-    if (user === null || user === undefined) return;
+    if (user === null) return;
     const practicesRef = db
       .collection('users')
       .doc(user.uid)
@@ -65,7 +65,6 @@ const PracticeEditDetail: FC = () => {
 
   //メニュー追加処理
   const addMenu = async (e: React.KeyboardEvent<HTMLElement>) => {
-    if (user === null || user === undefined) return;
     if (isComposed) return;
     if (name === '') {
       setErrorMessage('練習メニューを登録してください');
@@ -93,6 +92,7 @@ const PracticeEditDetail: FC = () => {
       return;
     }
     if (e.key === 'Enter') {
+      if (user === null) return;
       const practicesRef = db
         .collection('users')
         .doc(user.uid)
@@ -112,7 +112,7 @@ const PracticeEditDetail: FC = () => {
 
   //メニュー削除処理
   const deleteMenu = async (menuId: string) => {
-    if (user === null || user === undefined) return;
+    if (user === null) return;
     const practicesRef = db
       .collection('users')
       .doc(user.uid)
@@ -141,7 +141,7 @@ const PracticeEditDetail: FC = () => {
       <Box mb={8}></Box>
 
       <Flex justify="space-between" align="center">
-        <DatePicker />
+        <DatePicker bg="orange.400" />
         <Button
           size="sm"
           shadow="base"

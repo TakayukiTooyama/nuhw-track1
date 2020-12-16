@@ -3,7 +3,7 @@ import React, { FC, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
 import { db } from '../../../lib/firebase';
-import { Menu, Recode } from '../../../models/users';
+import { Recode, WeightMenu } from '../../../models/users';
 import { isComposedState, userAuthState } from '../../../recoil/users/user';
 
 type Props = {
@@ -12,12 +12,12 @@ type Props = {
   menuId: string;
   setIndex: React.Dispatch<React.SetStateAction<number>>;
   setRecodes: React.Dispatch<React.SetStateAction<Recode[]>>;
-  setMenus: React.Dispatch<React.SetStateAction<Menu[]>>;
+  setMenus: React.Dispatch<React.SetStateAction<WeightMenu[]>>;
   toggleEdit: boolean;
   setToggleEdit: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const PracticeRecodeCreator: FC<Props> = ({
+const WeightRecodeCreator: FC<Props> = ({
   index,
   recodes,
   menuId,
@@ -51,7 +51,7 @@ const PracticeRecodeCreator: FC<Props> = ({
     const practicesRef = db
       .collection('users')
       .doc(user.uid)
-      .collection('practices')
+      .collection('weights')
       .doc(menuId);
     if (e.key === 'Enter') {
       const newRecode = { recodeId: index, value: recode, editting: false };
@@ -78,7 +78,7 @@ const PracticeRecodeCreator: FC<Props> = ({
           autoFocus
           maxW="200px"
           value={recode}
-          placeholder={`${index + 1}本目`}
+          placeholder={`${index + 1}set`}
           onChange={handleChange}
           onBlur={handleBlur}
           onKeyDown={addRecode}
@@ -96,4 +96,4 @@ const PracticeRecodeCreator: FC<Props> = ({
   );
 };
 
-export default PracticeRecodeCreator;
+export default WeightRecodeCreator;

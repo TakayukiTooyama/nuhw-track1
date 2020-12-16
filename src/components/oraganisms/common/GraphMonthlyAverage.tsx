@@ -3,19 +3,20 @@ import { Menu } from '../../../models/users';
 import dynamic from 'next/dynamic';
 import { selectedMakedMenuNameState } from '../../../recoil/users/user';
 import { useRecoilValue } from 'recoil';
-import { insertStr } from '../practice/PracticeEditRecode';
 
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 type Props = {
   data: Menu[];
+  insertStr?: (input: string) => string;
+  label: string;
 };
 type Data = {
   name: string;
   data: number[];
 };
 
-const GraphMonthlyAverage: FC<Props> = ({ data }) => {
+const GraphMonthlyAverage: FC<Props> = ({ data, insertStr, label }) => {
   const selectedName = useRecoilValue(selectedMakedMenuNameState);
   const [xLabel, setXLabel] = useState<string[]>([]);
   const [monthlyData, setMonthlyData] = useState<number[]>([]);
@@ -114,7 +115,7 @@ const GraphMonthlyAverage: FC<Props> = ({ data }) => {
   }, [selectedName]);
 
   useEffect(() => {
-    setDataList([{ name: '平均タイム', data: monthlyData }]);
+    setDataList([{ name: `${label}`, data: monthlyData }]);
     setOptions({
       chart: {
         type: 'area',
@@ -136,7 +137,7 @@ const GraphMonthlyAverage: FC<Props> = ({ data }) => {
         size: 0,
       },
       title: {
-        text: `「${name}M」月間平均グラフ`,
+        text: '月間平均グラフ',
         align: 'left',
       },
       xaxis: {
@@ -144,14 +145,22 @@ const GraphMonthlyAverage: FC<Props> = ({ data }) => {
       },
       yaxis: {
         formatter: function (val: number) {
-          return insertStr(String(val));
+          if (insertStr === undefined) {
+            return String(val);
+          } else {
+            return insertStr(String(val));
+          }
         },
       },
       tooltip: {
         shared: false,
         y: {
           formatter: function (val: number) {
-            return insertStr(String(val));
+            if (insertStr === undefined) {
+              return String(val);
+            } else {
+              return insertStr(String(val));
+            }
           },
         },
       },

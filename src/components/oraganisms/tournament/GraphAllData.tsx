@@ -1,31 +1,31 @@
 import React, { FC, useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { useRecoilValue } from 'recoil';
+import moment from 'moment';
 
-import { Menu } from '../../../models/users';
+import { TournamentMenu } from '../../../models/users';
 import { selectedMakedMenuNameState } from '../../../recoil/users/user';
 
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 type Props = {
-  data: Menu[];
-  insertStr?: (input: string) => string;
+  data: TournamentMenu[];
   label: string;
-  axisLabel: string;
 };
 type Data = {
   name: string;
   data: number[];
 };
 
-const GraphAllData: FC<Props> = ({ data, insertStr, label, axisLabel }) => {
+const GraphAllData: FC<Props> = ({ data, label }) => {
+  //Global State
   const selectedName = useRecoilValue(selectedMakedMenuNameState);
+
+  //Local State
   const [xLabel, setXLabel] = useState<string[]>([]);
-  const name = data[0].name;
   const [dataList, setDataList] = useState<Data[]>([]);
   const [options, setOptions] = useState({});
 
-  //xLabel作成 (例2020/12/02 1本目)
   useEffect(() => {
     createXLabel();
     dailyFormula();
@@ -46,11 +46,12 @@ const GraphAllData: FC<Props> = ({ data, insertStr, label, axisLabel }) => {
           autoSelected: 'zoom',
         },
       },
+
       dataLabels: {
         enabled: false,
       },
       markers: {
-        size: 0,
+        size: 1,
       },
       title: {
         text: '全ての記録',
@@ -58,25 +59,20 @@ const GraphAllData: FC<Props> = ({ data, insertStr, label, axisLabel }) => {
       },
       xaxis: {
         categories: xLabel,
+        labels: {
+          show: false,
+        },
       },
       yaxis: {
         formatter: function (val: number) {
-          if (insertStr === undefined) {
-            return String(val);
-          } else {
-            return insertStr(String(val));
-          }
+          return val;
         },
       },
       tooltip: {
         shared: false,
         y: {
           formatter: function (val: number) {
-            if (insertStr === undefined) {
-              return String(val);
-            } else {
-              return insertStr(String(val));
-            }
+            return val;
           },
         },
       },
@@ -86,12 +82,11 @@ const GraphAllData: FC<Props> = ({ data, insertStr, label, axisLabel }) => {
   const createXLabel = () => {
     let xLabelAry: string[] = [];
     data.forEach((item) => {
-      item.recodes.forEach((recode, idx) => {
-        if (recode.value === '') return;
-        const strDateId = String(item.dateId);
-        const formatDateId =
-          strDateId.slice(4, 6) + '/' + strDateId.slice(6, 8);
-        xLabelAry.push(`${formatDateId} ${idx + 1}${axisLabel}`);
+      const date = moment(String(item.competitionDay)).format('YYYY/MM/DD');
+      item.recodes.forEach((recode) => {
+        xLabelAry.push(
+          `${item.data.name} ・ ${date} ・ ${recode.round} ・ 風${recode.wind}`
+        );
       });
     });
     setXLabel(xLabelAry);
@@ -102,10 +97,20 @@ const GraphAllData: FC<Props> = ({ data, insertStr, label, axisLabel }) => {
     let array: number[] = [];
     data.forEach((menu) => {
       menu.recodes.forEach((recode) => {
-        array.push(Number(recode.value));
+        const value = recode.value;
+        if (value.length > 4) {
+          const data =
+            String(Number(value.slice(0, 1)) * 60 + Number(value.slice(1, 3))) +
+            '.' +
+            value.slice(3);
+          array.push(Number(data));
+        } else {
+          const data = Number(value.slice(0, -2) + '.' + value.slice(-2));
+          array.push(Number(data));
+        }
       });
     });
-    setDataList([{ name: `${label}`, data: array }]);
+    setDataList([{ name: label, data: array }]);
   };
 
   return <Chart options={options} series={dataList} type="line" height={300} />;

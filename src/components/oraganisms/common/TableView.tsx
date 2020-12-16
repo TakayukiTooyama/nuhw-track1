@@ -10,19 +10,26 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '../common/Table';
+} from './TableStyle';
 import { Menu } from '../../../models/users';
-import { insertStr } from './PracticeEditRecode';
 import { NumberToDisplay } from '../../../recoil/users/user';
 
 type Props = {
   menus: Menu[];
+  label: string;
+  firstHeaderLabel?: string;
+  format?: (input: string) => string;
 };
 type Data = {
   [key: string]: string;
 };
 
-const PracticeViewTable: FC<Props> = ({ menus }) => {
+const TableView: FC<Props> = ({
+  menus,
+  label = '',
+  firstHeaderLabel = '',
+  format,
+}) => {
   const displayNumber = useRecoilValue(NumberToDisplay);
   const name = menus[0].name;
 
@@ -42,8 +49,12 @@ const PracticeViewTable: FC<Props> = ({ menus }) => {
         let obj: Data = {};
         menu.recodes.forEach((recode, idx) => {
           const key = `recode${idx + 1}`;
-          const value = insertStr(recode.value);
-          obj[key] = value;
+          const value = recode.value;
+          if (format) {
+            obj[key] = format(value);
+          } else {
+            obj[key] = value;
+          }
         });
         tableDataAry.push({ date: formatDate, ...obj });
       });
@@ -61,7 +72,7 @@ const PracticeViewTable: FC<Props> = ({ menus }) => {
     let selectedNumberList: any = [];
     ary.forEach((_recode, idx) => {
       selectedNumberList.push({
-        Header: `${idx + 1}本目`,
+        Header: `${idx + 1}${label}`,
         accessor: `recode${idx + 1}`,
       });
     });
@@ -70,7 +81,7 @@ const PracticeViewTable: FC<Props> = ({ menus }) => {
 
   const COLUMNS: Column<Data>[] = [
     {
-      Header: `${name}M`,
+      Header: `${name}${firstHeaderLabel}`,
       accessor: 'date',
     },
     ...columnData(Number(displayNumber)),
@@ -126,4 +137,4 @@ const PracticeViewTable: FC<Props> = ({ menus }) => {
   );
 };
 
-export default PracticeViewTable;
+export default TableView;

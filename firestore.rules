@@ -25,8 +25,20 @@ service cloud.firestore {
     match /teams/{teamId} {
       allow read: if isAnyAuth();
       allow create: if isAnyAuth();
-      allow update: if isUserAuth(teamId);
-      allow delete: if isUserAuth(teamId);
+      allow update: if isAnyAuth();
+      allow delete: if isAnyAuth();
+
+      match /weightMenus/{weightMenuId} {
+        allow read, write: if isAnyAuth();
+      }
+
+      match /tournamentMenus/{tournamentMenuId} {
+        allow read, write: if isAnyAuth();
+      }
+    }
+
+    function getUser(userId) {
+      return get(/database/$(database)/documents/users/$(userId))
     }
 
     function isAnyAuth() {
@@ -36,9 +48,8 @@ service cloud.firestore {
     function isUserAuth(userId) {
       return request.auth.uid == userId;
     }
-
     function isTeamAuth(teamId) {
-      return request.auth.uid == teamId;
+      return request.resource.data.teamInfo.teamId == teamId;
     }
   }
 }

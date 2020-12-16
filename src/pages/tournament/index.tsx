@@ -1,13 +1,11 @@
-import React from 'react';
 import { NextPage } from 'next';
-import { Stack } from '@chakra-ui/react';
-
-import { Layout } from '../../components/templates';
+import React from 'react';
+import { Layout, TournamentViewDetail } from '../../components/templates';
 
 const Tournament: NextPage = () => {
   return (
     <Layout title="大会結果" bg="green.50">
-      <Stack spacing={8}></Stack>
+      <TournamentViewDetail />
     </Layout>
   );
 };

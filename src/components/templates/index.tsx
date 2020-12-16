@@ -16,3 +16,11 @@ export { default as PracticeEditDetail } from './practice/PracticeEditDetail';
 
 //ウエイト
 export { default as WeightEditDetail } from './weight/WeightEditDetail';
+export { default as WeightViewDetail } from './weight/WeightViewDetail';
+export { default as CreateWeightMenuDetail } from './weight/CreateWeightMenuDetail';
+
+//大会結果
+export { default as TournamentEditDetail } from './tournament/TournamentEditDetail';
+export { default as TournamentViewDetail } from './tournament/TournamentViewDetail';
+export { default as CreateTournamentMenuDetail } from './tournament/CreateTournamentMenuDetail';
+export { default as TournamentFirstViewDetail } from './tournament/TournamentFirstViewDetail';

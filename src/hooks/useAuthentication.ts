@@ -16,11 +16,13 @@ export const useAuthentication = () => {
         return;
       }
       //認証完了 or GlobalStateに何も入っていない時
-      if (user === undefined) {
+      if (user === null) {
+        if (firebaseUser.photoURL === null) return;
+        if (firebaseUser.displayName === null) return;
         setUser({
-          uid: firebaseUser?.uid!,
-          photoURL: firebaseUser?.photoURL!,
-          displayName: firebaseUser?.displayName!,
+          uid: firebaseUser.uid,
+          photoURL: firebaseUser.photoURL,
+          displayName: firebaseUser.displayName,
         });
         return;
       }
@@ -29,7 +31,7 @@ export const useAuthentication = () => {
         return;
       }
     });
-  }, []);
+  }, [user, setUser]);
 
   return { user };
 };

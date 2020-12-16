@@ -12,6 +12,7 @@ export type UserInfo = {
   gender: string;
   grade: string;
   teamInfo: TeamInfo;
+  tournamentIds: string[];
 };
 
 export type User = UserAuth & UserInfo;
@@ -19,6 +20,12 @@ export type User = UserAuth & UserInfo;
 export type TimeStamp = {
   created_at: TimeStamp;
   updated_at: TimeStamp;
+};
+
+//選択しているnameListの型
+export type SelectNameList = {
+  id: string;
+  name: string;
 };
 
 //練習メニュー
@@ -41,6 +48,7 @@ export type WeightMenu = {
   menuId: string;
   name: string;
   rm: number;
+  setCount: number;
   recodes: Recode[];
 };
 
@@ -50,20 +58,28 @@ export type WeightName = {
 };
 
 //大会結果
-type TournamentsRecode = {
-  recode: string;
-  round: '予選' | '準決勝' | '決勝';
-  wind: number;
+export type Round = '予選' | '準決勝' | '決勝';
+
+export type TournamentRecode = {
+  recodeId: number;
+  value: string;
+  round: Round;
+  wind: string;
+  lane: string;
 };
 
-type Result = {
-  event: string;
-  recodes: TournamentsRecode[];
+export type TournamentMenu = {
+  menuId: string;
+  competitionName: string;
+  competitionDay: number;
+  data: TournamentData;
+  recodes: TournamentRecode[];
 };
 
-export type Tournaments = {
-  date: Date;
-  tournamentsName: string;
-  place: string;
-  results: Result[];
+export type TournamentData = {
+  id: string;
+  name: string;
+  venue: string;
+  startDate: string;
+  endDate: string;
 };
