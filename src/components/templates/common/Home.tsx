@@ -1,63 +1,47 @@
-import React, { FC } from 'react';
-import Router from 'next/router';
+import React, { VFC } from 'react';
+import { Stack } from '@chakra-ui/react';
+import { LinkBlock } from '../../molecules';
 import { useRecoilValue } from 'recoil';
-import { Button, Flex, Text } from '@chakra-ui/react';
-import { AiOutlineRight } from 'react-icons/ai';
-
 import { selectedDateIdState } from '../../../recoil/users/user';
+import { AiOutlineRight } from 'react-icons/ai';
+import { LinkContent } from '../../../models/users';
 
-const contents = [
-  { id: 'practice', name: '練習タイム', color: 'orange.400' },
-  { id: 'weight', name: 'ウエイト', color: 'blue.400' },
-  { id: 'tournament', name: '大会結果', color: 'green.400' },
-];
-
-const buttonStyles = {
-  boxShadow: 'base',
-  w: '100%',
-  h: 200,
-  mb: 3,
-  color: 'white',
-};
-
-const Home: FC = () => {
+const Home: VFC = () => {
+  //Global state
   const selectedDateId = useRecoilValue(selectedDateIdState);
 
-  const goToItemPage = (link: string) => {
-    Router.push(link);
-  };
+  const contents: LinkContent[] = [
+    {
+      id: 'practice',
+      name: '練習タイム',
+      color: 'orange.400',
+      link: selectedDateId,
+    },
+    { id: 'weight', name: 'ウエイト', color: 'blue.400', link: selectedDateId },
+    { id: 'tournament', name: '大会結果', color: 'green.400', link: 'search' },
+  ];
 
   return (
-    <>
-      <Flex direction="column">
-        {contents.map((item) => {
-          if (item.id === 'tournament') {
-            return (
-              <Button
-                key={item.id}
-                {...buttonStyles}
-                bg={item.color}
-                rightIcon={<AiOutlineRight />}
-                onClick={() => goToItemPage(`/${item.id}/search`)}
-              >
-                <Text fontSize="2xl">{item.name}</Text>
-              </Button>
-            );
-          }
+    <Stack spacing={4} display="flex" flexDirection="column">
+      {contents.map((item) => {
+        if (item.id === 'tournament') {
           return (
-            <Button
+            <LinkBlock
               key={item.id}
-              {...buttonStyles}
-              bg={item.color}
-              rightIcon={<AiOutlineRight />}
-              onClick={() => goToItemPage(`/${item.id}/${selectedDateId}`)}
-            >
-              <Text fontSize="2xl">{item.name}</Text>
-            </Button>
+              item={item}
+              rightIcon={<AiOutlineRight fontSize="20px" />}
+            />
           );
-        })}
-      </Flex>
-    </>
+        }
+        return (
+          <LinkBlock
+            key={item.id}
+            item={item}
+            rightIcon={<AiOutlineRight fontSize="20px" />}
+          />
+        );
+      })}
+    </Stack>
   );
 };
 

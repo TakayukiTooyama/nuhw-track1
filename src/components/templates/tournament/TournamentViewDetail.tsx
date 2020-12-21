@@ -1,29 +1,10 @@
-import { ChevronDownIcon } from '@chakra-ui/icons';
-import {
-  Box,
-  Button,
-  Flex,
-  Heading,
-  Menu as StyleMenu,
-  MenuButton,
-  MenuItem,
-  MenuList,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
-  Text,
-} from '@chakra-ui/react';
+import { Box, Flex, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react';
 import React, { FC, useEffect, useState } from 'react';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import moment from 'moment';
-import Router from 'next/router';
 
 import { TournamentRecode } from '../../../models/users';
 import { selectedMakedMenuNameState } from '../../../recoil/users/user';
-import GraphAllData from '../../oraganisms/tournament/GraphAllData';
-import TableView from '../../oraganisms/tournament/TableView';
 import { CalcWind200m, CalcWind100m } from './test';
 import { TournamentData, TournamentMenu } from '../../../models/users';
 import {
@@ -33,7 +14,12 @@ import {
   userInfoState,
 } from '../../../recoil/users/user';
 import { db } from '../../../lib/firebase';
-import { TournamentHeader } from '../../oraganisms';
+import {
+  TournamentHeader,
+  TournamentTodayData,
+  TournamentYearData,
+} from '../../oraganisms';
+import { LinkButton, SelectNameList, TabList } from '../../molecules';
 
 //入力された文字列をタイム表記に変換
 export const timeNotation = (input: string) => {
@@ -57,11 +43,9 @@ const TournamentViewDetail: FC = () => {
   const [selectedName, setSelectedName] = useRecoilState(
     selectedMakedMenuNameState
   );
-  const nameList = useRecoilValue(makedMenuNameListState);
   const selectedData = useRecoilValue(selectedTournamentDataState);
 
   //Local State
-  const [hide, setHide] = useState(false);
   const [toggleNoWind, setToggleNoWind] = useState(false);
   const [windLessMenus, setWindLessMenus] = useState<TournamentMenu[]>([]);
   const [menus, setMenus] = useState<TournamentMenu[]>([]);
@@ -115,7 +99,7 @@ const TournamentViewDetail: FC = () => {
       const dataList: TournamentData[] = [];
       snapshot.forEach((doc) => {
         const data = doc.data() as TournamentData;
-        userInfo.tournamentIds.map((id) => {
+        userInfo.tournamentIds.filter((id) => {
           if (id === data.id) {
             dataList.push(data);
           }
@@ -142,13 +126,6 @@ const TournamentViewDetail: FC = () => {
   //選択された種目によって表示を変える
   const filterMenus2 =
     menus && menus.filter((menu) => menu.competitionName === selectedName);
-
-  //ソートしたメニューの名前リスト
-  const sortNameList = nameList.slice().sort();
-
-  const restore = () => {
-    setToggleNoWind(false);
-  };
 
   const windlessCalculation = (
     name: '100M' | '200M',
@@ -203,127 +180,45 @@ const TournamentViewDetail: FC = () => {
     }
   };
 
+  const tabList = ['今日', '年間'];
+
   return (
     <>
       <TournamentHeader dataList={dataList} />
-      <Flex justify="space-between" align="center">
-        <StyleMenu>
-          <MenuButton as={Button} rightIcon={<ChevronDownIcon />} shadow="base">
-            {selectedName}
-          </MenuButton>
-          <MenuList>
-            {nameList &&
-              nameList.length &&
-              sortNameList.map((item) => (
-                <MenuItem key={item} onClick={() => setSelectedName(item)}>
-                  {item}
-                </MenuItem>
-              ))}
-          </MenuList>
-        </StyleMenu>
-        <Button
-          shadow="base"
-          size="sm"
-          onClick={() => Router.push('/tournament/edit')}
-        >
-          編集
-        </Button>
-      </Flex>
-      <Box mb={8}></Box>
-      <Tabs variant="enclosed">
-        <TabList>
-          <Tab>今日</Tab>
-          <Tab>年間</Tab>
-        </TabList>
-        <TabPanels>
-          <TabPanel p={0}>
-            {filterMenus1.length ? (
-              <>
-                <Flex justify="space-between" align="center" mb={4}>
-                  <Heading size="md">今回と前回の結果</Heading>
-                  {selectedName === '100M' || selectedName === '200M' ? (
-                    toggleNoWind ? (
-                      <Button shadow="base" onClick={() => restore()}>
-                        元に戻す
-                      </Button>
-                    ) : (
-                      <Button
-                        shadow="base"
-                        onClick={() =>
-                          windlessCalculation(selectedName, filterMenus1)
-                        }
-                      >
-                        無風計算
-                      </Button>
-                    )
-                  ) : null}
-                  {hide ? (
-                    <Button shadow="base" onClick={() => setHide(false)}>
-                      大会名を表示
-                    </Button>
-                  ) : (
-                    <Button shadow="base" onClick={() => setHide(true)}>
-                      大会名を非表示
-                    </Button>
-                  )}
-                </Flex>
-                <TableView
-                  menus={toggleNoWind ? windLessMenus : filterMenus1}
-                  hide={hide}
-                />
-                <Box mb={12}></Box>
+      <Box mb={8} />
 
-                <Heading size="md" mb={4}>
-                  記録遷移グラフ
-                </Heading>
-                <GraphAllData data={filterMenus1} label="記録" />
-              </>
+      <Flex justify="space-between" align="center">
+        <SelectNameList />
+        <LinkButton label="編集" link={'/tournament/edit'} />
+      </Flex>
+      <Box mb={8} />
+
+      <Tabs variant="enclosed">
+        <TabList tabList={tabList} />
+        <TabPanels>
+          <TabPanel p={0} pt={4}>
+            {filterMenus1.length ? (
+              <TournamentTodayData
+                windlessCalculation={windlessCalculation}
+                windLessMenus={windLessMenus}
+                filterMenus={filterMenus1}
+                toggleNoWind={toggleNoWind}
+                setToggleNoWind={setToggleNoWind}
+              />
             ) : (
               <Text>まだ登録されていません</Text>
             )}
           </TabPanel>
-          <TabPanel p={0}>
+          <TabPanel p={0} pt={4}>
             {filterMenus1.length ? (
-              <>
-                <Flex justify="space-between" align="center" mb={4}>
-                  <Heading size="md">今回と前回の結果</Heading>
-                  {selectedName === '100M' || selectedName === '200M' ? (
-                    toggleNoWind ? (
-                      <Button shadow="base" onClick={() => restore()}>
-                        元に戻す
-                      </Button>
-                    ) : (
-                      <Button
-                        shadow="base"
-                        onClick={() =>
-                          windlessCalculation(selectedName, filterMenus1)
-                        }
-                      >
-                        無風計算
-                      </Button>
-                    )
-                  ) : null}
-                  {hide ? (
-                    <Button shadow="base" onClick={() => setHide(false)}>
-                      大会名を表示
-                    </Button>
-                  ) : (
-                    <Button shadow="base" onClick={() => setHide(true)}>
-                      大会名を非表示
-                    </Button>
-                  )}
-                </Flex>
-                <TableView
-                  menus={toggleNoWind ? windLessMenus : filterMenus2}
-                  hide={hide}
-                />
-                <Box mb={12}></Box>
-
-                <Heading size="md" mb={4}>
-                  記録遷移グラフ
-                </Heading>
-                <GraphAllData data={filterMenus2} label="記録" />
-              </>
+              <TournamentYearData
+                windlessCalculation={windlessCalculation}
+                windLessMenus={windLessMenus}
+                filterMenus1={filterMenus1}
+                filterMenus2={filterMenus2}
+                toggleNoWind={toggleNoWind}
+                setToggleNoWind={setToggleNoWind}
+              />
             ) : (
               <Text>まだ登録されていません</Text>
             )}

@@ -20,9 +20,10 @@ import { Round, TournamentMenu, TournamentRecode } from '../../../models/users';
 import { useRecoilValue } from 'recoil';
 import { userAuthState } from '../../../recoil/users/user';
 import { db } from '../../../lib/firebase';
-import { insertStr } from '../practice/PracticeEditRecode';
 import { ChevronDownIcon } from '@chakra-ui/icons';
 import { AiFillDelete } from 'react-icons/ai';
+import { insertStr } from '../../../hooks/useInsertStr';
+import { ErrorMessage } from '../../molecules';
 
 type Props = {
   menuId: string;
@@ -178,6 +179,7 @@ const TournamentEditRecode: FC<Props> = ({
       {toggleRecodes ? (
         <>
           <Flex direction="column">
+            <Box mb={4} />
             <Menu>
               <MenuButton
                 as={Button}
@@ -195,7 +197,7 @@ const TournamentEditRecode: FC<Props> = ({
                 ))}
               </MenuList>
             </Menu>
-            <Box mb={2}></Box>
+            <Box mb={2} />
             {menu.competitionName !== '800M' ? (
               <Flex justify="flex-start" align="center">
                 <PinInput
@@ -208,7 +210,7 @@ const TournamentEditRecode: FC<Props> = ({
                 <Text color="gray.400">レーン</Text>
               </Flex>
             ) : null}
-            <Box mb={2}></Box>
+            <Box mb={2} />
             <Stack>
               <Input
                 w="80%"
@@ -228,11 +230,9 @@ const TournamentEditRecode: FC<Props> = ({
                 />
               ) : null}
             </Stack>
-            <Box mb={2}></Box>
-            <Text color="red.300" fontWeight="bold">
-              {errorMessage}
-            </Text>
-            <Box mb={2}></Box>
+            <Box mb={2} />
+            <ErrorMessage message={errorMessage} />
+            <Box mb={2} />
             <HStack>
               <Button
                 bg="green.300"
@@ -251,10 +251,10 @@ const TournamentEditRecode: FC<Props> = ({
                 shadow="inner"
                 bg="red.300"
                 onClick={() => deleteRecode(items.recodeId)}
-              >
-                <AiFillDelete fontSize="20px" />
-              </IconButton>
+                icon={<AiFillDelete fontSize="20px" />}
+              />
             </HStack>
+            <Box mb={4} />
           </Flex>
         </>
       ) : (

@@ -86,11 +86,9 @@ const PracticeRecodeCreator: FC<Props> = ({
           onCompositionEnd={() => setIsComposed(false)}
         />
       ) : (
-        <>
-          <Button w="202px" shadow="base" onClick={InputToggle}>
-            ＋
-          </Button>
-        </>
+        <Button w="200px" shadow="base" onClick={InputToggle}>
+          ＋
+        </Button>
       )}
     </HStack>
   );

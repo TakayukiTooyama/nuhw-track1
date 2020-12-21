@@ -1,5 +1,4 @@
-import { Box, Button, Heading } from '@chakra-ui/react';
-import Router from 'next/router';
+import { Box } from '@chakra-ui/react';
 import React, { FC, useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 
@@ -7,6 +6,7 @@ import { db } from '../../../lib/firebase';
 import { TournamentData } from '../../../models/users';
 import { userInfoState } from '../../../recoil/users/user';
 import { TournamentDataTable } from '../../oraganisms';
+import { Heading1, LinkButton } from '../../molecules';
 
 const TournamentFirstViewDetail: FC = () => {
   //Global State
@@ -40,16 +40,14 @@ const TournamentFirstViewDetail: FC = () => {
 
   return (
     <>
-      <Heading>大会一覧</Heading>
+      <Heading1 label="大会一覧" />
+      <Box mb={8} />
       <TournamentDataTable dataList={dataList} />
-      <Box mb={4}></Box>
-      <Button
-        shadow="base"
-        color="gray.400"
-        onClick={() => Router.push('/tournament/create')}
-      >
-        追加したい大会がない場合
-      </Button>
+      <Box mb={4} />
+      <LinkButton
+        label="追加したい大会がない場合"
+        link={'/tournament/create'}
+      />
     </>
   );
 };

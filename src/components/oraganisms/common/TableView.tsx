@@ -13,6 +13,7 @@ import {
 } from './TableStyle';
 import { Menu } from '../../../models/users';
 import { NumberToDisplay } from '../../../recoil/users/user';
+import moment from 'moment';
 
 type Props = {
   menus: Menu[];
@@ -36,16 +37,12 @@ const TableView: FC<Props> = ({
   //データを動的に生成
   const tableData = () => {
     let tableDataAry: { date: string; [key: string]: string }[] = [];
-    menus.length > 0 &&
+    menus.length &&
       menus.forEach((menu) => {
+        if (!menu) return;
         const strDateId = String(menu.dateId);
-        const len = strDateId.length;
-        const formatDate =
-          strDateId.slice(0, len - 4) +
-          '/' +
-          strDateId.slice(len - 4, len - 2) +
-          '/' +
-          strDateId.slice(len - 2, len);
+        const formatDate = moment(strDateId).format('YYYY/MM/DD');
+
         let obj: Data = {};
         menu.recodes.forEach((recode, idx) => {
           const key = `recode${idx + 1}`;

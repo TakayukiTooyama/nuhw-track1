@@ -28,17 +28,18 @@ const TournamentEditMenu: FC<Props> = ({ items, deleteMenu }) => {
             maxW="255px"
             mr={1}
             textAlign="center"
-            readOnly={true}
+            isReadOnly
             value={items.competitionName}
           />
           <IconButton
             aria-label="menu-delete"
             shadow="inner"
             onClick={() => deleteMenu(items.menuId)}
-          >
-            <AiFillDelete fontSize="20px" />
-          </IconButton>
+            icon={<AiFillDelete fontSize="20px" />}
+          />
         </Flex>
+        <Box mb={4} />
+
         <Stack spacing={1}>
           {recodes &&
             recodes.map((recode, idx) => (
@@ -54,7 +55,7 @@ const TournamentEditMenu: FC<Props> = ({ items, deleteMenu }) => {
               />
             ))}
         </Stack>
-        <Box mb={4}></Box>
+        <Box mb={4} />
 
         <TournamentRecodeCreator
           index={index}

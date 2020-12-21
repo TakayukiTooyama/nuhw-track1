@@ -34,26 +34,25 @@ const SelectMenu: FC<Props> = ({ name, dataList }) => {
         <Heading fontSize={['xl', '2xl']}>{name}</Heading>
       </Button>
       <Divider />
-      {toggleMenu
-        ? dataList.map((data) => (
-            <Box
-              key={data.id}
-              pos="absolute"
-              zIndex={1}
-              shadow="base"
-              w="100%"
-              mx="auto"
-              textAlign="center"
-              py={2}
-              bg="white"
-              cursor="pointer"
-              _hover={{ bg: 'gray.50' }}
-              onClick={() => selectedMenu(data)}
-            >
-              {data.name}
-            </Box>
-          ))
-        : null}
+      {toggleMenu ? (
+        <Box zIndex={1} pos="absolute" w="100%" mx="auto">
+          {dataList &&
+            dataList.map((data) => (
+              <Box
+                key={data.id}
+                shadow="base"
+                textAlign="center"
+                py={2}
+                bg="white"
+                cursor="pointer"
+                _hover={{ bg: 'gray.50' }}
+                onClick={() => selectedMenu(data)}
+              >
+                {data.name}
+              </Box>
+            ))}
+        </Box>
+      ) : null}
     </Box>
   );
 };

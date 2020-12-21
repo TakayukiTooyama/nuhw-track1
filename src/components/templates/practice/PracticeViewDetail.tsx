@@ -1,26 +1,16 @@
-import { ChevronDownIcon } from '@chakra-ui/icons';
 import {
   Box,
-  Button,
   Flex,
   Heading,
-  Menu as StyleMenu,
-  MenuButton,
-  MenuItem,
-  MenuList,
-  PinInput,
-  PinInputField,
-  StatGroup,
-  Tab,
-  TabList,
   TabPanel,
   TabPanels,
   Tabs,
   Text,
 } from '@chakra-ui/react';
-import Router from 'next/router';
-import React, { FC, useEffect, useState } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import React, { useEffect, useState, VFC } from 'react';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { insertStr } from '../../../hooks/useInsertStr';
+
 import { db } from '../../../lib/firebase';
 import { Menu } from '../../../models/users';
 import {
@@ -31,21 +21,15 @@ import {
   selectedMakedMenuNameState,
   userAuthState,
 } from '../../../recoil/users/user';
-import { Stat } from '../../molecules';
-import {
-  GraphAllData,
-  GraphDailyAverage,
-  GraphMonthlyAverage,
-  TableView,
-} from '../../oraganisms';
-import { insertStr } from '../../oraganisms/practice/PracticeEditRecode';
+import { LinkButton, SelectNameList, TabList } from '../../molecules';
+import { PracticeTodayData, PracticeMonthlyData } from '../../oraganisms';
 
-type Comparison = {
+export type Comparison = {
   type: 'increase' | 'decrease';
   data: number;
 };
 
-const PracticeViewDetail: FC = () => {
+const PracticeViewDetail: VFC = () => {
   const user = useRecoilValue(userAuthState);
   const dateId = useRecoilValue(selectedDateIdState);
   const today = useRecoilValue(formatTodaysDateState);
@@ -57,15 +41,13 @@ const PracticeViewDetail: FC = () => {
   const [displayNumber, setDisplayNumber] = useRecoilState(NumberToDisplay);
   const [menus, setMenus] = useState<Menu[]>([]);
   const [changeNumber, setChangeNumber] = useState(displayNumber);
-  const [lastTime, setLastTime] = useState<Menu[]>([]);
+  const [lastTimeData, setLastTimeData] = useState<Menu[]>([]);
   const [comparisonAry, setComparisonAry] = useState<Comparison[]>([]);
 
   //選択されたメニューの名前によって表示されるmenusを変えるためフィルタリング
   const filterMenus = menus.filter((menu) => menu.name === selectedName);
   //今日
   const todaysData = filterMenus.filter((menu) => menu.dateId === today);
-  //1ヶ月
-  // const oneMonthData = filterMenus.filter((menu) => menu.dateId >= today - 100);
   //3ヶ月
   const threeMonthsData = filterMenus.filter(
     (menu) => menu.dateId >= today - 300
@@ -74,8 +56,8 @@ const PracticeViewDetail: FC = () => {
   const sixMonthsData = filterMenus.filter(
     (menu) => menu.dateId >= today - 600
   );
-  //ソートしたメニューの名前リスト
-  const sortNameList = nameList.slice().sort();
+  //タブメニュー
+  const tabList = ['今日', '3ヶ月', '6ヶ月', '年間'];
 
   useEffect(() => {
     fetchAnnualData();
@@ -99,36 +81,34 @@ const PracticeViewDetail: FC = () => {
       .collection('practices')
       .where('dateId', '>=', year);
     await practicesRef.get().then((snapshot) => {
-      let menuData: Menu[] = [];
       let nameList: string[] = [];
-      snapshot.forEach((doc) => {
+      const menuData = snapshot.docs.map((doc) => {
         const data = doc.data() as Menu;
         const name = data.name;
-        menuData.push(data);
         nameList.push(name);
+        return { ...data };
       });
+      setMenus(menuData);
       const DeduplicationNameList = [...new Set(nameList)];
       setNameList(DeduplicationNameList);
-      setMenus(menuData);
     });
   };
 
   const LastTimeData = async () => {
     const sortMenus = menus.filter((menu) => menu.name === selectedName).sort();
     const lastIndex = sortMenus.length - 1;
-    if (sortMenus.length > 0) {
+    if (sortMenus.length) {
       let comparisonAry1: number[] = [];
       let comparisonAry2: number[] = [];
 
       if (sortMenus[lastIndex]) {
         sortMenus[lastIndex].recodes.forEach((recode) => {
-          comparisonAry1.push(Number(recode.value));
+          comparisonAry1.push(+recode.value);
         });
       }
-
       if (sortMenus[lastIndex - 1]) {
         sortMenus[lastIndex - 1].recodes.forEach((recode) => {
-          comparisonAry2.push(Number(recode.value));
+          comparisonAry2.push(+recode.value);
         });
       }
 
@@ -136,7 +116,7 @@ const PracticeViewDetail: FC = () => {
       const newAry: Comparison[] = [];
       for (let i = 0; i < len; i++) {
         const number = comparisonAry1[i] - comparisonAry2[i];
-        const firstLetter = number.toString().slice(0, 1);
+        const firstLetter = String(number).slice(0, 1);
         if (firstLetter === '-') {
           newAry.push({ type: 'increase', data: Math.abs(number) });
         } else {
@@ -144,205 +124,63 @@ const PracticeViewDetail: FC = () => {
         }
       }
       setComparisonAry(newAry);
-      setLastTime([sortMenus[lastIndex], sortMenus[lastIndex - 1]]);
+      setLastTimeData([sortMenus[lastIndex], sortMenus[lastIndex - 1]]);
     } else {
       return;
     }
   };
-
-  const handleChange = (value: string) => {
-    setChangeNumber(value);
-  };
-
-  const format = (input: string) => {
-    const len = input.length;
-    if (len === 1) {
-      return '0"0' + input;
-    }
-    if (len === 2) {
-      return '0"' + input;
-    }
-    if (len > 2 && len < 5)
-      return input.slice(0, len - 2) + '"' + input.slice(len - 2, len);
-    if (len > 4 && len < 7)
-      return (
-        input.slice(0, len - 4) +
-        "'" +
-        input.slice(len - 4, len - 2) +
-        '"' +
-        input.slice(len - 2, len)
-      );
-    if (len > 6 && len < 9)
-      return (
-        input.slice(0, len - 6) +
-        ':' +
-        input.slice(len - 6, len - 4) +
-        "'" +
-        input.slice(len - 4, len - 2) +
-        '"' +
-        input.slice(len - 2, len)
-      );
-    return input;
-  };
+  const tabDataList = [
+    {
+      dateNumber: 3,
+      data: threeMonthsData,
+    },
+    { dateNumber: 6, data: sixMonthsData },
+    { dateNumber: 12, data: filterMenus },
+  ];
 
   return (
     <>
       <Heading>練習タイム</Heading>
-      <Box mb={8}></Box>
+      <Box mb={8} />
+
       <Flex justify="space-between" align="center">
-        <StyleMenu>
-          <MenuButton as={Button} rightIcon={<ChevronDownIcon />} shadow="base">
-            {selectedName === '選択してください'
-              ? selectedName
-              : `${selectedName}M`}
-          </MenuButton>
-          <MenuList>
-            {nameList.length > 0 &&
-              sortNameList.map((item) => (
-                <MenuItem key={item} onClick={() => setSelectedName(item)}>
-                  {item}M
-                </MenuItem>
-              ))}
-          </MenuList>
-        </StyleMenu>
-        <Button
-          shadow="base"
-          size="sm"
-          onClick={() => Router.push(`/practice/edit/${dateId}`)}
-        >
-          編集
-        </Button>
+        <SelectNameList />
+        <LinkButton label="編集" link={`/practice/edit/${dateId}`} />
       </Flex>
-      <Box mb={8}></Box>
+      <Box mb={8} />
+
       <Tabs variant="enclosed">
-        <TabList>
-          <Tab>今日</Tab>
-          <Tab>3ヶ月</Tab>
-          <Tab>6ヶ月</Tab>
-          <Tab>年間</Tab>
-        </TabList>
+        <TabList tabList={tabList} />
         <TabPanels>
-          <TabPanel p={0}>
-            {todaysData.length > 0 && lastTime.length > 0 ? (
-              <>
-                <Flex justify="space-between" align="center" mb={4}>
-                  <Heading size="md">今回と前回の記録</Heading>
-                  <PinInput value={changeNumber} onChange={handleChange}>
-                    <PinInputField />
-                  </PinInput>
-                </Flex>
-                <TableView menus={lastTime} label="本目" firstHeaderLabel="M" />
-                <Box mb={12}></Box>
-                <Heading size="md" mb={4}>
-                  前回比較
-                </Heading>
-                <StatGroup ml={6}>
-                  {comparisonAry.map((item, idx) => (
-                    <Stat
-                      key={idx.toString()}
-                      type={item.type}
-                      data={item.data}
-                      label="本目"
-                      idx={idx}
-                      format={format}
-                    />
-                  ))}
-                </StatGroup>
-                <Box mb={12}></Box>
-                <Heading size="md" mb={4}>
-                  記録遷移グラフ
-                </Heading>
-                <GraphAllData
-                  data={todaysData}
-                  insertStr={insertStr}
-                  label="タイム"
-                  axisLabel="本目"
-                />
-              </>
-            ) : (
-              <Text>まだ登録されていません</Text>
-            )}
-          </TabPanel>
-          <TabPanel p={0}>
-            {threeMonthsData.length > 0 ? (
-              <>
-                <GraphAllData
-                  data={threeMonthsData}
-                  insertStr={insertStr}
-                  label="タイム"
-                  axisLabel="本目"
-                />
-                <GraphDailyAverage
-                  data={threeMonthsData}
-                  insertStr={insertStr}
-                  label="平均タイム"
-                />
-                <TableView
-                  menus={threeMonthsData}
-                  label="本目"
-                  firstHeaderLabel="M"
-                  format={insertStr}
-                />
-              </>
-            ) : (
-              <Text>まだ登録されていません</Text>
-            )}
-          </TabPanel>
           <TabPanel p={0} pt={4}>
-            {sixMonthsData.length > 0 ? (
-              <>
-                <GraphAllData
-                  data={sixMonthsData}
-                  insertStr={insertStr}
-                  label="タイム"
-                  axisLabel="本目"
-                />
-                <GraphDailyAverage
-                  data={sixMonthsData}
-                  insertStr={insertStr}
-                  label="平均タイム"
-                />
-                <TableView
-                  menus={sixMonthsData}
-                  label="本目"
-                  firstHeaderLabel="M"
-                  format={insertStr}
-                />
-              </>
+            {todaysData.length && lastTimeData.length ? (
+              <PracticeTodayData
+                data={todaysData}
+                lastTimeData={lastTimeData}
+                setChangeNumber={setChangeNumber}
+                changeNumber={changeNumber}
+                comparisonAry={comparisonAry}
+              />
             ) : (
-              <Text>まだ登録されていません</Text>
+              <Text pl={4}>まだ登録されていません</Text>
             )}
           </TabPanel>
-          <TabPanel p={0} pt={4}>
-            {filterMenus.length > 0 ? (
-              <>
-                <GraphAllData
-                  data={filterMenus}
-                  insertStr={insertStr}
-                  label="タイム"
+          {tabDataList.map((item, idx) => (
+            <TabPanel key={idx} p={0} pt={4}>
+              {item.data.length ? (
+                <PracticeMonthlyData
+                  data={item.data}
+                  dateNumber={item.dateNumber}
                   axisLabel="本目"
-                />
-                <GraphDailyAverage
-                  data={filterMenus}
-                  insertStr={insertStr}
-                  label="平均タイム"
-                />
-                <GraphMonthlyAverage
-                  data={filterMenus}
-                  insertStr={insertStr}
-                  label="平均タイム"
-                />
-                <TableView
-                  menus={filterMenus}
-                  label="本目"
                   firstHeaderLabel="M"
+                  label="タイム"
                   format={insertStr}
                 />
-              </>
-            ) : (
-              <Text>まだ登録されていません</Text>
-            )}
-          </TabPanel>
+              ) : (
+                <Text pl={4}>まだ登録されていません</Text>
+              )}
+            </TabPanel>
+          ))}
         </TabPanels>
       </Tabs>
     </>

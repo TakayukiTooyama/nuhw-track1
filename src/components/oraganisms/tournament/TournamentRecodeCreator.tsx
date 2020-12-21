@@ -11,6 +11,7 @@ import {
   MenuList,
   PinInput,
   PinInputField,
+  Stack,
   Text,
 } from '@chakra-ui/react';
 import React, {
@@ -25,6 +26,7 @@ import { useRecoilValue } from 'recoil';
 import { db } from '../../../lib/firebase';
 import { TournamentRecode, TournamentMenu, Round } from '../../../models/users';
 import { userAuthState } from '../../../recoil/users/user';
+import { ErrorMessage } from '../../molecules';
 
 type Props = {
   index: number;
@@ -94,9 +96,19 @@ const TournamentRecodeCreator: FC<Props> = ({
       return;
     }
     //10分以内(800mまでなので10分以上かからない)
-    const regex = /[^0-9]/g;
-    const result = regex.test(recode);
-    if (recode.length > 5 || result || recode.slice(0, 1) === '0') {
+    const regex1 = /[^0-9]/g;
+    const regex2 = /[^0-9.-]/g;
+    const resultRecode = regex1.test(recode);
+    const resultWind = regex2.test(wind);
+    const currentWind = regex1.test(wind.slice(-3, -2));
+    if (
+      recode.length > 5 ||
+      resultRecode ||
+      resultWind ||
+      currentWind ||
+      (wind.slice(0, 1) === '-' && wind.slice(-3, -2) === '0') ||
+      recode.slice(0, 1) === '0'
+    ) {
       setErrorMessage('正しい記録を入力してください');
       return;
     }
@@ -153,50 +165,49 @@ const TournamentRecodeCreator: FC<Props> = ({
               ))}
             </MenuList>
           </Menu>
-          {menu.competitionName !== '800M' ? (
-            <Flex justify="flex-start" align="center">
-              <PinInput value={lane} onChange={(value) => setLane(value)}>
-                <PinInputField />
-              </PinInput>
-              <Text color="gray.400">レーン</Text>
-            </Flex>
-          ) : null}
-          <Input
-            maxW="200px"
-            value={recode}
-            onChange={(e) => handleChange(e, setRecode)}
-            placeholder="記録"
-          />
-          {menu.competitionName !== '400M' &&
-          menu.competitionName !== '800M' &&
-          menu.competitionName !== '400H' ? (
+          <Box mb={2} />
+          <Stack spacing={2}>
+            {menu.competitionName !== '800M' ? (
+              <Flex justify="flex-start" align="center">
+                <PinInput value={lane} onChange={(value) => setLane(value)}>
+                  <PinInputField />
+                </PinInput>
+                <Text color="gray.400">レーン</Text>
+              </Flex>
+            ) : null}
             <Input
               maxW="200px"
-              value={wind}
-              onChange={(e) => handleChange(e, setWind)}
-              placeholder="風速"
+              value={recode}
+              onChange={(e) => handleChange(e, setRecode)}
+              placeholder="記録"
             />
-          ) : null}
-          <Box mb={2}></Box>
-          <Text color="red.300" fontWeight="bold">
-            {errorMessage}
-          </Text>
-          <Box mb={2}></Box>
-          <HStack>
-            <Button
-              shadow="base"
-              bg="green.300"
-              w="100%"
-              maxW="100px"
-              onClick={addRecode}
-              isLoading={loading}
-            >
-              追加
-            </Button>
-            <Button shadow="base" onClick={cansel}>
-              キャンセル
-            </Button>
-          </HStack>
+            {menu.competitionName !== '400M' &&
+            menu.competitionName !== '800M' &&
+            menu.competitionName !== '400H' ? (
+              <Input
+                maxW="200px"
+                value={wind}
+                onChange={(e) => handleChange(e, setWind)}
+                placeholder="風速"
+              />
+            ) : null}
+            <ErrorMessage message={errorMessage} />
+            <HStack>
+              <Button
+                shadow="base"
+                bg="green.300"
+                w="100%"
+                maxW="100px"
+                onClick={addRecode}
+                isLoading={loading}
+              >
+                追加
+              </Button>
+              <Button shadow="base" onClick={cansel}>
+                キャンセル
+              </Button>
+            </HStack>
+          </Stack>
         </Flex>
       ) : (
         <Button w="200px" shadow="base" onClick={() => setToggleEdit(true)}>

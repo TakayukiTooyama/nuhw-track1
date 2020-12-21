@@ -32,7 +32,7 @@ export const formatTodaysDateState = atom<number>({
 });
 
 //選択している日付を保持
-export const selectedDateState = atom<Date | null>({
+export const selectedDateState = atom<Date>({
   key: 'date',
   default: new Date(),
 });
@@ -42,11 +42,7 @@ export const selectedDateIdState = selector<number>({
   key: 'dateId',
   get: ({ get }) => {
     const date = get(selectedDateState);
-    return Number(
-      date?.getFullYear() +
-        ('0' + (date?.getMonth()! + 1)).slice(-2) +
-        ('0' + date?.getDate()).slice(-2)
-    );
+    return Number(moment(date).format('YYYYMMDD'));
   },
 });
 
@@ -86,11 +82,6 @@ export const NumberToDisplay = atom<string>({
 });
 
 /*======tournament======*/
-// export const TournamentMenusState = atom<TournamentMenu[]>({
-//   key: 'menus',
-//   default: [],
-// });
-
 //選択している大会のIDを保持
 export const selectedTournamentDataState = atom<TournamentData>({
   key: 'tournamentName',

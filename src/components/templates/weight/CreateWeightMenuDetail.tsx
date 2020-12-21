@@ -1,14 +1,5 @@
 import React, { FC, useEffect, useState } from 'react';
-import Router from 'next/router';
-import {
-  Box,
-  Button,
-  Divider,
-  Flex,
-  Heading,
-  Input,
-  Text,
-} from '@chakra-ui/react';
+import { Box, Button, Divider, Flex, Input, Text } from '@chakra-ui/react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
 import { db } from '../../../lib/firebase';
@@ -18,6 +9,7 @@ import {
   selectedDateIdState,
   userInfoState,
 } from '../../../recoil/users/user';
+import { InputKeyDown, LinkButton, Heading1 } from '../../molecules';
 
 const CreateWeightMenuDetail: FC = () => {
   const user = useRecoilValue(userInfoState);
@@ -121,18 +113,12 @@ const CreateWeightMenuDetail: FC = () => {
   };
 
   return (
-    <div>
+    <>
       <Flex justify="space-between" align="center">
-        <Heading size="lg">ウエイトメニュー</Heading>
-        <Button
-          shadow="base"
-          size="sm"
-          onClick={() => Router.push(`/weight/edit/${dateId}`)}
-        >
-          戻る
-        </Button>
+        <Heading1 label="ウエイトメニュー" />
+        <LinkButton label="戻る" link={`/weight/edit/${dateId}`} />
       </Flex>
-      <Box mb={8}></Box>
+      <Box mb={8} />
       {menus &&
         menus.map((menu, idx) => {
           if (toggleEditMenu && selectedIndex === menu.id) {
@@ -167,22 +153,19 @@ const CreateWeightMenuDetail: FC = () => {
 
       <Box mb={4}></Box>
       {toggleEdit ? (
-        <Input
-          autoFocus
-          placeholder="新しいメニュー"
+        <InputKeyDown
           value={name}
-          onChange={handleChange}
-          onBlur={createBlur}
-          onKeyDown={addTeamWeightMenu}
-          onCompositionStart={() => setIsComposed(true)}
-          onCompositionEnd={() => setIsComposed(false)}
+          placeholder="新しいメニュー"
+          handleChange={handleChange}
+          handleBlur={createBlur}
+          addFunc={addTeamWeightMenu}
         />
       ) : (
         <Button shadow="base" w="100%" onClick={() => setToggleEdit(true)}>
           メニュー追加
         </Button>
       )}
-    </div>
+    </>
   );
 };
 

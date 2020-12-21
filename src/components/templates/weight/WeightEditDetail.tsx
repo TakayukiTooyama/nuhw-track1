@@ -1,21 +1,17 @@
 import React, { FC, useEffect, useState } from 'react';
-import Router from 'next/router';
+
 import {
   Box,
   Button,
   Divider,
   Flex,
-  Heading,
   HStack,
   Input,
-  InputGroup,
-  InputRightElement,
   Stack,
   Text,
 } from '@chakra-ui/react';
 import { useRecoilValue } from 'recoil';
 
-import DatePicker from '../../molecules/common/DatePicker';
 import {
   selectedDateIdState,
   userAuthState,
@@ -24,6 +20,13 @@ import {
 import { WeightMenu, WeightName } from '../../../models/users';
 import { db } from '../../../lib/firebase';
 import { WeightEditMenu } from '../../oraganisms';
+import {
+  CountButton,
+  DatePicker,
+  Heading1,
+  InputGroup,
+  LinkButton,
+} from '../../molecules';
 
 const WeightEditDetail: FC = () => {
   //Global State
@@ -72,7 +75,8 @@ const WeightEditDetail: FC = () => {
     const teamWeithMenusRef = db
       .collection('teams')
       .doc(userInfo.teamInfo.teamId)
-      .collection('weightMenus');
+      .collection('weightMenus')
+      .orderBy('name', 'asc');
     await teamWeithMenusRef.get().then((snapshot) => {
       let menuList: WeightName[] = [];
       snapshot.forEach((doc) => {
@@ -154,22 +158,22 @@ const WeightEditDetail: FC = () => {
     }
   };
 
+  const countList = [
+    { count: 10, label: '10RM' },
+    { count: 1, label: '+ 1' },
+    { count: -1, label: '− 1' },
+  ];
+
   return (
     <>
-      <Heading>ウエイト管理</Heading>
-      <Box mb={8}></Box>
+      <Heading1 label="ウエイト管理" />
+      <Box mb={8} />
 
       <Flex justify="space-between" align="center">
         <DatePicker bg="blue.400" />
-        <Button
-          size="sm"
-          shadow="base"
-          onClick={() => Router.push(`/weight/${dateId}`)}
-        >
-          終了
-        </Button>
+        <LinkButton label=" 終了" link={`/weight/${dateId}`} />
       </Flex>
-      <Box mb={8}></Box>
+      <Box mb={8} />
 
       <Stack spacing={4}>
         {menus &&
@@ -182,68 +186,65 @@ const WeightEditDetail: FC = () => {
             />
           ))}
       </Stack>
-      <Box mb={8}></Box>
+      <Box mb={8} />
+
       {toggleMenu ? (
-        <Box w="100%">
-          <Stack>
-            <InputGroup bg="white" borderRadius="5px" w="70%">
-              <Input value={rm} readOnly={true} textAlign="center" />
-              <InputRightElement children="RM" />
-            </InputGroup>
-            <HStack spacing={1}>
-              <Button shadow="base" onClick={() => setRm((prev) => prev + 10)}>
-                10RM
-              </Button>
-              <Button shadow="base" onClick={() => setRm((prev) => prev + 1)}>
-                ＋1
-              </Button>
-              <Button shadow="base" onClick={() => setRm((prev) => prev - 1)}>
-                −1
-              </Button>
-            </HStack>
+        <Flex justify="center" direction="column" align="center">
+          <InputGroup label="RM" value={rm} isReadOnly={true} />
+          <Box mb={1} />
+          <HStack spacing={1}>
+            {countList.map((item) => (
+              <CountButton
+                key={item.label}
+                setCount={setRm}
+                count={item.count}
+                label={item.label}
+              />
+            ))}
+          </HStack>
+          <Box mt={4} />
+          <Input
+            w="100%"
+            bg="white"
+            maxW="300px"
+            placeholder="メニュー検索"
+            onChange={handleChange}
+            onKeyDown={searchMenu}
+            onDoubleClick={handleBlur}
+          />
+          <Box mb={1} />
+
+          <Stack
+            w="100%"
+            maxW="300px"
+            border="1px solid"
+            borderColor="gray.200"
+            spacing={0}
+          >
+            {filterNameList &&
+              filterNameList.map((item) => (
+                <Box
+                  key={item.id}
+                  px={2}
+                  bg="white"
+                  textAlign="center"
+                  h="35px"
+                  lineHeight="35px"
+                  _hover={{ bg: 'gray.100' }}
+                  onClick={() => addMenu(item.name)}
+                >
+                  <Text color="gray.400">{item.name}</Text>
+                  <Divider />
+                </Box>
+              ))}
           </Stack>
-          <Box mt={4}>
-            <Input
-              w="70%"
-              bg="white"
-              placeholder="メニュー検索"
-              onChange={handleChange}
-              onKeyDown={searchMenu}
-              onDoubleClick={handleBlur}
-            />
-            <Box mb={1}></Box>
-            <Stack
-              w="70%"
-              maxW="300px"
-              border="1px solid"
-              borderColor="gray.200"
-              spacing={0}
-            >
-              {filterNameList &&
-                filterNameList.map((item) => (
-                  <Box
-                    key={item.id}
-                    bg="white"
-                    textAlign="center"
-                    h="35px"
-                    lineHeight="35px"
-                    _hover={{ bg: 'gray.100' }}
-                    onClick={() => addMenu(item.name)}
-                  >
-                    <Text color="gray.400">{item.name}</Text>
-                    <Divider />
-                  </Box>
-                ))}
-            </Stack>
-            <Button
-              shadow="base"
-              color="gray.400"
-              onClick={() => Router.push('/weight/createWeightMenu')}
-            >
-              追加したいメニューがない場合
-            </Button>
-          </Box>
-        </Box>
+          <Box mb={4} />
+
+          <LinkButton
+            label="追加したいメニューがない場合"
+            link={'/weight/createWeightMenu'}
+          />
+        </Flex>
       ) : (
         <Button
           shadow="base"

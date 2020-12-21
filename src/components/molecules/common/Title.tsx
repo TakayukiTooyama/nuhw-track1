@@ -7,7 +7,7 @@ type Props = {
 
 const Title: FC<Props> = ({ title }) => {
   return (
-    <Box p="40px" color="white" mt="4" bg="black" shadow="md">
+    <Box p="40px" color="white" bg="black" shadow="md">
       <Heading>{title}</Heading>
     </Box>
   );

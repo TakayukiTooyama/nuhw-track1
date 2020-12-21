@@ -46,11 +46,10 @@ const WeightEditMenu: FC<Props> = ({ items, setMenus, deleteMenu }) => {
           aria-label="menu-delete"
           shadow="inner"
           onClick={() => deleteMenu(items.menuId)}
-        >
-          <AiFillDelete fontSize="20px" />
-        </IconButton>
+          icon={<AiFillDelete fontSize="20px" />}
+        />
       </Flex>
-      <Box mb={4}></Box>
+      <Box mb={4} />
 
       <Stack spacing={1}>
         {recodes &&
@@ -66,7 +65,7 @@ const WeightEditMenu: FC<Props> = ({ items, setMenus, deleteMenu }) => {
             />
           ))}
       </Stack>
-      <Box mb={4}></Box>
+      <Box mb={4} />
 
       <WeightRecodeCreator
         index={index}

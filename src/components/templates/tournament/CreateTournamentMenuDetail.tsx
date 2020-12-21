@@ -1,13 +1,12 @@
 import React, { FC, useEffect, useState } from 'react';
-import Router from 'next/router';
 import {
   Box,
   Button,
   Divider,
   Flex,
-  Heading,
   HStack,
   Input,
+  Stack,
   Text,
 } from '@chakra-ui/react';
 import { useRecoilValue } from 'recoil';
@@ -16,7 +15,7 @@ import moment from 'moment';
 import { db } from '../../../lib/firebase';
 import { TournamentData } from '../../../models/users';
 import { userInfoState } from '../../../recoil/users/user';
-import { DateRangePicker } from '../../molecules';
+import { DateRangePicker, LinkButton, Heading1 } from '../../molecules';
 
 const CreateTournamentMenuDetail: FC = () => {
   //moment.js
@@ -160,22 +159,17 @@ const CreateTournamentMenuDetail: FC = () => {
   return (
     <div>
       <Flex justify="space-between" align="center">
-        <Heading size="lg">大会の追加</Heading>
-        <Button
-          shadow="base"
-          size="sm"
-          onClick={() => Router.push(`/tournament/search`)}
-        >
-          戻る
-        </Button>
+        <Heading1 label="大会の追加" />
+        <LinkButton label="戻る" link={`/tournament/search`} />
       </Flex>
-      <Box mb={8}></Box>
+      <Box mb={8} />
       {/* 追加された大会 */}
       {menus &&
         menus.map((menu, idx) => {
           if (toggleEditMenu && selectedIndex === menu.id) {
             return (
-              <Box key={menu.id}>
+              <Stack spacing={2} key={menu.id}>
+                <Box mb={4} />
                 <DateRangePicker
                   startDate={startDate}
                   endDate={endDate}
@@ -204,7 +198,8 @@ const CreateTournamentMenuDetail: FC = () => {
                     キャンセル
                   </Button>
                 </HStack>
-              </Box>
+                <Box mb={4} />
+              </Stack>
             );
           } else {
             return (
@@ -230,7 +225,7 @@ const CreateTournamentMenuDetail: FC = () => {
             );
           }
         })}
-      <Box mb={4}></Box>
+      <Box mb={4} />
       {toggleEdit ? (
         <>
           {/* 開催期間 */}
@@ -240,7 +235,7 @@ const CreateTournamentMenuDetail: FC = () => {
             setStartDate={setStartDate}
             setEndDate={setEndDate}
           />
-          <Box mb={4}></Box>
+          <Box mb={4} />
           {/* 大会名 */}
           <Input
             bg="white"
@@ -248,7 +243,7 @@ const CreateTournamentMenuDetail: FC = () => {
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
-          <Box mb={4}></Box>
+          <Box mb={4} />
           {/* 会場 */}
           <Input
             bg="white"
@@ -256,7 +251,7 @@ const CreateTournamentMenuDetail: FC = () => {
             value={venue}
             onChange={(e) => setVenue(e.target.value)}
           />
-          <Box mb={4}></Box>
+          <Box mb={4} />
           <Button bg="green.400" shadow="base" onClick={addTournamentMenu}>
             追加
           </Button>

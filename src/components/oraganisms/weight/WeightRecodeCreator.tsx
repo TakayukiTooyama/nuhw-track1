@@ -87,7 +87,7 @@ const WeightRecodeCreator: FC<Props> = ({
         />
       ) : (
         <>
-          <Button w="202px" shadow="base" onClick={InputToggle}>
+          <Button w="200px" shadow="base" onClick={InputToggle}>
             ＋
           </Button>
         </>

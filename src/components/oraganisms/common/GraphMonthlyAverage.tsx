@@ -8,7 +8,7 @@ const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 type Props = {
   data: Menu[];
-  insertStr?: (input: string) => string;
+  format?: (input: string) => string;
   label: string;
 };
 type Data = {
@@ -16,7 +16,7 @@ type Data = {
   data: number[];
 };
 
-const GraphMonthlyAverage: FC<Props> = ({ data, insertStr, label }) => {
+const GraphMonthlyAverage: FC<Props> = ({ data, format, label }) => {
   const selectedName = useRecoilValue(selectedMakedMenuNameState);
   const [xLabel, setXLabel] = useState<string[]>([]);
   const [monthlyData, setMonthlyData] = useState<number[]>([]);
@@ -144,10 +144,10 @@ const GraphMonthlyAverage: FC<Props> = ({ data, insertStr, label }) => {
       },
       yaxis: {
         formatter: function (val: number) {
-          if (insertStr === undefined) {
+          if (format === undefined) {
             return String(val);
           } else {
-            return insertStr(String(val));
+            return format(String(val));
           }
         },
       },
@@ -155,10 +155,10 @@ const GraphMonthlyAverage: FC<Props> = ({ data, insertStr, label }) => {
         shared: false,
         y: {
           formatter: function (val: number) {
-            if (insertStr === undefined) {
+            if (format === undefined) {
               return String(val);
             } else {
-              return insertStr(String(val));
+              return format(String(val));
             }
           },
         },

@@ -1,9 +1,8 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState, VFC } from 'react';
 import {
   Box,
   Button,
   Flex,
-  Input,
   PinInput,
   PinInputField,
   Skeleton,
@@ -23,14 +22,14 @@ import {
 import { db } from '../../../lib/firebase';
 import { TournamentData, TournamentMenu } from '../../../models/users';
 import { TournamentEditMenu, TournamentHeader } from '../../oraganisms';
-import Router from 'next/router';
+import { ErrorMessage, InputKeyDown, LinkButton } from '../../molecules';
 
-const TournamentEditDetail: FC = () => {
+const TournamentEditDetail: VFC = () => {
   //Global State
   const user = useRecoilValue(userAuthState);
   const userInfo = useRecoilValue(userInfoState);
   const selectedData = useRecoilValue(selectedTournamentDataState);
-  const [isComposed, setIsComposed] = useRecoilState(isComposedState);
+  const isComposed = useRecoilValue(isComposedState);
   const [nameList, setNameList] = useRecoilState(makedMenuNameListState);
 
   //Local State
@@ -176,20 +175,16 @@ const TournamentEditDetail: FC = () => {
         .doc(menuId)
         .set(newData)
         .then(() => {
+          successFnc();
           setMenus((prev) => [...prev, newData]);
-
           /*
             同じ大会で同じ種目に出る可能性があるので作成した種目を
             どんどん選択肢に入れると被りが出てしまうためそれを防ぐ
           */
-          let deduplicationNameList: string[] = [];
-          nameList.forEach((item) => {
-            if (item !== formatName(name)) {
-              deduplicationNameList.push(item);
-            }
+          const list = nameList.filter((item) => {
+            item !== formatName(name);
           });
-          setNameList([...deduplicationNameList, formatName(name)]);
-          successFnc();
+          setNameList([...list, formatName(name)]);
         });
     }
   };
@@ -206,14 +201,14 @@ const TournamentEditDetail: FC = () => {
       await usersRef
         .update({ tournamentIds: [...userInfo.tournamentIds, newId] })
         .then(() => {
+          setLoading(false);
           setToggleMenu(false);
           setName('');
-          setLoading(false);
         });
     } else {
+      setLoading(false);
       setToggleMenu(false);
       setName('');
-      setLoading(false);
     }
   };
 
@@ -245,6 +240,11 @@ const TournamentEditDetail: FC = () => {
     setDay(value);
   };
 
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setErrorMessage('');
+    setName(e.target.value);
+  };
+
   return (
     <>
       <TournamentHeader dataList={dataList} />
@@ -255,22 +255,21 @@ const TournamentEditDetail: FC = () => {
           </PinInput>
           <Text fontSize="lg">日目</Text>
         </Flex>
-        <Button
-          size="sm"
-          shadow="base"
-          onClick={() => Router.push('/tournament')}
-        >
-          終了
-        </Button>
+        <LinkButton label="終了" link={'/tournament'} />
       </Flex>
+      <Box mb={4} />
 
-      {filterMenus.map((menu) => (
-        <TournamentEditMenu
-          key={menu.menuId}
-          items={menu}
-          deleteMenu={deleteMenu}
-        />
-      ))}
+      <Stack spacing={4}>
+        {filterMenus.map((menu) => (
+          <TournamentEditMenu
+            key={menu.menuId}
+            items={menu}
+            deleteMenu={deleteMenu}
+          />
+        ))}
+      </Stack>
+      <Box mb={4} />
+
       {toggleMenu ? (
         <>
           {loading ? (
@@ -280,19 +279,15 @@ const TournamentEditDetail: FC = () => {
             </Stack>
           ) : (
             <>
-              <Input
-                autoFocus
-                bg="white"
-                placeholder="種目 (例 100, 400H)"
+              <InputKeyDown
                 value={name}
-                onChange={(e) => setName(e.target.value)}
-                onBlur={handleBlur}
-                onKeyDown={addMenu}
-                onCompositionStart={() => setIsComposed(true)}
-                onCompositionEnd={() => setIsComposed(false)}
+                placeholder="種目 (例 100, 400H)"
+                handleChange={handleChange}
+                handleBlur={handleBlur}
+                addFunc={addMenu}
               />
-              <Box mb={1}></Box>
-              <Text color="red.400">{errorMessage}</Text>
+              <Box mb={1} />
+              <ErrorMessage message={errorMessage} />
             </>
           )}
         </>

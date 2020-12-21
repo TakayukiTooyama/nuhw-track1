@@ -1,3 +1,4 @@
+import { ReactElement } from 'react';
 import { TeamInfo } from './teams';
 
 //ユーザー情報
@@ -17,15 +18,29 @@ export type UserInfo = {
 
 export type User = UserAuth & UserInfo;
 
+export type LinkContent = {
+  id: string;
+  name: string;
+  color: string;
+  icon?: ReactElement;
+  link: string | number;
+};
+
 export type TimeStamp = {
-  created_at: TimeStamp;
-  updated_at: TimeStamp;
+  createdAt: TimeStamp;
+  updatedAt: TimeStamp;
 };
 
 //選択しているnameListの型
 export type SelectNameList = {
   id: string;
   name: string;
+};
+
+//前回の記録との比較
+export type Comparison = {
+  type: 'increase' | 'decrease';
+  data: number;
 };
 
 //練習メニュー

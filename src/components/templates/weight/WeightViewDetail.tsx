@@ -1,28 +1,8 @@
-import { ChevronDownIcon } from '@chakra-ui/icons';
-import {
-  Box,
-  Button,
-  Flex,
-  Heading,
-  Menu as StyleMenu,
-  MenuButton,
-  MenuItem,
-  MenuList,
-  PinInput,
-  PinInputField,
-  StatGroup,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
-  Text,
-} from '@chakra-ui/react';
-import Router from 'next/router';
+import { Box, Flex, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react';
 import React, { FC, useEffect, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { db } from '../../../lib/firebase';
-import { Menu } from '../../../models/users';
+import { Menu, Comparison } from '../../../models/users';
 import {
   formatTodaysDateState,
   makedMenuNameListState,
@@ -31,18 +11,8 @@ import {
   selectedMakedMenuNameState,
   userAuthState,
 } from '../../../recoil/users/user';
-import { Stat } from '../../molecules';
-import {
-  GraphAllData,
-  GraphDailyAverage,
-  GraphMonthlyAverage,
-  TableView,
-} from '../../oraganisms';
-
-type Comparison = {
-  type: 'increase' | 'decrease';
-  data: number;
-};
+import { Heading1, LinkButton, TabList, SelectNameList } from '../../molecules';
+import { TodayData, WeightMonthlyData } from '../../oraganisms';
 
 const WeightViewDetail: FC = () => {
   const user = useRecoilValue(userAuthState);
@@ -56,16 +26,14 @@ const WeightViewDetail: FC = () => {
   const [displayNumber, setDisplayNumber] = useRecoilState(NumberToDisplay);
   const [menus, setMenus] = useState<Menu[]>([]);
   const [changeNumber, setChangeNumber] = useState(displayNumber);
-  const [lastTime, setLastTime] = useState<Menu[]>([]);
+  const [lastTimeData, setLastTimeData] = useState<Menu[]>([]);
   const [comparisonAry, setComparisonAry] = useState<Comparison[]>([]);
   const [judgLastTime, setJudgLastTime] = useState(false);
 
   //選択されたメニューの名前によって表示されるmenusを変えるためフィルタリング
   const filterMenus = menus.filter((menu) => menu.name === selectedName);
   //今日
-  const todaysData = filterMenus.filter((menu) => menu.dateId === today);
-  //1ヶ月
-  // const oneMonthData = filterMenus.filter((menu) => menu.dateId >= today - 100);
+  const todayData = filterMenus.filter((menu) => menu.dateId === today);
   //3ヶ月
   const threeMonthsData = filterMenus.filter(
     (menu) => menu.dateId >= today - 300
@@ -74,8 +42,6 @@ const WeightViewDetail: FC = () => {
   const sixMonthsData = filterMenus.filter(
     (menu) => menu.dateId >= today - 600
   );
-  //ソートしたメニューの名前リスト
-  const sortNameList = nameList.slice().sort();
 
   useEffect(() => {
     fetchAnnualData();
@@ -108,7 +74,8 @@ const WeightViewDetail: FC = () => {
         nameList.push(name);
       });
       const DeduplicationNameList = [...new Set(nameList)];
-      setNameList(DeduplicationNameList);
+      const sortDeduplicationNameList = DeduplicationNameList.slice().sort();
+      setNameList(sortDeduplicationNameList);
       setMenus(menuData);
     });
   };
@@ -146,157 +113,68 @@ const WeightViewDetail: FC = () => {
       if (!sortMenus[lastIndex - 1]) {
         setJudgLastTime(true);
         setComparisonAry(newAry);
-        setLastTime([sortMenus[lastIndex]]);
+        setLastTimeData([sortMenus[lastIndex]]);
       } else {
         setComparisonAry(newAry);
-        setLastTime([sortMenus[lastIndex], sortMenus[lastIndex - 1]]);
+        setLastTimeData([sortMenus[lastIndex], sortMenus[lastIndex - 1]]);
       }
     } else {
       return;
     }
   };
 
-  const handleChange = (value: string) => {
-    setChangeNumber(value);
-  };
-
   const format = (input: string) => {
     return `${input}kg`;
   };
 
+  const tabList = ['今日', '3ヶ月', '6ヶ月', '年間'];
+  const tabDataList = [
+    { data: threeMonthsData, dateNumber: 3 },
+    { data: sixMonthsData, dateNumber: 6 },
+    { data: filterMenus, dateNumber: 12 },
+  ];
+
   return (
     <>
-      <Heading>ウエイト管理</Heading>
-      <Box mb={8}></Box>
+      <Heading1 label="ウエイト管理" />
+      <Box mb={4} />
       <Flex justify="space-between" align="center">
-        <StyleMenu>
-          <MenuButton as={Button} rightIcon={<ChevronDownIcon />} shadow="base">
-            {selectedName}
-          </MenuButton>
-          <MenuList>
-            {nameList.length > 0 &&
-              sortNameList.map((item) => (
-                <MenuItem key={item} onClick={() => setSelectedName(item)}>
-                  {item}
-                </MenuItem>
-              ))}
-          </MenuList>
-        </StyleMenu>
-        <Button
-          shadow="base"
-          size="sm"
-          onClick={() => Router.push(`/weight/edit/${dateId}`)}
-        >
-          編集
-        </Button>
+        <SelectNameList />
+        <LinkButton label="編集" link={`/weight/edit/${dateId}`} />
       </Flex>
-      <Box mb={8}></Box>
+      <Box mb={8} />
       <Tabs variant="enclosed">
-        <TabList>
-          <Tab>今日</Tab>
-          <Tab>3ヶ月</Tab>
-          <Tab>6ヶ月</Tab>
-          <Tab>年間</Tab>
-        </TabList>
+        <TabList tabList={tabList} />
         <TabPanels>
-          <TabPanel p={0}>
-            {todaysData.length > 0 && lastTime.length > 0 ? (
-              <>
-                <Flex justify="space-between" align="center" mb={4}>
-                  <Heading size="md">今回と前回の記録</Heading>
-                  <PinInput value={changeNumber} onChange={handleChange}>
-                    <PinInputField />
-                  </PinInput>
-                </Flex>
-                <TableView
-                  menus={judgLastTime ? todaysData : lastTime}
-                  label="セット目"
-                  format={format}
-                />
-                <Box mb={12}></Box>
-                <Heading size="md" mb={4}>
-                  前回比較
-                </Heading>
-                <StatGroup ml={6}>
-                  {judgLastTime ? (
-                    <Text>前回の記録がありません</Text>
-                  ) : (
-                    comparisonAry.map((item, idx) => (
-                      <Stat
-                        key={idx.toString()}
-                        type={item.type}
-                        data={item.data}
-                        label="set"
-                        idx={idx}
-                        format={format}
-                      />
-                    ))
-                  )}
-                </StatGroup>
-                <Box mb={12}></Box>
-                <Heading size="md" mb={4}>
-                  記録遷移グラフ
-                </Heading>
-                <GraphAllData data={todaysData} label="重量" axisLabel="set" />
-              </>
-            ) : (
-              <Text>まだ登録されていません</Text>
-            )}
+          <TabPanel p={0} pt={4}>
+            <TodayData
+              todayData={todayData}
+              lastTimeData={lastTimeData}
+              tableLabel="セット"
+              graphLabel="重量"
+              statLabel="set"
+              format={format}
+              judgLastTime={judgLastTime}
+              changeNumber={changeNumber}
+              setChangeNumber={setChangeNumber}
+              comparisonAry={comparisonAry}
+            />
           </TabPanel>
-          <TabPanel p={0}>
-            {threeMonthsData.length > 0 ? (
-              <>
-                <GraphAllData
-                  data={threeMonthsData}
-                  label="重量"
+          {tabDataList.map((item, idx) => (
+            <TabPanel key={idx} p={0} pt={4}>
+              {item.data.length ? (
+                <WeightMonthlyData
+                  data={item.data}
+                  dateNumber={item.dateNumber}
                   axisLabel="set"
-                />
-                <GraphDailyAverage data={threeMonthsData} label="重量" />
-                <TableView
-                  menus={threeMonthsData}
-                  label="セット目"
-                  format={format}
-                />
-              </>
-            ) : (
-              <Text>まだ登録されていません</Text>
-            )}
-          </TabPanel>
-          <TabPanel p={0}>
-            {sixMonthsData.length > 0 ? (
-              <>
-                <GraphAllData
-                  data={sixMonthsData}
                   label="重量"
-                  axisLabel="set"
-                />
-                <GraphDailyAverage data={sixMonthsData} label="重量" />
-                <TableView
-                  menus={sixMonthsData}
-                  label="セット目"
                   format={format}
                 />
-              </>
-            ) : (
-              <Text>まだ登録されていません</Text>
-            )}
-          </TabPanel>
-          <TabPanel p={0}>
-            {filterMenus.length > 0 ? (
-              <>
-                <GraphAllData data={filterMenus} label="重量" axisLabel="set" />
-                <GraphDailyAverage data={filterMenus} label="重量" />
-                <GraphMonthlyAverage data={filterMenus} label="平均重量" />
-                <TableView
-                  menus={filterMenus}
-                  label="セット目"
-                  format={format}
-                />
-              </>
-            ) : (
-              <Text>まだ登録されていません</Text>
-            )}
-          </TabPanel>
+              ) : (
+                <Text pl={4}>まだ登録されていません</Text>
+              )}
+            </TabPanel>
+          ))}
         </TabPanels>
       </Tabs>
     </>

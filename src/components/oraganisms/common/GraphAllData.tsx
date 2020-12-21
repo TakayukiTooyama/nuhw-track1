@@ -4,12 +4,13 @@ import { useRecoilValue } from 'recoil';
 
 import { Menu } from '../../../models/users';
 import { selectedMakedMenuNameState } from '../../../recoil/users/user';
+import moment from 'moment';
 
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 type Props = {
   data: Menu[];
-  insertStr?: (input: string) => string;
+  format?: (input: string) => string;
   label: string;
   axisLabel: string;
 };
@@ -18,7 +19,7 @@ type Data = {
   data: number[];
 };
 
-const GraphAllData: FC<Props> = ({ data, insertStr, label, axisLabel }) => {
+const GraphAllData: FC<Props> = ({ data, format, label, axisLabel }) => {
   const selectedName = useRecoilValue(selectedMakedMenuNameState);
   const [xLabel, setXLabel] = useState<string[]>([]);
   const [dataList, setDataList] = useState<Data[]>([]);
@@ -60,10 +61,10 @@ const GraphAllData: FC<Props> = ({ data, insertStr, label, axisLabel }) => {
       },
       yaxis: {
         formatter: function (val: number) {
-          if (insertStr === undefined) {
+          if (format === undefined) {
             return String(val);
           } else {
-            return insertStr(String(val));
+            return format(String(val));
           }
         },
       },
@@ -71,10 +72,10 @@ const GraphAllData: FC<Props> = ({ data, insertStr, label, axisLabel }) => {
         shared: false,
         y: {
           formatter: function (val: number) {
-            if (insertStr === undefined) {
+            if (format === undefined) {
               return String(val);
             } else {
-              return insertStr(String(val));
+              return format(String(val));
             }
           },
         },
@@ -88,8 +89,7 @@ const GraphAllData: FC<Props> = ({ data, insertStr, label, axisLabel }) => {
       item.recodes.forEach((recode, idx) => {
         if (recode.value === '') return;
         const strDateId = String(item.dateId);
-        const formatDateId =
-          strDateId.slice(4, 6) + '/' + strDateId.slice(6, 8);
+        const formatDateId = moment(strDateId).format('MM/DD');
         xLabelAry.push(`${formatDateId} ${idx + 1}${axisLabel}`);
       });
     });

@@ -20,6 +20,7 @@ const TournamentHeader: FC<Props> = ({ dataList }) => {
   const formatStartDate = format(selectedData.startDate, 'YYYY/MM/DD');
   //最終日
   const formatEndDate = format(selectedData.endDate, 'MM/DD');
+
   return (
     <>
       <SelectMenu dataList={dataList} name={selectedData.name} />

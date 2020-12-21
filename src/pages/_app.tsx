@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import Head from 'next/head';
 import { AppProps } from 'next/app';
-import { ReactQueryConfig, ReactQueryConfigProvider } from 'react-query';
-import { ReactQueryDevtools } from 'react-query-devtools';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools';
 import { ChakraProvider } from '@chakra-ui/react';
 import { RecoilRoot } from 'recoil';
 
@@ -16,15 +16,7 @@ const App = ({ Component, pageProps }: AppProps) => {
     }
   }, []);
 
-  const queryConfig: ReactQueryConfig = {
-    shared: {
-      suspense: true,
-    },
-    queries: {
-      retry: 0,
-      // useErrorBoundary: true,
-    },
-  };
+  const queryClient = new QueryClient();
 
   return (
     <>
@@ -35,7 +27,7 @@ const App = ({ Component, pageProps }: AppProps) => {
           content="minimum-scale=1, initial-scale=1, width=device-width"
         />
       </Head>
-      <ReactQueryConfigProvider config={queryConfig}>
+      <QueryClientProvider client={queryClient}>
         <ChakraProvider theme={customTheme}>
           <RecoilRoot>
             <Component {...pageProps} />
@@ -44,7 +36,7 @@ const App = ({ Component, pageProps }: AppProps) => {
         {process.env.NODE_ENV === 'development' && (
           <ReactQueryDevtools initialIsOpen={false} />
         )}
-      </ReactQueryConfigProvider>
+      </QueryClientProvider>
     </>
   );
 };
