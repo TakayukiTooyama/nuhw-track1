@@ -37,7 +37,7 @@ const PracticeViewDetail: VFC = () => {
   const [selectedName, setSelectedName] = useRecoilState(
     selectedMakedMenuNameState
   );
-  const setNameList = useSetjRecoilState(makedMenuNameListState);
+  const setNameList = useSetRecoilState(makedMenuNameListState);
   const [displayNumber, setDisplayNumber] = useRecoilState(NumberToDisplay);
   const [menus, setMenus] = useState<Menu[]>([]);
   const [changeNumber, setChangeNumber] = useState(displayNumber);
