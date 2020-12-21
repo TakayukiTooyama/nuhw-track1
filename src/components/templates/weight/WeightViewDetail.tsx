@@ -1,6 +1,6 @@
 import { Box, Flex, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react';
 import React, { FC, useEffect, useState } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { db } from '../../../lib/firebase';
 import { Menu, Comparison } from '../../../models/users';
 import {
@@ -22,7 +22,7 @@ const WeightViewDetail: FC = () => {
   const [selectedName, setSelectedName] = useRecoilState(
     selectedMakedMenuNameState
   );
-  const [nameList, setNameList] = useRecoilState(makedMenuNameListState);
+  const setNameList = useSetRecoilState(makedMenuNameListState);
   const [displayNumber, setDisplayNumber] = useRecoilState(NumberToDisplay);
   const [menus, setMenus] = useState<Menu[]>([]);
   const [changeNumber, setChangeNumber] = useState(displayNumber);
