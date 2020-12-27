@@ -1,4 +1,4 @@
-import { Box, Flex } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 import React, { VFC } from 'react';
 import { AiOutlineHome, AiOutlineRead, AiOutlineSetting } from 'react-icons/ai';
 import { NavTab } from '../../molecules';
