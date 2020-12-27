@@ -30,3 +30,4 @@ export { default as ViewDetail } from './view/ViewDetail';
 export { default as ViewDetailTournament } from './view/ViewDetailTournament';
 export { default as ViewDetailWeight } from './view/ViewDetailWeight';
 export { default as WeightViewTable } from './view/WeightViewTable';
+export { default as TournamentViewTable } from './view/TournamentViewTable';
