@@ -11,7 +11,6 @@ import {
   Checkbox,
   Flex,
   HStack,
-  Icon,
   IconButton,
   Stack,
   Text,
