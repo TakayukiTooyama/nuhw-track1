@@ -183,7 +183,7 @@ const TableView: FC<Props> = ({ menus, hide }) => {
     //まだ記録が登録されていない
     return useMemo(() => COLUMNS5, [menus, hide]);
   };
-  const columns = changeColumn();
+  const columns: any = changeColumn();
 
   const tableInstance = useTable({ columns, data }, useSortBy);
 
