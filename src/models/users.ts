@@ -98,3 +98,9 @@ export type TournamentData = {
   startDate: string;
   endDate: string;
 };
+
+//閲覧ページ
+export type SearchName = {
+  id: string;
+  name: string;
+};

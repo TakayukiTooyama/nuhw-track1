@@ -6,7 +6,7 @@ import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { db } from '../../../lib/firebase';
 import SelectMenu from '../../molecules/common/SelectMenu1';
 import { FormButton, SelectRadio } from '../../molecules/index';
-import { UserInfo } from '../../../models/users';
+import { User, UserInfo } from '../../../models/users';
 import { selectedTeamInfo } from '../../../recoil/teams/team';
 import {
   ParticipatedTournamentIds,
@@ -41,19 +41,25 @@ const ProfileCreate: FC = () => {
     if (teamInfo === null) return;
     setIsLoading(true);
     const usersRef = db.collection('users');
-    const newData: UserInfo = {
+    if (user === null) return;
+    const userInfo: UserInfo = {
       blockName,
       grade,
       gender,
       teamInfo: { teamId: teamInfo.teamId, teamName: teamInfo.teamName },
       tournamentIds,
     };
-    if (user === null) return;
+    const newData: User = {
+      uid: user.uid,
+      displayName: user.displayName,
+      photoURL: user.photoURL,
+      ...userInfo,
+    };
     await usersRef
       .doc(user.uid)
       .set(newData, { merge: true })
       .then(() => {
-        setUserInfo(newData);
+        setUserInfo(userInfo);
         Router.push('/');
       });
   };

@@ -6,6 +6,7 @@ import {
   PinInput,
   PinInputField,
   Skeleton,
+  Spinner,
   Stack,
   Text,
 } from '@chakra-ui/react';
@@ -185,6 +186,9 @@ const TournamentEditDetail: VFC = () => {
             item !== formatName(name);
           });
           setNameList([...list, formatName(name)]);
+          setToggleMenu(false);
+          setLoading(false);
+          setName('');
         });
     }
   };
@@ -198,17 +202,9 @@ const TournamentEditDetail: VFC = () => {
       return id !== newId;
     });
     if (judg) {
-      await usersRef
-        .update({ tournamentIds: [...userInfo.tournamentIds, newId] })
-        .then(() => {
-          setLoading(false);
-          setToggleMenu(false);
-          setName('');
-        });
-    } else {
-      setLoading(false);
-      setToggleMenu(false);
-      setName('');
+      await usersRef.update({
+        tournamentIds: [...userInfo.tournamentIds, newId],
+      });
     }
   };
 
@@ -273,10 +269,7 @@ const TournamentEditDetail: VFC = () => {
       {toggleMenu ? (
         <>
           {loading ? (
-            <Stack bg="white" shadow="base" p={4}>
-              <Skeleton height="40px" />
-              <Skeleton height="40px" />
-            </Stack>
+            <Spinner />
           ) : (
             <>
               <InputKeyDown

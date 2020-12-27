@@ -1,4 +1,4 @@
-import React, { FC, useMemo } from 'react';
+import React, { useMemo, VFC } from 'react';
 import { useSortBy, useTable } from 'react-table';
 import { Column } from 'react-table';
 import { useRecoilValue } from 'recoil';
@@ -10,34 +10,36 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from './TableStyle';
-import { Menu } from '../../../models/users';
+} from '../../oraganisms/common/TableStyle';
+import { WeightMenu } from '../../../models/users';
 import { NumberToDisplay } from '../../../recoil/users/user';
 import moment from 'moment';
 
+type WeightViewData = WeightMenu & {
+  user: {
+    id: string;
+    username: string;
+  };
+};
+
 type Props = {
-  menus: Menu[];
+  menus: WeightViewData[];
   label: string;
-  firstHeaderLabel?: string;
   format?: (input: string) => string;
 };
+
 type Data = {
   [key: string]: string;
 };
 
-const TableView: FC<Props> = ({
-  menus,
-  label = '',
-  firstHeaderLabel = '',
-  format,
-}) => {
+const ViewTable: VFC<Props> = ({ menus, label = '', format }) => {
   const displayNumber = useRecoilValue(NumberToDisplay);
-  const name = menus[0].name;
 
   //データを動的に生成
   const tableData = () => {
     let tableDataAry: {
       date: string;
+      name: string;
       [key: string]: string;
     }[] = [];
     menus.length &&
@@ -58,6 +60,7 @@ const TableView: FC<Props> = ({
         });
         tableDataAry.push({
           date: formatDate,
+          name: menu.user.username,
           ...obj,
         });
       });
@@ -84,8 +87,12 @@ const TableView: FC<Props> = ({
 
   const COLUMNS: Column<Data>[] = [
     {
-      Header: `${name}${firstHeaderLabel}`,
+      Header: '日付',
       accessor: 'date',
+    },
+    {
+      Header: '名前',
+      accessor: 'name',
     },
     ...columnData(Number(displayNumber)),
   ];
@@ -140,4 +147,4 @@ const TableView: FC<Props> = ({
   );
 };
 
-export default TableView;
+export default ViewTable;

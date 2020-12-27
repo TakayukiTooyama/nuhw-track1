@@ -24,3 +24,10 @@ export { default as CreateTournamentMenuDetail } from './tournament/CreateTourna
 export { default as TournamentEditDetail } from './tournament/TournamentEditDetail';
 export { default as TournamentViewDetail } from './tournament/TournamentViewDetail';
 export { default as TournamentFirstViewDetail } from './tournament/TournamentFirstViewDetail';
+
+//記録閲覧
+export { default as ViewDetail } from './view/ViewDetail';
+export { default as ViewDetailTournament } from './view/ViewDetailTournament';
+export { default as ViewDetailWeight } from './view/ViewDetailWeight';
+export { default as WeightViewTable } from './view/WeightViewTable';
+export { default as TournamentViewTable } from './view/TournamentViewtable';

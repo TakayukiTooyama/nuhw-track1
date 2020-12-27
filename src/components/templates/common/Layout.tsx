@@ -4,6 +4,7 @@ import { Box, Container } from '@chakra-ui/react';
 
 import Header from './Header';
 import { useAuthentication } from '../../../hooks/useAuthentication';
+import { NavBar } from '../../oraganisms';
 
 type Props = {
   children: ReactNode;
@@ -19,18 +20,20 @@ const Layout: FC<Props> = ({
   bg = 'white',
 }) => {
   const { user } = useAuthentication();
+  const avatar = user?.photoURL;
 
   return (
     <>
       <Head>
         <title>{title}</title>
       </Head>
-      {noHeader ? null : <Header avatar={user?.photoURL} />}
+      {noHeader ? null : <Header avatar={avatar} />}
       <Box bg={bg}>
-        <Container pt={12} pb={16} zIndex={2}>
+        <Container pt={8} pb={16} zIndex={2}>
           {children}
         </Container>
       </Box>
+      <NavBar />
     </>
   );
 };

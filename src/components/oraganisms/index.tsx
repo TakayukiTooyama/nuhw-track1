@@ -6,6 +6,8 @@ export { default as GuideMenu } from './common/GuideMenu';
 export { default as TableView } from './common/TableView';
 export { default as SelectMenu } from './common/SelectMenu';
 export { default as TodayData } from './common/TodayData';
+export { default as NavBar } from './common/NavBar';
+export { default as GlobalFilter } from './common/GlobalFilter';
 
 //練習タイム
 export { default as PracticeEditMenu } from './practice/PracticeEditMenu';

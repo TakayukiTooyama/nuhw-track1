@@ -6,7 +6,6 @@ export const CalcWind100m = (record: number, wind: number) => {
     (1.028 - 0.028 * dens * Math.pow(1.0 - (wind * record) / 100, 2)) * record;
   return Math.floor(t0 * 100) / 100;
 };
-
 // 200mの風換算
 export const CalcWind200m = (record: number, wind: number, lane: number) => {
   const Alt = 0; // 海抜10m（東京）だけど0で計算

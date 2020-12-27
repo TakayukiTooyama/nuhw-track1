@@ -45,7 +45,7 @@ const GuideMenu: FC<Props> = ({ avatar }) => {
         </MenuItem>
         <MenuItem
           icon={<AiOutlineRead fontSize="20px" />}
-          onClick={() => goToLink('/browsing')}
+          onClick={() => goToLink('/view')}
         >
           閲覧
         </MenuItem>

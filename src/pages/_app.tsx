@@ -16,7 +16,11 @@ const App = ({ Component, pageProps }: AppProps) => {
     }
   }, []);
 
-  const queryClient = new QueryClient();
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {},
+    },
+  });
 
   return (
     <>
