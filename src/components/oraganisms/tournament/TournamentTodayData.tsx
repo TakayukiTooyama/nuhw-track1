@@ -1,4 +1,4 @@
-import { Box, Button, Flex } from '@chakra-ui/react';
+import { Box, Button, Flex, HStack } from '@chakra-ui/react';
 import React, { Dispatch, SetStateAction, useState, VFC } from 'react';
 import { useRecoilValue } from 'recoil';
 
@@ -7,6 +7,7 @@ import TableView from './TableView';
 import { Heading2 } from '../../molecules';
 import { selectedMakedMenuNameState } from '../../../recoil/users/user';
 import { TournamentMenu } from '../../../models/users';
+import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 
 type Props = {
   windlessCalculation: (name: '100M' | '200M', menus: TournamentMenu[]) => void;
@@ -29,30 +30,36 @@ const TournamentTodayData: VFC<Props> = ({
   return (
     <>
       <Flex justify="space-between" align="center" mb={4}>
-        <Heading2 label="今回と前回の結果" />
-        {selectedName === '100M' || selectedName === '200M' ? (
-          toggleNoWind ? (
-            <Button shadow="base" onClick={() => setToggleNoWind(false)}>
-              元に戻す
-            </Button>
-          ) : (
-            <Button
-              shadow="base"
-              onClick={() => windlessCalculation(selectedName, filterMenus)}
-            >
-              無風計算
-            </Button>
-          )
-        ) : null}
-        {hide ? (
-          <Button shadow="base" onClick={() => setHide(false)}>
-            大会名を表示
+        <Heading2 label="今回の結果" />
+        <HStack>
+          {selectedName === '100M' || selectedName === '200M' ? (
+            toggleNoWind ? (
+              <Button
+                size="sm"
+                shadow="base"
+                onClick={() => setToggleNoWind(false)}
+              >
+                元に戻す
+              </Button>
+            ) : (
+              <Button
+                size="sm"
+                shadow="base"
+                onClick={() => windlessCalculation(selectedName, filterMenus)}
+              >
+                無風計算
+              </Button>
+            )
+          ) : null}
+          <Button
+            size="sm"
+            shadow="base"
+            leftIcon={hide ? <ViewOffIcon /> : <ViewIcon />}
+            onClick={() => setHide((prev) => !prev)}
+          >
+            大会名
           </Button>
-        ) : (
-          <Button shadow="base" onClick={() => setHide(true)}>
-            大会名を非表示
-          </Button>
-        )}
+        </HStack>
       </Flex>
       <TableView
         menus={toggleNoWind ? windLessMenus : filterMenus}

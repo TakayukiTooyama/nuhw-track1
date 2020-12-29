@@ -10,6 +10,7 @@ type Props = {
   addFunc?: (e: KeyboardEvent<HTMLElement>) => Promise<void>;
   handleBlur?: () => void;
   handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  maxW?: string;
 };
 
 const InputKeyDown: VFC<Props> = ({
@@ -19,10 +20,11 @@ const InputKeyDown: VFC<Props> = ({
   addFunc,
   handleBlur,
   handleChange,
+  maxW = '255px',
 }) => {
   const setIsComposed = useSetRecoilState(isComposedState);
   return (
-    <InputGroup maxW="255px">
+    <InputGroup w="100%" maxW={maxW}>
       <Input
         autoFocus
         bg="white"

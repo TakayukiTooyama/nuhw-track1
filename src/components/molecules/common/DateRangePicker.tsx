@@ -34,7 +34,7 @@ const DateRangePicker: FC<Props> = ({
         startDate={startDate}
         endDate={endDate}
         customInput={
-          <Button shadow="base" color="gray.600" bg="white">
+          <Button shadow="base" color="gray.600">
             {getFormatDate(startDate)}
           </Button>
         }
@@ -51,7 +51,7 @@ const DateRangePicker: FC<Props> = ({
         endDate={endDate}
         minDate={startDate}
         customInput={
-          <Button shadow="base" color="gray.600" bg="white">
+          <Button shadow="base" color="gray.600">
             {getFormatDate(endDate)}
           </Button>
         }

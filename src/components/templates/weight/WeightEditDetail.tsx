@@ -167,6 +167,7 @@ const WeightEditDetail: FC = () => {
         <DatePicker bg="blue.400" />
         <LinkButton label=" 終了" link={`/weight/${dateId}`} />
       </Flex>
+      <Box mb={8} />
 
       <Stack spacing={4}>
         {menus &&
@@ -183,14 +184,15 @@ const WeightEditDetail: FC = () => {
 
       {toggleMenu ? (
         <Flex justify="center" direction="column" align="center">
-          <InputGroup label="RM" value={rm} isReadOnly={true} />
-          <Box mb={1} />
+          <InputGroup label="RM" value={rm < 0 ? 0 : rm} isReadOnly={true} />
+          <Box mb={4} />
           <HStack spacing={1}>
             {countList.map((item) => (
               <CountButton
                 key={item.label}
                 setCount={setRm}
-                count={item.count}
+                count={rm}
+                countLabel={item.count}
                 label={item.label}
               />
             ))}

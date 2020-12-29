@@ -2,10 +2,12 @@ import React, { FC, useEffect, useState } from 'react';
 import {
   Box,
   Button,
+  Center,
   Divider,
   Flex,
   HStack,
   Input,
+  Spinner,
   Stack,
   Text,
 } from '@chakra-ui/react';
@@ -164,107 +166,114 @@ const CreateTournamentMenuDetail: FC = () => {
       </Flex>
       <Box mb={8} />
       {/* 追加された大会 */}
-      {menus &&
-        menus.map((menu, idx) => {
-          if (toggleEditMenu && selectedIndex === menu.id) {
-            return (
-              <Stack spacing={2} key={menu.id}>
-                <Box mb={4} />
-                <DateRangePicker
-                  startDate={startDate}
-                  endDate={endDate}
-                  setStartDate={setStartDate}
-                  setEndDate={setEndDate}
-                />
-                <Input
-                  bg="white"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                />
-                <Input
-                  bg="white"
-                  value={venue}
-                  onChange={(e) => setVenue(e.target.value)}
-                />
-                <HStack>
-                  <Button
-                    bg="green.400"
-                    shadow="base"
-                    onClick={() => editTournamentMenu(menu.id, idx)}
-                  >
-                    更新
-                  </Button>
-                  <Button onClick={cansel} shadow="base">
-                    キャンセル
-                  </Button>
-                </HStack>
-                <Box mb={4} />
-              </Stack>
-            );
-          } else {
-            return (
-              <Box
-                key={menu.id}
-                h="35px"
-                bg="white"
-                lineHeight="35px"
-                textAlign="center"
-                onClick={() =>
-                  handleClick(
-                    menu.id,
-                    menu.name,
-                    menu.venue,
-                    menu.startDate,
-                    menu.endDate
-                  )
-                }
-              >
-                <Text color="gray.400">{menu.name}</Text>
-                <Divider />
-              </Box>
-            );
-          }
-        })}
-      <Box mb={4} />
-      {toggleEdit ? (
+      {menus.length ? (
         <>
-          {/* 開催期間 */}
-          <DateRangePicker
-            startDate={startDate}
-            endDate={endDate}
-            setStartDate={setStartDate}
-            setEndDate={setEndDate}
-          />
+          {menus.map((menu, idx) => {
+            if (toggleEditMenu && selectedIndex === menu.id) {
+              return (
+                <Stack spacing={2} key={menu.id}>
+                  <Box mb={4} />
+                  <DateRangePicker
+                    startDate={startDate}
+                    endDate={endDate}
+                    setStartDate={setStartDate}
+                    setEndDate={setEndDate}
+                  />
+                  <Input
+                    bg="white"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                  <Input
+                    bg="white"
+                    value={venue}
+                    onChange={(e) => setVenue(e.target.value)}
+                  />
+                  <HStack>
+                    <Button
+                      bg="green.400"
+                      shadow="base"
+                      onClick={() => editTournamentMenu(menu.id, idx)}
+                    >
+                      更新
+                    </Button>
+                    <Button onClick={cansel} shadow="base">
+                      キャンセル
+                    </Button>
+                  </HStack>
+                  <Box mb={4} />
+                </Stack>
+              );
+            } else {
+              return (
+                <Box
+                  key={menu.id}
+                  h="35px"
+                  bg="white"
+                  lineHeight="35px"
+                  textAlign="center"
+                  onClick={() =>
+                    handleClick(
+                      menu.id,
+                      menu.name,
+                      menu.venue,
+                      menu.startDate,
+                      menu.endDate
+                    )
+                  }
+                >
+                  <Text color="gray.400">{menu.name}</Text>
+                  <Divider />
+                </Box>
+              );
+            }
+          })}
           <Box mb={4} />
-          {/* 大会名 */}
-          <Input
-            bg="white"
-            placeholder="大会名"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-          <Box mb={4} />
-          {/* 会場 */}
-          <Input
-            bg="white"
-            placeholder="会場"
-            value={venue}
-            onChange={(e) => setVenue(e.target.value)}
-          />
-          <Box mb={4} />
-          <Button bg="green.400" shadow="base" onClick={addTournamentMenu}>
-            追加
-          </Button>
+          {toggleEdit ? (
+            <>
+              {/* 開催期間 */}
+              <DateRangePicker
+                startDate={startDate}
+                endDate={endDate}
+                setStartDate={setStartDate}
+                setEndDate={setEndDate}
+              />
+              <Box mb={4} />
+              {/* 大会名 */}
+              <Input
+                bg="white"
+                placeholder="大会名"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+              <Box mb={4} />
+              {/* 会場 */}
+              <Input
+                bg="white"
+                placeholder="会場"
+                value={venue}
+                onChange={(e) => setVenue(e.target.value)}
+              />
+              <Box mb={4} />
+              <Button bg="green.400" shadow="base" onClick={addTournamentMenu}>
+                追加
+              </Button>
+            </>
+          ) : (
+            <Button
+              shadow="base"
+              w="100%"
+              onClick={() => setToggleEdit(true)}
+              disabled={toggleEditMenu}
+            >
+              大会追加
+            </Button>
+          )}
         </>
       ) : (
-        <Button
-          shadow="base"
-          w="100%"
-          onClick={() => setToggleEdit(true)}
-          disabled={toggleEditMenu}
-        >
-          大会追加
-        </Button>
+        <Center>
+          <Spinner color="gray.200" />
+        </Center>
       )}
     </div>
   );

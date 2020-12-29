@@ -21,7 +21,7 @@ const Statistics: FC<Props> = ({ idx, type, data, label, format }) => {
 
   return (
     <>
-      {!!data ? (
+      {!!data && (
         <Stat>
           <StatLabel>{`${idx + 1}${label}`}</StatLabel>
           <StatNumber>
@@ -29,8 +29,6 @@ const Statistics: FC<Props> = ({ idx, type, data, label, format }) => {
             {statData}
           </StatNumber>
         </Stat>
-      ) : (
-        '前回のデータがありません'
       )}
     </>
   );

@@ -1,5 +1,13 @@
 import React, { FC, useEffect, useState } from 'react';
-import { Box, Button, Divider, Flex, Input, Text } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Center,
+  Flex,
+  Input,
+  Spinner,
+  Text,
+} from '@chakra-ui/react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
 import { db } from '../../../lib/firebase';
@@ -119,51 +127,61 @@ const CreateWeightMenuDetail: FC = () => {
         <LinkButton label="戻る" link={`/weight/edit/${dateId}`} />
       </Flex>
       <Box mb={8} />
-      {menus &&
-        menus.map((menu, idx) => {
-          if (toggleEditMenu && selectedIndex === menu.id) {
-            return (
-              <Input
-                autoFocus
-                key={menu.id}
-                value={name}
-                onChange={handleChange}
-                onKeyDown={(e) => editWeigthMenu(e, menu.id, idx)}
-                onBlur={editBlur}
-                onCompositionStart={() => setIsComposed(true)}
-                onCompositionEnd={() => setIsComposed(false)}
-              />
-            );
-          } else {
-            return (
-              <Box
-                key={menu.id}
-                h="35px"
-                bg="white"
-                lineHeight="35px"
-                textAlign="center"
-                onClick={() => handleClick(menu.id, menu.name)}
-              >
-                <Text color="gray.400">{menu.name}</Text>
-                <Divider />
-              </Box>
-            );
-          }
-        })}
-
-      <Box mb={4}></Box>
-      {toggleEdit ? (
-        <InputKeyDown
-          value={name}
-          placeholder="新しいメニュー"
-          handleChange={handleChange}
-          handleBlur={createBlur}
-          addFunc={addTeamWeightMenu}
-        />
+      {menus.length ? (
+        <>
+          {menus.map((menu, idx) => {
+            if (toggleEditMenu && selectedIndex === menu.id) {
+              return (
+                <Input
+                  textAlign="center"
+                  autoFocus
+                  key={menu.id}
+                  value={name}
+                  onChange={handleChange}
+                  onKeyDown={(e) => editWeigthMenu(e, menu.id, idx)}
+                  onBlur={editBlur}
+                  onCompositionStart={() => setIsComposed(true)}
+                  onCompositionEnd={() => setIsComposed(false)}
+                />
+              );
+            } else {
+              return (
+                <Box
+                  key={menu.id}
+                  h="40px"
+                  bg="white"
+                  lineHeight="40px"
+                  textAlign="center"
+                  overflow="hidden"
+                  borderBottom="1px solid"
+                  borderColor="gray.200"
+                  onClick={() => handleClick(menu.id, menu.name)}
+                >
+                  <Text color="gray.400">{menu.name}</Text>
+                </Box>
+              );
+            }
+          })}
+          <Box mb={8} />
+          {toggleEdit ? (
+            <InputKeyDown
+              value={name}
+              placeholder="新しいメニュー"
+              maxW="100%"
+              handleChange={handleChange}
+              handleBlur={createBlur}
+              addFunc={addTeamWeightMenu}
+            />
+          ) : (
+            <Button shadow="base" w="100%" onClick={() => setToggleEdit(true)}>
+              メニュー追加
+            </Button>
+          )}
+        </>
       ) : (
-        <Button shadow="base" w="100%" onClick={() => setToggleEdit(true)}>
-          メニュー追加
-        </Button>
+        <Center>
+          <Spinner color="gray.200" />
+        </Center>
       )}
     </>
   );
