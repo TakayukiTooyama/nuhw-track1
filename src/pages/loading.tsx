@@ -6,11 +6,11 @@ import { useAuthentication } from '../hooks/useAuthentication';
 import { NextPage } from 'next';
 
 const Loading: NextPage = () => {
-  const { user } = useAuthentication();
+  const { userAuth } = useAuthentication();
 
   useEffect(() => {
-    user && Router.push('/');
-  }, [user]);
+    userAuth && Router.push('/');
+  }, [userAuth]);
 
   return (
     <Center h="100vh">
