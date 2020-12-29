@@ -40,7 +40,8 @@ const CreateWeightMenuDetail: FC = () => {
     const weightsRef = db
       .collection('teams')
       .doc(user.teamInfo.teamId)
-      .collection('weightMenus');
+      .collection('weightMenus')
+      .orderBy('name', 'asc');
     await weightsRef.get().then((snapshot) => {
       let weightMenus: WeightName[] = [];
       snapshot.forEach((doc) => {
@@ -95,6 +96,7 @@ const CreateWeightMenuDetail: FC = () => {
       .collection('teams')
       .doc(user.teamInfo.teamId)
       .collection('weightMenus');
+
     if (e.key === 'Enter') {
       await weightsRef
         .doc(id)

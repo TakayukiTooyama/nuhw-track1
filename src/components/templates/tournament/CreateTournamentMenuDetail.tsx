@@ -52,7 +52,8 @@ const CreateTournamentMenuDetail: FC = () => {
     const tournamentsRef = db
       .collection('teams')
       .doc(user.teamInfo.teamId)
-      .collection('tournamentMenus');
+      .collection('tournamentMenus')
+      .orderBy('startDate', 'desc');
     await tournamentsRef.get().then((snapshot) => {
       let tournamentMenus: TournamentData[] = [];
       snapshot.forEach((doc) => {
