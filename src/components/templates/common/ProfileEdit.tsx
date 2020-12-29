@@ -1,4 +1,4 @@
-import { Box, Button, Img, Stack, Text } from '@chakra-ui/react';
+import { Box, Button, Img, Stack } from '@chakra-ui/react';
 import React, { Dispatch, SetStateAction, useState, VFC } from 'react';
 import { SetterOrUpdater } from 'recoil';
 import { db } from '../../../lib/firebase';
