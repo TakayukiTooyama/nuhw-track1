@@ -25,7 +25,7 @@ const Layout: FC<Props> = ({
       <Container pt={8} pb={16} zIndex={2}>
         {children}
       </Container>
-      <NavBar />
+      {noHeader ? null : <NavBar />}
     </>
   );
 };

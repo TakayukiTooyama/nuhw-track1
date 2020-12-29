@@ -1,7 +1,7 @@
 import React, { FC, useState } from 'react';
 import Router from 'next/router';
 import { Box, Stack } from '@chakra-ui/react';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 import { db } from '../../../lib/firebase';
 import SelectMenu from '../../molecules/common/SelectMenu1';
@@ -12,10 +12,12 @@ import {
   ParticipatedTournamentIds,
   userState,
 } from '../../../recoil/users/user';
+import { useAuthentication } from '../../../hooks/useAuthentication';
 
 const ProfileCreate: FC = () => {
   //Global State
-  const [user, setUser] = useRecoilState(userState);
+  const setUser = useSetRecoilState(userState);
+  const { userAuth } = useAuthentication();
   const teamInfo = useRecoilValue(selectedTeamInfo);
   const tournamentIds = useRecoilValue(ParticipatedTournamentIds);
 
@@ -39,9 +41,9 @@ const ProfileCreate: FC = () => {
     if (teamInfo === null) return;
     setIsLoading(true);
     const usersRef = db.collection('users');
-    if (user === null) return;
+    if (userAuth === null) return;
     const newData: User = {
-      ...user,
+      ...userAuth,
       blockName,
       grade,
       gender,
@@ -49,7 +51,7 @@ const ProfileCreate: FC = () => {
       tournamentIds,
     };
     await usersRef
-      .doc(user.uid)
+      .doc(userAuth.uid)
       .set(newData, { merge: true })
       .then(() => {
         setUser(newData);
