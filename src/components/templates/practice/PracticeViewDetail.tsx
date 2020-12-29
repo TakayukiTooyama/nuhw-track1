@@ -172,7 +172,6 @@ const PracticeViewDetail: VFC = () => {
                   data={item.data}
                   dateNumber={item.dateNumber}
                   axisLabel="本目"
-                  firstHeaderLabel="M"
                   label="タイム"
                   format={insertStr}
                 />

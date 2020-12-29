@@ -49,12 +49,7 @@ const PracticeTodayData: VFC<Props> = ({
         <Heading2 label="今回と前回の記録" />
         <PinInput value={changeNumber} setValue={setChangeNumber} />
       </Flex>
-      <TableView
-        menus={lastTimeData}
-        label="本目"
-        firstHeaderLabel="M"
-        format={insertStr}
-      />
+      <TableView menus={lastTimeData} label="本目" format={insertStr} />
       <Box mb={12} />
 
       <Heading2 label="前回比較" />
