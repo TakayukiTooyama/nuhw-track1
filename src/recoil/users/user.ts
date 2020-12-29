@@ -1,5 +1,5 @@
 import { atom, selector } from 'recoil';
-import { UserAuth, User, UserInfo, TournamentData } from '../../models/users';
+import { UserAuth, User, TournamentData } from '../../models/users';
 import moment from 'moment';
 
 //ユーザーデータを保持
