@@ -9,7 +9,7 @@ import React, {
 } from 'react';
 import { useRecoilValue } from 'recoil';
 import { db } from '../../../lib/firebase';
-import { userInfoState } from '../../../recoil/users/user';
+import { userState } from '../../../recoil/users/user';
 import { ErrorMessage, InputText, TopScrollButton } from '../../molecules';
 import { Box, HStack, IconButton } from '@chakra-ui/react';
 import SearchInBox from '../../molecules/common/SearchInBox';
@@ -26,9 +26,9 @@ type WeightViewData = WeightMenu & {
 
 const WeightViewDetail: VFC = () => {
   //Global State
-  const userInfo = useRecoilValue(userInfoState);
-  const teamId = userInfo?.teamInfo.teamId;
-  const gender = userInfo?.gender;
+  const user = useRecoilValue(userState);
+  const teamId = user?.teamInfo.teamId;
+  const gender = user?.gender;
 
   //Local State
   const [name, setName] = useState('');

@@ -6,12 +6,12 @@ import { Menu } from '../models/users';
 import {
   isComposedState,
   selectedDateIdState,
-  userAuthState,
+  userState,
 } from '../recoil/users/user';
 
 const usePracticeMenu = (menusData: Menu[]) => {
   //Global State
-  const user = useRecoilValue(userAuthState);
+  const user = useRecoilValue(userState);
   const dateId = useRecoilValue(selectedDateIdState);
   const isComposed = useRecoilValue(isComposedState);
 

@@ -5,7 +5,7 @@ import { Layout, WeightEditDetail } from '../../../components/templates';
 
 const WeightEdit: NextPage = () => {
   return (
-    <Layout title="ウエイト管理" bg="blue.50">
+    <Layout title="ウエイト管理">
       <WeightEditDetail />
     </Layout>
   );

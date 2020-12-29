@@ -4,7 +4,7 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 
 import { db } from '../../../lib/firebase';
 import { Recode, WeightMenu } from '../../../models/users';
-import { isComposedState, userAuthState } from '../../../recoil/users/user';
+import { isComposedState, userState } from '../../../recoil/users/user';
 
 type Props = {
   index: number;
@@ -27,7 +27,7 @@ const WeightRecodeCreator: FC<Props> = ({
   setToggleEdit,
 }) => {
   //Global State
-  const user = useRecoilValue(userAuthState);
+  const user = useRecoilValue(userState);
   const [isComposed, setIsComposed] = useRecoilState(isComposedState);
 
   //Local State

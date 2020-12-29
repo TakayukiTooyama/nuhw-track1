@@ -1,12 +1,11 @@
 import Router from 'next/router';
-import { useEffect } from 'react';
-import { useRecoilState } from 'recoil';
+import { useEffect, useState } from 'react';
 
 import { auth } from '../lib/firebase';
-import { userAuthState } from '../recoil/users/user';
+import { UserAuth } from '../models/users';
 
 export const useAuthentication = () => {
-  const [user, setUser] = useRecoilState(userAuthState);
+  const [userAuth, setUserAuth] = useState<UserAuth | null>(null);
 
   useEffect(() => {
     auth.onAuthStateChanged((firebaseUser) => {
@@ -16,10 +15,10 @@ export const useAuthentication = () => {
         return;
       }
       //認証完了 or GlobalStateに何も入っていない時
-      if (user === null) {
+      if (userAuth === null) {
         if (firebaseUser.photoURL === null) return;
         if (firebaseUser.displayName === null) return;
-        setUser({
+        setUserAuth({
           uid: firebaseUser.uid,
           photoURL: firebaseUser.photoURL,
           displayName: firebaseUser.displayName,
@@ -27,11 +26,11 @@ export const useAuthentication = () => {
         return;
       }
       //画面リフレッシュ時 or 画面遷移
-      if (user !== null) {
+      if (userAuth !== null) {
         return;
       }
     });
-  }, [user, setUser]);
+  }, [userAuth, setUserAuth]);
 
-  return { user };
+  return { userAuth };
 };

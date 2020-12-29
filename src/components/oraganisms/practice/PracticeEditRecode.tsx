@@ -3,7 +3,7 @@ import { Flex, Input, Text } from '@chakra-ui/react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
 import { Recode } from '../../../models/users';
-import { isComposedState, userAuthState } from '../../../recoil/users/user';
+import { isComposedState, userState } from '../../../recoil/users/user';
 import { db } from '../../../lib/firebase';
 import { insertStr } from '../../../hooks/useInsertStr';
 
@@ -25,7 +25,7 @@ const PracticeEditRecode: FC<Props> = ({
   setIndex,
 }) => {
   //Global State
-  const user = useRecoilValue(userAuthState);
+  const user = useRecoilValue(userState);
   const [isComposed, setIsComposed] = useRecoilState(isComposedState);
 
   //Local State

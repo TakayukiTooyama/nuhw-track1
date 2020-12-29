@@ -57,7 +57,7 @@ const SignIn: FC = () => {
   const [loading, setLoading] = useRecoilState(loadingState);
 
   //カスタムhook
-  const { user } = useAuthentication();
+  const { userAuth } = useAuthentication();
 
   const fetchTeamInfo = async (uid: string) => {
     const usersRef = db.collection('users');
@@ -84,7 +84,7 @@ const SignIn: FC = () => {
         setLoading(true);
       }
     });
-  }, [user]);
+  }, [userAuth]);
 
   const login = () => {
     auth.signInWithRedirect(provider);

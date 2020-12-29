@@ -21,9 +21,10 @@ export type User = UserAuth & UserInfo;
 export type LinkContent = {
   id: string;
   name: string;
-  color: string;
+  color?: string;
   icon?: ReactElement;
   link: string | number;
+  image?: string;
 };
 
 export type TimeStamp = {

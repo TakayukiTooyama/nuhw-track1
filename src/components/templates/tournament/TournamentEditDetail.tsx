@@ -16,8 +16,7 @@ import {
   isComposedState,
   makedMenuNameListState,
   selectedTournamentDataState,
-  userAuthState,
-  userInfoState,
+  userState,
 } from '../../../recoil/users/user';
 import { db } from '../../../lib/firebase';
 import { TournamentData, TournamentMenu } from '../../../models/users';
@@ -26,8 +25,7 @@ import { ErrorMessage, InputKeyDown, LinkButton } from '../../molecules';
 
 const TournamentEditDetail: VFC = () => {
   //Global State
-  const user = useRecoilValue(userAuthState);
-  const userInfo = useRecoilValue(userInfoState);
+  const user = useRecoilValue(userState);
   const selectedData = useRecoilValue(selectedTournamentDataState);
   const isComposed = useRecoilValue(isComposedState);
   const [nameList, setNameList] = useRecoilState(makedMenuNameListState);
@@ -58,7 +56,7 @@ const TournamentEditDetail: VFC = () => {
   useEffect(() => {
     fetchYearData();
     fetchTournamentData();
-  }, [userInfo]);
+  }, [user]);
 
   //一年分の大会結果を取得
   const fetchYearData = async () => {
@@ -85,16 +83,16 @@ const TournamentEditDetail: VFC = () => {
 
   //出場した大会を取得
   const fetchTournamentData = async () => {
-    if (userInfo === null) return;
+    if (user === null) return;
     const tournamentMenusRef = db
       .collection('teams')
-      .doc(userInfo.teamInfo.teamId)
+      .doc(user.teamInfo.teamId)
       .collection('tournamentMenus');
     await tournamentMenusRef.get().then((snapshot) => {
       const dataList: TournamentData[] = [];
       snapshot.forEach((doc) => {
         const data = doc.data() as TournamentData;
-        userInfo.tournamentIds.map((id) => {
+        user.tournamentIds.map((id) => {
           if (id === data.id) {
             dataList.push(data);
           }
@@ -159,7 +157,7 @@ const TournamentEditDetail: VFC = () => {
         return;
       }
       if (user === null) return;
-      if (userInfo === null) return;
+      if (user === null) return;
       setLoading(true);
       const usersRef = db.collection('users').doc(user.uid);
       const practicesRef = usersRef.collection('tournaments');
@@ -194,15 +192,15 @@ const TournamentEditDetail: VFC = () => {
 
   const successFnc = async () => {
     if (user === null) return;
-    if (userInfo === null) return;
+    if (user === null) return;
     const usersRef = db.collection('users').doc(user.uid);
     const newId = selectedData.id;
-    const judg = userInfo.tournamentIds.every((id) => {
+    const judg = user.tournamentIds.every((id) => {
       return id !== newId;
     });
     if (judg) {
       await usersRef.update({
-        tournamentIds: [...userInfo.tournamentIds, newId],
+        tournamentIds: [...user.tournamentIds, newId],
       });
     }
   };

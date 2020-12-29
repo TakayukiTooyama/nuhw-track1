@@ -19,7 +19,7 @@ import {
   NumberToDisplay,
   selectedDateIdState,
   selectedMakedMenuNameState,
-  userAuthState,
+  userState,
 } from '../../../recoil/users/user';
 import { LinkButton, SelectNameList, TabList } from '../../molecules';
 import { PracticeTodayData, PracticeMonthlyData } from '../../oraganisms';
@@ -30,7 +30,7 @@ export type Comparison = {
 };
 
 const PracticeViewDetail: VFC = () => {
-  const user = useRecoilValue(userAuthState);
+  const user = useRecoilValue(userState);
   const dateId = useRecoilValue(selectedDateIdState);
   const today = useRecoilValue(formatTodaysDateState);
   const year = today - 10000;

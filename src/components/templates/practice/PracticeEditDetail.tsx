@@ -3,7 +3,7 @@ import { Box, Button, Flex, Heading, Stack } from '@chakra-ui/react';
 import { useRecoilValue } from 'recoil';
 
 import DatePicker from '../../molecules/common/DatePicker';
-import { selectedDateIdState, userAuthState } from '../../../recoil/users/user';
+import { selectedDateIdState, userState } from '../../../recoil/users/user';
 import { Menu } from '../../../models/users';
 import { PracticeEditMenu } from '../../oraganisms';
 import usePracticeMenu from '../../../hooks/usePracticeMenu';
@@ -27,7 +27,7 @@ export const PracticeEditDetail: VFC = () => {
   } = usePracticeMenu([]);
 
   //Global State
-  const user = useRecoilValue(userAuthState);
+  const user = useRecoilValue(userState);
   const dateId = useRecoilValue(selectedDateIdState);
 
   // //ページ訪問時 & 選択された日付が変わった時

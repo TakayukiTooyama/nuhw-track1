@@ -4,7 +4,7 @@ import { Layout, PracticeEditDetail } from '../../../components/templates';
 
 const PracticeEdit: NextPage = () => {
   return (
-    <Layout title="練習タイム" bg="orange.50">
+    <Layout title="練習タイム">
       <PracticeEditDetail />
     </Layout>
   );

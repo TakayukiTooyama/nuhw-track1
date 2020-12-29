@@ -9,13 +9,13 @@ import {
   NumberToDisplay,
   selectedDateIdState,
   selectedMakedMenuNameState,
-  userAuthState,
+  userState,
 } from '../../../recoil/users/user';
 import { Heading1, LinkButton, TabList, SelectNameList } from '../../molecules';
 import { TodayData, WeightMonthlyData } from '../../oraganisms';
 
 const WeightViewDetail: FC = () => {
-  const user = useRecoilValue(userAuthState);
+  const user = useRecoilValue(userState);
   const dateId = useRecoilValue(selectedDateIdState);
   const today = useRecoilValue(formatTodaysDateState);
   const year = today - 10000;
@@ -137,7 +137,7 @@ const WeightViewDetail: FC = () => {
   return (
     <>
       <Heading1 label="ウエイト管理" />
-      <Box mb={4} />
+      <Box mb={8} />
       <Flex justify="space-between" align="center">
         <SelectNameList />
         <LinkButton label="編集" link={`/weight/edit/${dateId}`} />

@@ -18,7 +18,7 @@ import {
 
 import { Round, TournamentMenu, TournamentRecode } from '../../../models/users';
 import { useRecoilValue } from 'recoil';
-import { userAuthState } from '../../../recoil/users/user';
+import { userState } from '../../../recoil/users/user';
 import { db } from '../../../lib/firebase';
 import { ChevronDownIcon } from '@chakra-ui/icons';
 import { AiFillDelete } from 'react-icons/ai';
@@ -45,7 +45,7 @@ const TournamentEditRecode: FC<Props> = ({
   setToggleEdit,
 }) => {
   //Global State
-  const user = useRecoilValue(userAuthState);
+  const user = useRecoilValue(userState);
 
   //Local State
   const [round, setRound] = useState(items.round);

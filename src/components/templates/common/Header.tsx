@@ -1,34 +1,31 @@
-import React, { FC, useEffect } from 'react';
+import React, { useEffect, VFC } from 'react';
 import Link from 'next/link';
 import { Box, Divider, Heading } from '@chakra-ui/react';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 
 import GuideMenu from '../../oraganisms/common/GuideMenu';
-import { userAuthState, userInfoState } from '../../../recoil/users/user';
-import { UserInfo } from '../../../models/users';
+import { userState } from '../../../recoil/users/user';
+import { User } from '../../../models/users';
 import { db } from '../../../lib/firebase';
+import { useAuthentication } from '../../../hooks/useAuthentication';
 
-type Props = {
-  avatar?: string;
-};
-
-const Header: FC<Props> = ({ avatar = '/no-profile.png' }) => {
-  const [userInfo, setUserInfo] = useRecoilState(userInfoState);
-  const user = useRecoilValue(userAuthState);
+const Header: VFC = () => {
+  const [user, setUser] = useRecoilState(userState);
+  const { userAuth } = useAuthentication();
 
   //最初にユーザー情報がGlobalStateに入っているか確認
   useEffect(() => {
-    if (userInfo) return;
+    if (user) return;
     fetchUserInfo();
-  }, [user]);
+  }, [userAuth]);
 
   //ユーザーの情報を取得
   const fetchUserInfo = async () => {
-    if (user === null) return;
-    const usersRef = db.collection('users').doc(user.uid);
+    if (userAuth === null) return;
+    const usersRef = db.collection('users').doc(userAuth.uid);
     await usersRef.get().then((doc) => {
-      const data = doc.data() as UserInfo;
-      setUserInfo(data);
+      const data = doc.data() as User;
+      setUser(data);
     });
   };
 
@@ -47,7 +44,7 @@ const Header: FC<Props> = ({ avatar = '/no-profile.png' }) => {
               NUHW TRACK
             </Heading>
           </Link>
-          <GuideMenu avatar={avatar} />
+          <GuideMenu />
         </Box>
       </Box>
       <Divider />

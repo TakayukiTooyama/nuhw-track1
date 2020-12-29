@@ -3,6 +3,7 @@ export { default as Header } from './common/Header';
 export { default as Home } from './common/Home';
 export { default as Layout } from './common/Layout';
 export { default as ProfileDetail } from './common/ProfileDetail';
+export { default as ProfileEdit } from './common/ProfileEdit';
 
 //認証
 export { default as SignIn } from './auth/SignIn';

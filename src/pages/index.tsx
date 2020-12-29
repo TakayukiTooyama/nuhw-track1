@@ -5,7 +5,7 @@ import { Home, Layout } from '../components/templates';
 
 const HomePage: NextPage = () => {
   return (
-    <Layout title="Home" bg="blue.50">
+    <Layout title="Home">
       <Home />
     </Layout>
   );

@@ -1,24 +1,22 @@
 import React, { FC, useState } from 'react';
 import Router from 'next/router';
 import { Box, Stack } from '@chakra-ui/react';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 
 import { db } from '../../../lib/firebase';
 import SelectMenu from '../../molecules/common/SelectMenu1';
 import { FormButton, SelectRadio } from '../../molecules/index';
-import { User, UserInfo } from '../../../models/users';
+import { User } from '../../../models/users';
 import { selectedTeamInfo } from '../../../recoil/teams/team';
 import {
   ParticipatedTournamentIds,
-  userAuthState,
-  userInfoState,
+  userState,
 } from '../../../recoil/users/user';
 
 const ProfileCreate: FC = () => {
   //Global State
-  const user = useRecoilValue(userAuthState);
+  const [user, setUser] = useRecoilState(userState);
   const teamInfo = useRecoilValue(selectedTeamInfo);
-  const setUserInfo = useSetRecoilState(userInfoState);
   const tournamentIds = useRecoilValue(ParticipatedTournamentIds);
 
   //Local State
@@ -42,24 +40,19 @@ const ProfileCreate: FC = () => {
     setIsLoading(true);
     const usersRef = db.collection('users');
     if (user === null) return;
-    const userInfo: UserInfo = {
+    const newData: User = {
+      ...user,
       blockName,
       grade,
       gender,
       teamInfo: { teamId: teamInfo.teamId, teamName: teamInfo.teamName },
       tournamentIds,
     };
-    const newData: User = {
-      uid: user.uid,
-      displayName: user.displayName,
-      photoURL: user.photoURL,
-      ...userInfo,
-    };
     await usersRef
       .doc(user.uid)
       .set(newData, { merge: true })
       .then(() => {
-        setUserInfo(userInfo);
+        setUser(newData);
         Router.push('/');
       });
   };

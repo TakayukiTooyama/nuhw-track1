@@ -12,11 +12,7 @@ import {
 } from '@chakra-ui/react';
 import { useRecoilValue } from 'recoil';
 
-import {
-  selectedDateIdState,
-  userAuthState,
-  userInfoState,
-} from '../../../recoil/users/user';
+import { selectedDateIdState, userState } from '../../../recoil/users/user';
 import { WeightMenu, WeightName } from '../../../models/users';
 import { db } from '../../../lib/firebase';
 import { WeightEditMenu } from '../../oraganisms';
@@ -30,8 +26,7 @@ import {
 
 const WeightEditDetail: FC = () => {
   //Global State
-  const user = useRecoilValue(userAuthState);
-  const userInfo = useRecoilValue(userInfoState);
+  const user = useRecoilValue(userState);
   const dateId = useRecoilValue(selectedDateIdState);
 
   //Local State
@@ -47,12 +42,11 @@ const WeightEditDetail: FC = () => {
   useEffect(() => {
     fetchWeightData();
     fetchTeamWeightMenu();
-  }, [userInfo, dateId]);
+  }, [user, dateId]);
 
   //firestoreから選択された日付のデータを取ってくる処理
   const fetchWeightData = async () => {
     if (user === null) return;
-    if (userInfo === null) return;
     const WeightsRef = db
       .collection('users')
       .doc(user.uid)
@@ -71,10 +65,10 @@ const WeightEditDetail: FC = () => {
 
   //チーム内のウエイトメニューを取得
   const fetchTeamWeightMenu = async () => {
-    if (userInfo === null) return;
+    if (user === null) return;
     const teamWeithMenusRef = db
       .collection('teams')
-      .doc(userInfo.teamInfo.teamId)
+      .doc(user.teamInfo.teamId)
       .collection('weightMenus')
       .orderBy('name', 'asc');
     await teamWeithMenusRef.get().then((snapshot) => {
@@ -173,7 +167,6 @@ const WeightEditDetail: FC = () => {
         <DatePicker bg="blue.400" />
         <LinkButton label=" 終了" link={`/weight/${dateId}`} />
       </Flex>
-      <Box mb={8} />
 
       <Stack spacing={4}>
         {menus &&

@@ -7,12 +7,12 @@ import { WeightName } from '../../../models/users';
 import {
   isComposedState,
   selectedDateIdState,
-  userInfoState,
+  userState,
 } from '../../../recoil/users/user';
 import { InputKeyDown, LinkButton, Heading1 } from '../../molecules';
 
 const CreateWeightMenuDetail: FC = () => {
-  const user = useRecoilValue(userInfoState);
+  const user = useRecoilValue(userState);
   const [isComposed, setIsComposed] = useRecoilState(isComposedState);
   const dateId = useRecoilValue(selectedDateIdState);
 

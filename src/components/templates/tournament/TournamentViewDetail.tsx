@@ -9,9 +9,8 @@ import { CalcWind200m, CalcWind100m } from './test';
 import { TournamentData, TournamentMenu } from '../../../models/users';
 import {
   selectedTournamentDataState,
-  userAuthState,
+  userState,
   makedMenuNameListState,
-  userInfoState,
 } from '../../../recoil/users/user';
 import { db } from '../../../lib/firebase';
 import {
@@ -37,8 +36,7 @@ export const undo = (returnNumber: number) => {
 
 const TournamentViewDetail: FC = () => {
   //Global State
-  const user = useRecoilValue(userAuthState);
-  const userInfo = useRecoilValue(userInfoState);
+  const user = useRecoilValue(userState);
   const setNameList = useSetRecoilState(makedMenuNameListState);
   const [selectedName, setSelectedName] = useRecoilState(
     selectedMakedMenuNameState
@@ -63,7 +61,7 @@ const TournamentViewDetail: FC = () => {
   useEffect(() => {
     fetchYearData();
     fetchTournamentData();
-  }, [userInfo]);
+  }, [user]);
 
   //一年分の大会結果を取得
   const fetchYearData = async () => {
@@ -90,16 +88,16 @@ const TournamentViewDetail: FC = () => {
 
   //出場した大会を取得
   const fetchTournamentData = async () => {
-    if (userInfo === null) return;
+    if (user === null) return;
     const tournamentMenusRef = db
       .collection('teams')
-      .doc(userInfo.teamInfo.teamId)
+      .doc(user.teamInfo.teamId)
       .collection('tournamentMenus');
     await tournamentMenusRef.get().then((snapshot) => {
       const dataList: TournamentData[] = [];
       snapshot.forEach((doc) => {
         const data = doc.data() as TournamentData;
-        userInfo.tournamentIds.filter((id) => {
+        user.tournamentIds.filter((id) => {
           if (id === data.id) {
             dataList.push(data);
           }

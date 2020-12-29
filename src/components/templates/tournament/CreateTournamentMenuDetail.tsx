@@ -14,7 +14,7 @@ import moment from 'moment';
 
 import { db } from '../../../lib/firebase';
 import { TournamentData } from '../../../models/users';
-import { userInfoState } from '../../../recoil/users/user';
+import { userState } from '../../../recoil/users/user';
 import { DateRangePicker, LinkButton, Heading1 } from '../../molecules';
 
 const CreateTournamentMenuDetail: FC = () => {
@@ -22,7 +22,7 @@ const CreateTournamentMenuDetail: FC = () => {
   const date = moment().toDate();
 
   //Global State
-  const user = useRecoilValue(userInfoState);
+  const user = useRecoilValue(userState);
 
   //Local State
   const [menus, setMenus] = useState<TournamentData[]>([]);

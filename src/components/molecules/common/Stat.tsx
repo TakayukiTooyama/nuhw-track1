@@ -17,15 +17,22 @@ const Statistics: FC<Props> = ({ idx, type, data, label, format }) => {
       return data;
     }
   };
+  const statData = formatData();
 
   return (
-    <Stat>
-      <StatLabel>{`${idx + 1}${label}`}</StatLabel>
-      <StatNumber>
-        <StatArrow type={type} />
-        {formatData()}
-      </StatNumber>
-    </Stat>
+    <>
+      {!!data ? (
+        <Stat>
+          <StatLabel>{`${idx + 1}${label}`}</StatLabel>
+          <StatNumber>
+            <StatArrow type={type} />
+            {statData}
+          </StatNumber>
+        </Stat>
+      ) : (
+        '前回のデータがありません'
+      )}
+    </>
   );
 };
 

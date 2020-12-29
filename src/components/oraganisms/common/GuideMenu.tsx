@@ -1,5 +1,5 @@
+import { CloseIcon, HamburgerIcon } from '@chakra-ui/icons';
 import {
-  Avatar,
   Menu,
   MenuButton,
   MenuDivider,
@@ -7,7 +7,7 @@ import {
   MenuList,
 } from '@chakra-ui/react';
 import Router from 'next/router';
-import React, { FC } from 'react';
+import React, { useState, VFC } from 'react';
 import {
   AiOutlineSetting,
   AiOutlineRead,
@@ -16,11 +16,8 @@ import {
 } from 'react-icons/ai';
 import { auth } from '../../../lib/firebase';
 
-type Props = {
-  avatar: string;
-};
-
-const GuideMenu: FC<Props> = ({ avatar }) => {
+const GuideMenu: VFC = () => {
+  const [toggleMenu, setToggleMenu] = useState(false);
   const goToLink = (link: string) => {
     Router.push(link);
   };
@@ -32,9 +29,16 @@ const GuideMenu: FC<Props> = ({ avatar }) => {
   };
 
   return (
-    <Menu>
+    <Menu
+      onOpen={() => setToggleMenu(true)}
+      onClose={() => setToggleMenu(false)}
+    >
       <MenuButton>
-        <Avatar src={avatar} shadow="lg" />
+        {toggleMenu ? (
+          <CloseIcon fontSize="18px" />
+        ) : (
+          <HamburgerIcon fontSize="25px" />
+        )}
       </MenuButton>
       <MenuList color="grey">
         <MenuItem

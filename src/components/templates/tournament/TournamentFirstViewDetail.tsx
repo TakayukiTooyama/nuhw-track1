@@ -1,53 +1,56 @@
 import { Box } from '@chakra-ui/react';
-import React, { FC, useEffect, useState } from 'react';
+import React, { VFC } from 'react';
 import { useRecoilValue } from 'recoil';
 
 import { db } from '../../../lib/firebase';
 import { TournamentData } from '../../../models/users';
-import { userInfoState } from '../../../recoil/users/user';
+import { userState } from '../../../recoil/users/user';
 import { TournamentDataTable } from '../../oraganisms';
 import { Heading1, LinkButton } from '../../molecules';
+import { QueryFunctionContext, useQuery } from 'react-query';
 
-const TournamentFirstViewDetail: FC = () => {
+const TournamentFirstViewDetail: VFC = () => {
   //Global State
-  const user = useRecoilValue(userInfoState);
-
-  //Local State
-  const [dataList, setDataList] = useState<TournamentData[]>([]);
-
-  //ページ訪問時 & 選択された日付が変わった時
-  useEffect(() => {
-    if (dataList.length > 0) return;
-    fetchTournametData();
-  }, [user]);
+  const user = useRecoilValue(userState);
+  const teamId = user?.teamInfo.teamId;
 
   //team内で登録されている大会の情報を取得
-  const fetchTournametData = async () => {
-    if (user === null) return;
+  const fetchTournametData = async (context: QueryFunctionContext<string>) => {
+    const teamId = context.queryKey[1];
     const tournamentMenusRef = db
       .collection('teams')
-      .doc(user.teamInfo.teamId)
-      .collection('tournamentMenus');
-    await tournamentMenusRef.get().then((snapshot) => {
+      .doc(teamId)
+      .collection('tournamentMenus')
+      .orderBy('startDate', 'desc');
+    return await tournamentMenusRef.get().then((snapshot) => {
       let tournamentDataList: TournamentData[] = [];
       snapshot.forEach((doc) => {
         const data = doc.data() as TournamentData;
         tournamentDataList.push(data);
       });
-      setDataList(tournamentDataList);
+      return tournamentDataList;
     });
   };
+
+  const { data } = useQuery(['tournamentMenus', teamId], fetchTournametData, {
+    enabled: !!teamId,
+    refetchOnWindowFocus: false,
+  });
 
   return (
     <>
       <Heading1 label="大会一覧" />
       <Box mb={8} />
-      <TournamentDataTable dataList={dataList} />
-      <Box mb={4} />
-      <LinkButton
-        label="追加したい大会がない場合"
-        link={'/tournament/create'}
-      />
+      {data && (
+        <>
+          <TournamentDataTable dataList={data} />
+          <Box mb={4} />
+          <LinkButton
+            label="追加したい大会がない場合"
+            link={'/tournament/create'}
+          />
+        </>
+      )}
     </>
   );
 };

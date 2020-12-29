@@ -156,8 +156,10 @@ const TableView: FC<Props> = ({ menus, hide }) => {
   ];
   const data = useMemo(() => DATA, [menus]);
 
+  const judgRecode = menus.some((menu) => menu.recodes.length);
+
   const changeColumn = () => {
-    if (recodes.length) {
+    if (judgRecode) {
       let ary: string[] = [];
       recodes.forEach((recode) => {
         if (recode.wind !== '') {
@@ -173,15 +175,16 @@ const TableView: FC<Props> = ({ menus, hide }) => {
         return useMemo(() => COLUMNS4, [menus, hide]);
       } else {
         if (ary.length) {
-          //大会なし、風速あり
+          //大会あり、風速あり
           return useMemo(() => COLUMNS1, [menus, hide]);
         }
-        //大会なし、風速なし
+        //大会あり、風速なし
         return useMemo(() => COLUMNS2, [menus, hide]);
       }
+    } else {
+      //まだ記録が登録されていない
+      return useMemo(() => COLUMNS5, [menus, hide]);
     }
-    //まだ記録が登録されていない
-    return useMemo(() => COLUMNS5, [menus, hide]);
   };
   const columns: any = changeColumn();
 

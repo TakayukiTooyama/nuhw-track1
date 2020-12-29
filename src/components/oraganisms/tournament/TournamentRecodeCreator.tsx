@@ -25,7 +25,7 @@ import { useRecoilValue } from 'recoil';
 
 import { db } from '../../../lib/firebase';
 import { TournamentRecode, TournamentMenu, Round } from '../../../models/users';
-import { userAuthState } from '../../../recoil/users/user';
+import { userState } from '../../../recoil/users/user';
 import { ErrorMessage } from '../../molecules';
 
 type Props = {
@@ -54,7 +54,7 @@ const TournamentRecodeCreator: FC<Props> = ({
   setErrorMessage,
 }) => {
   //Global State
-  const user = useRecoilValue(userAuthState);
+  const user = useRecoilValue(userState);
 
   //Local State
   //ラウンド

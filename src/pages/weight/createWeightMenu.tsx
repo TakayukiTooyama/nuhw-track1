@@ -4,7 +4,7 @@ import { CreateWeightMenuDetail, Layout } from '../../components/templates';
 
 const CreateWeightMenu: NextPage = () => {
   return (
-    <Layout title="ウエイトメニューの追加" bg="blue.50">
+    <Layout title="ウエイトメニューの追加">
       <CreateWeightMenuDetail />
     </Layout>
   );

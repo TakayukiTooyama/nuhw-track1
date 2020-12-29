@@ -8,11 +8,6 @@ export const userAuthState = atom<UserAuth | null>({
   default: null,
 });
 
-export const userInfoState = atom<UserInfo | null>({
-  key: 'userInfo',
-  default: null,
-});
-
 export const userState = atom<User | null>({
   key: 'user',
   default: null,

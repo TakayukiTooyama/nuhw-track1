@@ -30,7 +30,7 @@ import moment from 'moment';
 import { TournamentViewTable } from '..';
 import { db } from '../../../lib/firebase';
 import { SearchName, TournamentMenu, User } from '../../../models/users';
-import { userInfoState } from '../../../recoil/users/user';
+import { userState } from '../../../recoil/users/user';
 import { ErrorMessage, InputText, TopScrollButton } from '../../molecules';
 import SearchInBox from '../../molecules/common/SearchInBox';
 
@@ -53,9 +53,9 @@ const boxStyle = {
 
 const TournamentViewDetail: VFC = () => {
   //Global State
-  const userInfo = useRecoilValue(userInfoState);
-  const teamId = userInfo?.teamInfo.teamId;
-  const genderInfo = userInfo?.gender;
+  const user = useRecoilValue(userState);
+  const teamId = user?.teamInfo.teamId;
+  const genderInfo = user?.gender;
 
   //Local State
   const [name, setName] = useState('');

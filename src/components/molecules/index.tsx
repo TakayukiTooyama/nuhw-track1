@@ -18,5 +18,6 @@ export { default as ErrorMessage } from './common/ErrorMessage';
 export { default as CountButton } from './common/CountButton';
 export { default as NavTab } from './common/NavTab';
 export { default as TopScrollButton } from './common/TopScrollButton';
+export { default as ImageLinkButton } from './common/ImageLinkButton';
 
 export * from './common/Heading';

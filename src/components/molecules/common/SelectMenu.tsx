@@ -28,7 +28,6 @@ const SelectMenu: FC<Props> = ({ name, dataList }) => {
         rightIcon={<ChevronDownIcon fontSize="2xl" />}
         w="100%"
         textAlign="center"
-        bg="green.50"
         onClick={() => setToggleMenu(!toggleMenu)}
       >
         <Heading fontSize={['xl', '2xl']}>{name}</Heading>

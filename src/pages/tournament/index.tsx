@@ -4,7 +4,7 @@ import { Layout, TournamentViewDetail } from '../../components/templates';
 
 const Tournament: NextPage = () => {
   return (
-    <Layout title="大会結果" bg="green.50">
+    <Layout title="大会結果">
       <TournamentViewDetail />
     </Layout>
   );

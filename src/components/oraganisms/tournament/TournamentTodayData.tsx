@@ -24,7 +24,7 @@ const TournamentTodayData: VFC<Props> = ({
   filterMenus,
 }) => {
   const selectedName = useRecoilValue(selectedMakedMenuNameState);
-  const [hide, setHide] = useState(false);
+  const [hide, setHide] = useState(true);
 
   return (
     <>

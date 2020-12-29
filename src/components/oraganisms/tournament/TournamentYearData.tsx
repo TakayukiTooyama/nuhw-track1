@@ -30,7 +30,7 @@ const TournamentYearData: VFC<Props> = ({
   return (
     <>
       <Flex justify="space-between" align="center" mb={4}>
-        <Heading2 label="今回と前回の結果" />
+        <Heading2 label="年間結果" />
         {selectedName === '100M' || selectedName === '200M' ? (
           toggleNoWind ? (
             <Button shadow="base" onClick={() => setToggleNoWind(false)}>

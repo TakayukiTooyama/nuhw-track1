@@ -1,9 +1,9 @@
 import React, { VFC } from 'react';
 import { Stack } from '@chakra-ui/react';
-import { LinkBlock } from '../../molecules';
 import { useRecoilValue } from 'recoil';
+
+import { ImageLinkButton } from '../../molecules';
 import { selectedDateIdState } from '../../../recoil/users/user';
-import { AiOutlineRight } from 'react-icons/ai';
 import { LinkContent } from '../../../models/users';
 
 const Home: VFC = () => {
@@ -14,32 +14,30 @@ const Home: VFC = () => {
     {
       id: 'practice',
       name: '練習タイム',
-      color: 'orange.400',
       link: selectedDateId,
+      image: '/orange-track.jpg',
     },
-    { id: 'weight', name: 'ウエイト', color: 'blue.400', link: selectedDateId },
-    { id: 'tournament', name: '大会結果', color: 'green.400', link: 'search' },
+    {
+      id: 'weight',
+      name: 'ウエイト',
+      link: selectedDateId,
+      image: '/running.jpg',
+    },
+    {
+      id: 'tournament',
+      name: '大会結果',
+      link: 'search',
+      image: '/blue-track.jpg',
+    },
   ];
 
   return (
     <Stack spacing={4} display="flex" flexDirection="column">
       {contents.map((item) => {
         if (item.id === 'tournament') {
-          return (
-            <LinkBlock
-              key={item.id}
-              item={item}
-              rightIcon={<AiOutlineRight fontSize="20px" />}
-            />
-          );
+          return <ImageLinkButton key={item.id} item={item} />;
         }
-        return (
-          <LinkBlock
-            key={item.id}
-            item={item}
-            rightIcon={<AiOutlineRight fontSize="20px" />}
-          />
-        );
+        return <ImageLinkButton key={item.id} item={item} />;
       })}
     </Stack>
   );
