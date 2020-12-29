@@ -6,10 +6,9 @@ type Props = {
   label: string;
   contents: string[];
   setName: React.Dispatch<React.SetStateAction<string>>;
-  maxW?: string;
 };
 
-const SelectMenu: FC<Props> = ({ label, contents, setName, maxW }) => {
+const SelectMenu: FC<Props> = ({ label, contents, setName }) => {
   const [open, setOpen] = useState(false);
   return (
     <Box>
