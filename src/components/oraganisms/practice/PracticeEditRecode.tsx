@@ -1,5 +1,5 @@
 import { FC, useState } from 'react';
-import { Flex, Input, Text } from '@chakra-ui/react';
+import { Box, Flex, Input, Text } from '@chakra-ui/react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
 import { Recode } from '../../../models/users';
@@ -101,13 +101,20 @@ const PracticeEditRecode: FC<Props> = ({
             onCompositionEnd={() => setIsComposed(false)}
           />
         ) : (
-          <Input
-            isReadOnly
+          <Box
+            align="left"
             w="80%"
+            px="1rem"
+            lineHeight="2.4rem"
+            height="2.5rem"
+            borderRadius="0.375rem"
+            border="1px solid"
+            borderColor="inherit"
             maxW="200px"
-            value={insertStr(items.value)}
             onClick={() => handleClick(items.recodeId, items.value)}
-          />
+          >
+            {insertStr(items.value)}
+          </Box>
         )}
       </Flex>
     </>
