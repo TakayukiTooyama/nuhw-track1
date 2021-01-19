@@ -17,14 +17,14 @@ import { auth, db, provider } from '../../../lib/firebase';
 import { User, UserInfo } from '../../../models/users';
 
 const topBox = {
-  h: { base: '45vh', md: '100vh' },
+  h: { base: '50vh', md: '100vh' },
   w: { base: '100％', md: '100vh' },
   pt: 10,
   align: 'center',
 };
 
 const bottomBox = {
-  h: { base: '55vh', md: '100vh' },
+  h: { base: '50vh', md: '100vh' },
   w: { base: '100％', md: '100vh' },
   bg: 'blue.50',
   pt: 10,
@@ -32,7 +32,7 @@ const bottomBox = {
 
 const inner = {
   w: '80%',
-  top: '45%',
+  top: '50%',
   left: '50%',
   transform: 'translateY(-50%) translateX(-50%)',
 };
