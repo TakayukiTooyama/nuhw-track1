@@ -20,6 +20,7 @@ const buttonStyles = {
 };
 
 const backImageStyle = {
+  borderRadius: '30px',
   w: '100%',
   h: '200px',
   backgroundSize: 'cover',
