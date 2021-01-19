@@ -25,7 +25,7 @@ import { ErrorMessage, InputKeyDown, LinkButton } from '../../molecules';
 
 const TournamentEditDetail: VFC = () => {
   //Global State
-  const user = useRecoilValue(userState);
+  const [user, setUser] = useRecoilState(userState);
   const selectedData = useRecoilValue(selectedTournamentDataState);
   const isComposed = useRecoilValue(isComposedState);
   const [nameList, setNameList] = useRecoilState(makedMenuNameListState);
@@ -84,6 +84,7 @@ const TournamentEditDetail: VFC = () => {
   //出場した大会を取得
   const fetchTournamentData = async () => {
     if (user === null) return;
+    if (!user.tournamentIds) return;
     const tournamentMenusRef = db
       .collection('teams')
       .doc(user.teamInfo.teamId)
@@ -157,7 +158,6 @@ const TournamentEditDetail: VFC = () => {
         return;
       }
       if (user === null) return;
-      if (user === null) return;
       setLoading(true);
       const usersRef = db.collection('users').doc(user.uid);
       const practicesRef = usersRef.collection('tournaments');
@@ -192,16 +192,31 @@ const TournamentEditDetail: VFC = () => {
 
   const successFnc = async () => {
     if (user === null) return;
-    if (user === null) return;
     const usersRef = db.collection('users').doc(user.uid);
     const newId = selectedData.id;
-    const judg = user.tournamentIds.every((id) => {
-      return id !== newId;
-    });
-    if (judg) {
-      await usersRef.update({
-        tournamentIds: [...user.tournamentIds, newId],
+    const firstTournament = !user.tournamentIds;
+    const judg =
+      !firstTournament &&
+      user.tournamentIds.every((id) => {
+        return id !== newId;
       });
+    if (firstTournament) {
+      await usersRef
+        .update({
+          tournamentIds: [newId],
+        })
+        .then(() => {
+          setUser({ ...user, tournamentIds: [newId] });
+        });
+    }
+    if (judg) {
+      await usersRef
+        .update({
+          tournamentIds: [...user.tournamentIds, newId],
+        })
+        .then(() => {
+          setUser({ ...user, tournamentIds: [...user.tournamentIds, newId] });
+        });
     }
   };
 

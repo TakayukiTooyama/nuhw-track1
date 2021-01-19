@@ -25,6 +25,7 @@ const SelectMenu: FC<Props> = ({ label, contents, setName }) => {
       {open
         ? contents.map((item) => (
             <Box
+              key={item}
               bg="white"
               border="1px solid"
               borderColor="gray.200"

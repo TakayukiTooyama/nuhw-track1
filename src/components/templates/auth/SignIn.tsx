@@ -14,7 +14,7 @@ import { useRecoilState } from 'recoil';
 import { loadingState } from '../../../recoil/users/user';
 import { useAuthentication } from '../../../hooks/useAuthentication';
 import { auth, db, provider } from '../../../lib/firebase';
-import { UserInfo } from '../../../models/users';
+import { User, UserInfo } from '../../../models/users';
 
 const topBox = {
   h: { base: '45vh', md: '100vh' },
@@ -69,9 +69,18 @@ const SignIn: FC = () => {
         if (data && data.teamInfo) {
           Router.push('/');
         } else {
-          Router.push('/teams');
+          Router.push('/teams/join');
         }
       });
+  };
+  const transition = async () => {
+    const userRef = db.collection('users').doc(userAuth?.uid);
+    await userRef.get().then((doc) => {
+      const data = doc.data() as User;
+      if (!data) Router.push('teams/join');
+      if (data && !data.blockName) Router.push('/teams/profile');
+      if (data && data.teamInfo && data.blockName) Router.push('/');
+    });
   };
 
   useEffect(() => {
@@ -84,6 +93,12 @@ const SignIn: FC = () => {
         setLoading(true);
       }
     });
+  }, [userAuth]);
+
+  useEffect(() => {
+    if (userAuth !== null) {
+      transition();
+    }
   }, [userAuth]);
 
   const login = () => {

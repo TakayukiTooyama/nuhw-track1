@@ -9,8 +9,6 @@ type Props = {
 };
 
 const CountButton: VFC<Props> = ({ setCount, count, countLabel, label }) => {
-  console.log(count);
-
   const countFunc = () => {
     if (count < 1 && countLabel === -1) {
       setCount(0);

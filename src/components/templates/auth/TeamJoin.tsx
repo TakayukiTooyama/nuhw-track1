@@ -3,12 +3,12 @@ import Router from 'next/router';
 import { Box, Stack, Text } from '@chakra-ui/react';
 import * as yup from 'yup';
 import { Formik, Form } from 'formik';
-import { useSetRecoilState } from 'recoil';
 
 import { db } from '../../../lib/firebase';
 import { FormButton, FormInput } from '../../molecules';
-import { selectedTeamInfo } from '../../../recoil/teams/team';
 import { Team } from '../../../models/teams';
+import { useAuthentication } from '../../../hooks/useAuthentication';
+import { UserAuth } from '../../../models/users';
 
 type FormValues = {
   teamName: string;
@@ -17,7 +17,7 @@ type FormValues = {
 
 const TeamJoin: FC = () => {
   //Global State
-  const setSelectedTeamInfo = useSetRecoilState(selectedTeamInfo);
+  const { userAuth } = useAuthentication();
 
   //Local State
   const [submitErrorMessage, setSubmitErrorMessage] = useState('');
@@ -34,29 +34,31 @@ const TeamJoin: FC = () => {
     password: string,
     setSubmitting: (isSubmitting: boolean) => void
   ) => {
-    const teamsRef = db.collection('teams');
+    if (userAuth === null) return;
+    const teamsRef = db.collection('teams').doc('e2ZQAbPvnqMvTFUktAGC');
+    const usersRef = db.collection('users').doc(userAuth.uid);
     setSubmitErrorMessage('');
 
-    await teamsRef.get().then((snapshot) => {
-      let teamList = [];
-      snapshot.forEach((doc) => {
-        const data = doc.data() as Team;
-        const teamId = data.teamId;
-        if (data.teamName === teamName && data.password === password) {
-          setSelectedTeamInfo({ teamId, teamName });
-          Router.push('/teams/profile');
-        } else {
-          teamList.push(data.teamName);
-          return false;
-        }
-      });
-      if (teamList.length === snapshot.docs.length) {
+    await teamsRef.get().then(async (doc) => {
+      const data = doc.data() as Team;
+      const teamId = data.teamId;
+      const newData: UserAuth = {
+        uid: userAuth.uid,
+        photoURL: userAuth.photoURL,
+        displayName: userAuth.displayName,
+      };
+
+      // 団体名とパスワードによる認証
+      if (data.teamName === teamName && data.password === password) {
+        await usersRef
+          .set({ ...newData, teamInfo: { teamId, teamName } })
+          .then(() => {
+            Router.push('/teams/profile');
+          });
+      } else {
         setSubmitting(false);
         setSubmitErrorMessage('団体名かパスワードが間違っています');
-      }
-      if (snapshot.empty) {
-        setSubmitting(false);
-        setSubmitErrorMessage('団体が存在しません');
+        return false;
       }
     });
   };
@@ -96,7 +98,7 @@ const TeamJoin: FC = () => {
             isLoading={isSubmitting}
             disabled={!isValid || !dirty}
           />
-          <Box mb={4}></Box>
+          <Box mb={4} />
           <Text color="red.400" textAlign="center">
             {submitErrorMessage}
           </Text>

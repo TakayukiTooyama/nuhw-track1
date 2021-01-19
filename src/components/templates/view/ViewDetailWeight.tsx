@@ -81,9 +81,6 @@ const WeightViewDetail: VFC = () => {
     }
     //検索結果を初期化
     setMenus([]);
-    //一致したIDに対して検索条件にあったデータを取得
-
-    //ここからnameも入れていく
 
     userData.forEach(async (item) => {
       const numberRM = Number(rm);

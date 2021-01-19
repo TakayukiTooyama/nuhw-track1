@@ -1,5 +1,5 @@
 import { ChevronDownIcon } from '@chakra-ui/icons';
-import { Box, Button, Divider, Heading } from '@chakra-ui/react';
+import { Box, Button } from '@chakra-ui/react';
 import React, { FC, useState } from 'react';
 import { useSetRecoilState } from 'recoil';
 import { TournamentData } from '../../../models/users';
@@ -8,6 +8,15 @@ import { selectedTournamentDataState } from '../../../recoil/users/user';
 type Props = {
   name: string;
   dataList: TournamentData[];
+};
+
+const BoxStyle = {
+  shadow: 'base',
+  align: 'center',
+  py: 2,
+  bg: 'white',
+  cursor: 'pointer',
+  _hover: { bg: 'gray.50' },
 };
 
 const SelectMenu: FC<Props> = ({ name, dataList }) => {
@@ -25,31 +34,30 @@ const SelectMenu: FC<Props> = ({ name, dataList }) => {
   return (
     <Box pos="relative">
       <Button
-        rightIcon={<ChevronDownIcon fontSize="2xl" />}
+        rightIcon={<ChevronDownIcon fontSize={['2xl', '3xl']} />}
         w="100%"
         textAlign="center"
+        fontSize={['lg', 'xl']}
+        borderRadius={toggleMenu ? '0px' : '5px'}
         onClick={() => setToggleMenu(!toggleMenu)}
       >
-        <Heading fontSize={['xl', '2xl']}>{name}</Heading>
+        {name}
       </Button>
-      <Divider />
       {toggleMenu ? (
-        <Box zIndex={1} pos="absolute" w="100%" mx="auto">
-          {dataList &&
+        <Box zIndex={1} pos="absolute" w="100%" mx="auto" top="43px">
+          {dataList.length ? (
             dataList.map((data) => (
               <Box
                 key={data.id}
-                shadow="base"
-                textAlign="center"
-                py={2}
-                bg="white"
-                cursor="pointer"
-                _hover={{ bg: 'gray.50' }}
+                {...BoxStyle}
                 onClick={() => selectedMenu(data)}
               >
                 {data.name}
               </Box>
-            ))}
+            ))
+          ) : (
+            <Box {...BoxStyle}>参加した大会がありません</Box>
+          )}
         </Box>
       ) : null}
     </Box>

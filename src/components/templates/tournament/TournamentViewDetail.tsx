@@ -89,6 +89,7 @@ const TournamentViewDetail: FC = () => {
   //出場した大会を取得
   const fetchTournamentData = async () => {
     if (user === null) return;
+    if (!user.tournamentIds) return;
     const tournamentMenusRef = db
       .collection('teams')
       .doc(user.teamInfo.teamId)

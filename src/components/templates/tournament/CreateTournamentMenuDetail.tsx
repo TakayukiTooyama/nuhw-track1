@@ -169,6 +169,7 @@ const CreateTournamentMenuDetail: FC = () => {
       {/* 追加された大会 */}
       {menus.length ? (
         <>
+          <Divider />
           {menus.map((menu, idx) => {
             if (toggleEditMenu && selectedIndex === menu.id) {
               return (
@@ -209,10 +210,12 @@ const CreateTournamentMenuDetail: FC = () => {
               return (
                 <Box
                   key={menu.id}
-                  h="35px"
+                  h="40px"
                   bg="white"
-                  lineHeight="35px"
-                  textAlign="center"
+                  lineHeight="40px"
+                  align="center"
+                  cursor="pointer"
+                  _hover={{ bg: 'gray.50' }}
                   onClick={() =>
                     handleClick(
                       menu.id,

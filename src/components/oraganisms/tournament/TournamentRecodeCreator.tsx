@@ -71,11 +71,8 @@ const TournamentRecodeCreator: FC<Props> = ({
   //大会結果を追加
   const addRecode = async () => {
     if (user === null) return;
-    const tournamentsRef = db
-      .collection('users')
-      .doc(user.uid)
-      .collection('tournaments')
-      .doc(menuId);
+    const usersRef = db.collection('users').doc(user.uid);
+    const tournamentsRef = usersRef.collection('tournaments').doc(menuId);
 
     const validation =
       menu.competitionName !== '400M' &&
@@ -106,7 +103,7 @@ const TournamentRecodeCreator: FC<Props> = ({
       resultRecode ||
       resultWind ||
       currentWind ||
-      (wind.slice(0, 1) === '-' && wind.slice(-3, -2) === '0') ||
+      (wind.slice(0, 1) === '-' && wind.slice(-3, -2) === '.') ||
       recode.slice(0, 1) === '0'
     ) {
       setErrorMessage('正しい記録を入力してください');
@@ -121,15 +118,17 @@ const TournamentRecodeCreator: FC<Props> = ({
       wind,
       lane,
     };
-    await tournamentsRef.update({ recodes: [...recodes, newData] }).then(() => {
-      setRecodes((prev) => [...prev, newData]);
-      setRecode('');
-      setRound('予選');
-      setWind('');
-      setLane('1');
-      setIndex((prev) => prev + 1);
-      setLoading(false);
-    });
+    await tournamentsRef
+      .update({ recodes: [...recodes, newData] })
+      .then(async () => {
+        setRecodes((prev) => [...prev, newData]);
+        setRecode('');
+        setRound('予選');
+        setWind('');
+        setLane('1');
+        setIndex((prev) => prev + 1);
+        setLoading(false);
+      });
   };
 
   const handleChange = (
