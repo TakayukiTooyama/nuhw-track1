@@ -6,11 +6,11 @@ import {
   Text,
 } from '@chakra-ui/react';
 import React, { FC, useState } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilValue } from 'recoil';
 
 import { db } from '../../../lib/firebase';
 import { Menu, Recode } from '../../../models/users';
-import { isComposedState, userState } from '../../../recoil/users/user';
+import { userState } from '../../../recoil/users/user';
 
 type Props = {
   index: number;
@@ -34,7 +34,6 @@ const PracticeRecodeCreator: FC<Props> = ({
 }) => {
   //Global State
   const user = useRecoilValue(userState);
-  const [isComposed, setIsComposed] = useRecoilState(isComposedState);
 
   //Local State
   const [recode, setRecode] = useState('');
@@ -53,7 +52,6 @@ const PracticeRecodeCreator: FC<Props> = ({
   //新しく記録を追加するための処理
   const addRecode = async (e: React.KeyboardEvent<HTMLElement>) => {
     if (user === null) return;
-    if (isComposed) return;
     const practicesRef = db
       .collection('users')
       .doc(user.uid)
