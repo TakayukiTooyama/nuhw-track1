@@ -30,7 +30,7 @@ const backImageStyle = {
 const LinkBlock: VFC<Props> = ({ item }) => {
   return (
     <Link href={`/${item.id}/${item.link}`} passHref>
-      <Box pos="relative" {...buttonStyles} _hover={{ borderRadius: '30px' }}>
+      <Box pos="relative" {...buttonStyles}>
         <Text
           pos="absolute"
           top="50%"
