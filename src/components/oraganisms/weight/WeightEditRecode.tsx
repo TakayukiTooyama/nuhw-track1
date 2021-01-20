@@ -2,11 +2,9 @@ import { FC, useState } from 'react';
 import {
   Box,
   Flex,
-  HStack,
   IconButton,
   NumberInput,
   NumberInputField,
-  Stack,
   Text,
 } from '@chakra-ui/react';
 

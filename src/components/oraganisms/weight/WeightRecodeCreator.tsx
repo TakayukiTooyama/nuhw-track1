@@ -2,8 +2,6 @@ import {
   Box,
   Button,
   Flex,
-  HStack,
-  Input,
   NumberInput,
   NumberInputField,
   Text,
