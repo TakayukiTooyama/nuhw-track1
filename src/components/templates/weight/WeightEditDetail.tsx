@@ -186,7 +186,7 @@ const WeightEditDetail: FC = () => {
         <Flex justify="center" direction="column" align="center">
           <InputGroup label="RM" value={rm < 0 ? 0 : rm} isReadOnly={true} />
           <Box mb={4} />
-          <HStack spacing={1}>
+          <HStack spacing={2}>
             {countList.map((item) => (
               <CountButton
                 key={item.label}
@@ -202,12 +202,12 @@ const WeightEditDetail: FC = () => {
             w="100%"
             bg="white"
             maxW="300px"
+            borderRadius="none"
             placeholder="メニュー検索"
             onChange={handleChange}
             onKeyDown={searchMenu}
             onDoubleClick={handleBlur}
           />
-          <Box mb={1} />
 
           <Stack
             w="100%"

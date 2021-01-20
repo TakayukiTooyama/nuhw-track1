@@ -25,7 +25,13 @@ const PracticeEditMenu: VFC<Props> = ({ items, setMenus, deleteMenu }) => {
   return (
     <Box bg="white" w="100%" p={4} rounded={5} shadow="base">
       <Flex justify="space-between" align="center">
-        <Input maxW="255px" textAlign="center" isReadOnly value={items.name} />
+        <Input
+          maxW="255px"
+          textAlign="center"
+          isReadOnly
+          value={items.name}
+          mr={2}
+        />
         <IconButton
           aria-label="menu-delete"
           shadow="inner"

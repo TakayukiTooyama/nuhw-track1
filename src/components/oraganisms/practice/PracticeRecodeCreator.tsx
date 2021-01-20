@@ -1,4 +1,11 @@
-import { Button, HStack, Input } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  HStack,
+  NumberInput,
+  NumberInputField,
+  Text,
+} from '@chakra-ui/react';
 import React, { FC, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
@@ -40,8 +47,8 @@ const PracticeRecodeCreator: FC<Props> = ({
   };
 
   //記録入力処理
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setRecode(e.target.value);
+  const handleChange = (valueAsString: string, _valueAsNumber: number) => {
+    setRecode(valueAsString);
   };
 
   //新しく記録を追加するための処理
@@ -72,25 +79,29 @@ const PracticeRecodeCreator: FC<Props> = ({
   };
 
   return (
-    <HStack spacing={1} ml={14}>
+    <>
       {toggleEdit ? (
-        <Input
-          autoFocus
-          maxW="200px"
-          value={recode}
-          placeholder={`${index + 1}本目`}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          onKeyDown={addRecode}
-          onCompositionStart={() => setIsComposed(true)}
-          onCompositionEnd={() => setIsComposed(false)}
-        />
+        <HStack>
+          <Text color="gray.400" w="45px">
+            記録
+          </Text>
+          <NumberInput
+            maxW="200px"
+            value={recode}
+            placeholder={`${index + 1}本目`}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            onKeyDown={addRecode}
+          >
+            <NumberInputField autoFocus />
+          </NumberInput>
+        </HStack>
       ) : (
-        <Button w="200px" shadow="base" onClick={InputToggle}>
+        <Button w="100%" maxW="255px" shadow="base" onClick={InputToggle}>
           ＋
         </Button>
       )}
-    </HStack>
+    </>
   );
 };
 

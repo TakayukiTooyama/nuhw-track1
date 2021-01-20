@@ -40,7 +40,7 @@ const TournamentEditMenu: FC<Props> = ({ items, deleteMenu }) => {
         </Flex>
         <Box mb={4} />
 
-        <Stack spacing={1}>
+        <Stack spacing={2}>
           {recodes &&
             recodes.map((recode, idx) => (
               <TournamentEditRecode

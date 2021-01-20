@@ -91,6 +91,7 @@ const usePracticeMenu = (menusData: Menu[]) => {
   const handleBlur = () => {
     setToggleMenu(false);
     setName('');
+    setErrorMessage('');
   };
   return {
     menus,

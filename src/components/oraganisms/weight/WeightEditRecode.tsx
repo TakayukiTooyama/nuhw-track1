@@ -1,9 +1,12 @@
 import { FC, useState } from 'react';
 import {
+  Box,
   Flex,
-  Input,
-  InputGroup,
-  InputRightElement,
+  HStack,
+  IconButton,
+  NumberInput,
+  NumberInputField,
+  Stack,
   Text,
 } from '@chakra-ui/react';
 
@@ -11,6 +14,7 @@ import { Recode } from '../../../models/users';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { isComposedState, userState } from '../../../recoil/users/user';
 import { db } from '../../../lib/firebase';
+import { DeleteIcon } from '@chakra-ui/icons';
 
 type Props = {
   idx: number;
@@ -38,8 +42,8 @@ const WeightEditRecode: FC<Props> = ({
     [editToggle, setEditToggle] = useState(items.editting);
 
   //新しく追加するための入力処理
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setRecode(e.target.value);
+  const handleChange = (valueAsString: string, _valueAsNumber: number) => {
+    setRecode(valueAsString);
   };
 
   //記録の編集処理
@@ -67,6 +71,20 @@ const WeightEditRecode: FC<Props> = ({
     }
   };
 
+  //記録の削除
+  const deleteRecode = async (recodeId: number) => {
+    const newRecodes = recodes.filter((_recode, idx) => idx !== recodeId);
+    if (!user) return;
+    const practicesRef = db
+      .collection('users')
+      .doc(user.uid)
+      .collection('practices')
+      .doc(menuId);
+    await practicesRef.update({ recodes: newRecodes }).then(() => {
+      setRecodes(newRecodes);
+    });
+  };
+
   //編集への切り替え(recodeクリック時の処理)
   const handleClick = (id: number, value: string) => {
     setRecode(value);
@@ -90,34 +108,56 @@ const WeightEditRecode: FC<Props> = ({
   };
 
   return (
-    <>
-      <Flex key={`recode-${idx}-${items.value}`} align="center">
-        <Text color="gray.400" mx={3}>{`${idx + 1}set`}</Text>
-        {editToggle ? (
-          <Input
-            autoFocus
-            w="80%"
-            maxW="200px"
-            value={recode}
-            onChange={handleChange}
-            onBlur={() => handleBlur(items.recodeId, items.value)}
-            onKeyDown={(e) => updateRecode(e, idx, recode)}
-            onCompositionStart={() => setIsComposed(true)}
-            onCompositionEnd={() => setIsComposed(false)}
+    <Flex align="center">
+      <Text color="gray.400" w="100%" maxW="45px">{`${idx + 1}set`}</Text>
+      {editToggle ? (
+        <>
+          <Flex justify="space-between" align="center" w="100%" maxW="200px">
+            <NumberInput
+              value={recode}
+              onChange={handleChange}
+              onBlur={() => handleBlur(items.recodeId, items.value)}
+              onKeyDown={(e) => updateRecode(e, idx, recode)}
+              onCompositionStart={() => setIsComposed(true)}
+              onCompositionEnd={() => setIsComposed(false)}
+            >
+              <NumberInputField autoFocus />
+            </NumberInput>
+            <Text color="gray.400" ml={2} mr={editToggle ? '17px' : '0px'}>
+              kg
+            </Text>
+          </Flex>
+          <IconButton
+            aria-label="recode-delete"
+            bg="none"
+            _hover={{ bg: 'gray.100' }}
+            icon={<DeleteIcon color="red.400" />}
+            onClick={() => deleteRecode(idx)}
+            ml={1}
           />
-        ) : (
-          <InputGroup w="100%" maxW="200px">
-            <Input
-              readOnly={true}
-              textAlign="center"
-              defaultValue={items.value}
-              onClick={() => handleClick(items.recodeId, items.value)}
-            />
-            <InputRightElement color="gray.400" children="kg" />
-          </InputGroup>
-        )}
-      </Flex>
-    </>
+        </>
+      ) : (
+        <>
+          <Flex
+            justify="space-between"
+            align="center"
+            w="100%"
+            maxW="200px"
+            px={4}
+            lineHeight="2.4rem"
+            height="2.5rem"
+            borderRadius="0.375rem"
+            border="1px solid"
+            borderColor="inherit"
+            onClick={() => handleClick(items.recodeId, items.value)}
+          >
+            <Text>{items.value}</Text>
+            <Text color="gray.400">kg</Text>
+          </Flex>
+          <Box w="100%" maxW="40px" h="40px" ml={1} />
+        </>
+      )}
+    </Flex>
   );
 };
 

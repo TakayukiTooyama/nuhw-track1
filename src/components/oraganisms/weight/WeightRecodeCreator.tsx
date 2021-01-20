@@ -1,4 +1,13 @@
-import { Button, HStack, Input } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Flex,
+  HStack,
+  Input,
+  NumberInput,
+  NumberInputField,
+  Text,
+} from '@chakra-ui/react';
 import React, { FC, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
@@ -40,8 +49,8 @@ const WeightRecodeCreator: FC<Props> = ({
   };
 
   //記録入力処理
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setRecode(e.target.value);
+  const handleChange = (valueAsString: string, _valueAsNumber: number) => {
+    setRecode(valueAsString);
   };
 
   //新しく記録を追加するための処理
@@ -72,27 +81,35 @@ const WeightRecodeCreator: FC<Props> = ({
   };
 
   return (
-    <HStack spacing={1} ml={14}>
+    <>
       {toggleEdit ? (
-        <Input
-          autoFocus
-          maxW="200px"
-          value={recode}
-          placeholder={`${index + 1}set`}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          onKeyDown={addRecode}
-          onCompositionStart={() => setIsComposed(true)}
-          onCompositionEnd={() => setIsComposed(false)}
-        />
+        <Flex align="center">
+          <Text color="gray.400" w="100%" maxW="45px">
+            記録
+          </Text>
+          <NumberInput
+            maxW="200px"
+            value={recode}
+            placeholder={`${index + 1}set`}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            onKeyDown={addRecode}
+            onCompositionStart={() => setIsComposed(true)}
+            onCompositionEnd={() => setIsComposed(false)}
+          >
+            <NumberInputField autoFocus />
+          </NumberInput>
+          <Box w="100%" maxW="40px" h="40px" ml={1} />
+        </Flex>
       ) : (
-        <>
-          <Button w="200px" shadow="base" onClick={InputToggle}>
+        <Flex>
+          <Button w="253px" shadow="base" onClick={InputToggle}>
             ＋
           </Button>
-        </>
+          <Box w="100%" maxW="40px" h="40px" ml={1} />
+        </Flex>
       )}
-    </HStack>
+    </>
   );
 };
 

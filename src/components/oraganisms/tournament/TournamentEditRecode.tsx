@@ -1,11 +1,10 @@
-import { FC, useState, Dispatch, SetStateAction, ChangeEvent } from 'react';
+import { FC, useState, Dispatch, SetStateAction } from 'react';
 import {
   Box,
   Button,
   Flex,
   HStack,
   IconButton,
-  Input,
   Menu,
   MenuButton,
   MenuItem,
@@ -23,7 +22,8 @@ import { db } from '../../../lib/firebase';
 import { ChevronDownIcon } from '@chakra-ui/icons';
 import { AiFillDelete } from 'react-icons/ai';
 import { insertStr } from '../../../hooks/useInsertStr';
-import { ErrorMessage } from '../../molecules';
+import { ErrorMessage, InputNumber } from '../../molecules';
+import InputBox from '../../molecules/common/InputBox';
 
 type Props = {
   menuId: string;
@@ -153,10 +153,10 @@ const TournamentEditRecode: FC<Props> = ({
   const roundList: Round[] = ['予選', '準決勝', '決勝'];
 
   const handleChange = (
-    e: ChangeEvent<HTMLInputElement>,
+    valueAsString: string,
     setValue: Dispatch<SetStateAction<string>>
   ) => {
-    setValue(e.target.value);
+    setValue(valueAsString);
     setErrorMessage('');
   };
 
@@ -212,21 +212,20 @@ const TournamentEditRecode: FC<Props> = ({
             ) : null}
             <Box mb={2} />
             <Stack>
-              <Input
-                w="80%"
-                maxW="200px"
+              <InputNumber
                 value={recode}
-                onChange={(e) => handleChange(e, setRecode)}
+                onChange={(valueAsString) =>
+                  handleChange(valueAsString, setRecode)
+                }
               />
               {menu.competitionName !== '400M' &&
               menu.competitionName !== '800M' &&
               menu.competitionName !== '400H' ? (
-                <Input
-                  autoFocus
-                  w="80%"
-                  maxW="200px"
+                <InputNumber
                   value={wind}
-                  onChange={(e) => handleChange(e, setWind)}
+                  onChange={(valueAsString) =>
+                    handleChange(valueAsString, setWind)
+                  }
                 />
               ) : null}
             </Stack>
@@ -258,45 +257,54 @@ const TournamentEditRecode: FC<Props> = ({
           </Flex>
         </>
       ) : (
-        <Box onClick={handleClick}>
-          <Input
-            isReadOnly
-            value={items.round}
-            textAlign="center"
-            w="100%"
-            maxW="100px"
-            rounded="0"
-          />
-          {menu.competitionName !== '800M' ? (
-            <Input
-              isReadOnly
-              value={`${items.lane}レーン`}
+        <Box
+          onClick={handleClick}
+          w="100%"
+          maxW="255px"
+          border="1px solid"
+          borderColor="inherit"
+          borderRadius="0.375rem"
+        >
+          <Flex>
+            <InputBox
+              bg="gray.100"
+              value={items.round}
+              maxW="100%"
               textAlign="center"
-              w="100%"
-              maxW="100px"
-              rounded="0"
+              borderRadius="none"
+              borderstyle="none"
             />
-          ) : null}
-          <Input
-            isReadOnly
-            value={insertStr(items.value)}
-            textAlign="center"
-            w="100%"
-            maxW="100px"
-            rounded="0"
-          />
-          {menu.competitionName !== '400M' &&
-          menu.competitionName !== '800M' &&
-          menu.competitionName !== '400H' ? (
-            <Input
-              isReadOnly
-              value={items.wind}
+            {menu.competitionName !== '800M' ? (
+              <InputBox
+                bg="gray.100"
+                value={`${items.lane}レーン`}
+                maxW="100%"
+                textAlign="center"
+                borderRadius="none"
+                borderstyle="none"
+              />
+            ) : null}
+          </Flex>
+          <Flex>
+            <InputBox
+              value={insertStr(items.value)}
+              maxW="100%"
               textAlign="center"
-              w="100%"
-              maxW="100px"
-              rounded="0"
+              borderRadius="none"
+              borderstyle="none"
             />
-          ) : null}
+            {menu.competitionName !== '400M' &&
+            menu.competitionName !== '800M' &&
+            menu.competitionName !== '400H' ? (
+              <InputBox
+                value={items.wind}
+                maxW="100%"
+                textAlign="center"
+                borderRadius="none"
+                borderstyle="none"
+              />
+            ) : null}
+          </Flex>
         </Box>
       )}
     </>

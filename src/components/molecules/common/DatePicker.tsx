@@ -29,7 +29,7 @@ const DatePicker: FC<Props> = ({ bg }) => {
 
   //フォーマット変更 → 2020/12/26
   const getFormatDate = (date: Date) => {
-    return moment(date).format('YYYY/MM/DD');
+    return moment(date).format('YYYY / MM / DD');
   };
 
   return (

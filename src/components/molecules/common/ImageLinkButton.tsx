@@ -20,7 +20,6 @@ const buttonStyles = {
 };
 
 const backImageStyle = {
-  borderRadius: '30px',
   w: '100%',
   h: '200px',
   backgroundSize: 'cover',
@@ -31,7 +30,7 @@ const backImageStyle = {
 const LinkBlock: VFC<Props> = ({ item }) => {
   return (
     <Link href={`/${item.id}/${item.link}`} passHref>
-      <Box pos="relative" {...buttonStyles}>
+      <Box pos="relative" {...buttonStyles} _hover={{ borderRadius: '30px' }}>
         <Text
           pos="absolute"
           top="50%"
@@ -45,7 +44,7 @@ const LinkBlock: VFC<Props> = ({ item }) => {
         </Text>
         <Box
           opacity="0.3"
-          _hover={{ opacity: 1, transition: 'all 0.3s ease-out' }}
+          _hover={{ opacity: 1, transition: 'opacity 0.3s ease-out' }}
         >
           <Box
             pos="absolute"
@@ -53,9 +52,9 @@ const LinkBlock: VFC<Props> = ({ item }) => {
             {...backImageStyle}
             _hover={{
               transform: 'scale(1.2)',
-              transition: 'all 0.6s ease-out',
+              transition: 'transform 0.6s ease-out',
             }}
-          ></Box>
+          />
         </Box>
       </Box>
     </Link>
