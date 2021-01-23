@@ -22,6 +22,7 @@ const NavBar: VFC = () => {
         display={['flex', 'none']}
         borderTop="1px solid"
         borderColor="gray.100"
+        zIndex="2"
       >
         {navList.map((item) => (
           <NavTab

@@ -3,6 +3,7 @@ import React, { VFC } from 'react';
 
 type Props = {
   value: string;
+  placeholder?: string;
   maxW?: string;
   onChange: (valueAsString: string) => void;
   onBlur?: (e: React.FocusEvent<HTMLDivElement>) => void;
@@ -11,6 +12,7 @@ type Props = {
 
 const InputNumber: VFC<Props> = ({
   value,
+  placeholder,
   maxW = '200px',
   onChange,
   onBlur,
@@ -25,7 +27,7 @@ const InputNumber: VFC<Props> = ({
       onBlur={onBlur}
       onKeyDown={onKeyDown}
     >
-      <NumberInputField autoFocus />
+      <NumberInputField autoFocus placeholder={placeholder} />
     </NumberInput>
   );
 };

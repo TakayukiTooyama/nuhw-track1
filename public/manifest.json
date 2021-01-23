@@ -1,7 +1,12 @@
 {
-  "name": "PWA App",
-  "short_name": "App",
+  "name": "NUHW TRACK",
+  "short_name": "NTRA",
   "icons": [
+    {
+      "src": "/apple-touch-icon-180x180.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
     {
       "src": "/icon-192x192.png",
       "sizes": "192x192",
@@ -11,6 +16,7 @@
   "theme_color": "#FFFFFF",
   "background_color": "#FFFFFF",
   "start_url": "/",
+  "description": "this is NTRA",
   "display": "standalone",
   "orientation": "portrait"
 }

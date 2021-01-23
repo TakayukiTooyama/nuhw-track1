@@ -1,12 +1,5 @@
 import { FC, useState } from 'react';
-import {
-  Box,
-  HStack,
-  IconButton,
-  NumberInput,
-  NumberInputField,
-  Text,
-} from '@chakra-ui/react';
+import { Box, HStack, IconButton, Text } from '@chakra-ui/react';
 import { useRecoilValue } from 'recoil';
 
 import { Recode } from '../../../models/users';
@@ -14,6 +7,7 @@ import { userState } from '../../../recoil/users/user';
 import { db } from '../../../lib/firebase';
 import { insertStr } from '../../../hooks/useInsertStr';
 import { DeleteIcon } from '@chakra-ui/icons';
+import { InputNumber } from '../../molecules';
 
 type Props = {
   idx: number;
@@ -39,8 +33,14 @@ const PracticeEditRecode: FC<Props> = ({
   const [recode, setRecode] = useState(items.value),
     [editToggle, setEditToggle] = useState(items.editting);
 
+  const practicesRef = db
+    .collection('users')
+    .doc(user?.uid)
+    .collection('practices')
+    .doc(menuId);
+
   //新しく追加するための入力処理
-  const handleChange = (valueAsString: string, _valueAsNumber: number) => {
+  const handleChange = (valueAsString: string) => {
     setRecode(valueAsString);
   };
 
@@ -52,11 +52,6 @@ const PracticeEditRecode: FC<Props> = ({
   ) => {
     if (user === null) return;
     if (e.key === 'Enter') {
-      const practicesRef = db
-        .collection('users')
-        .doc(user.uid)
-        .collection('practices')
-        .doc(menuId);
       const newRecodes = recodes;
       recodes[idx] = { recodeId: idx, value, editting: false };
       await practicesRef.update({ recodes: newRecodes }).then(() => {
@@ -110,15 +105,12 @@ const PracticeEditRecode: FC<Props> = ({
         <Text color="gray.400" w="100%" maxW="45px">{`${idx + 1}本目`}</Text>
         {editToggle ? (
           <>
-            <NumberInput
-              maxW="200px"
+            <InputNumber
               value={recode}
               onChange={handleChange}
               onBlur={() => handleBlur(items.recodeId, items.value)}
               onKeyDown={(e) => updateRecode(e, idx, recode)}
-            >
-              <NumberInputField autoFocus />
-            </NumberInput>
+            />
             <IconButton
               aria-label="recode-delete"
               bg="none"

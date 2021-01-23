@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, FocusEvent, useRef, useState } from 'react';
 import {
   Box,
   Flex,
@@ -9,8 +9,8 @@ import {
 } from '@chakra-ui/react';
 
 import { Recode } from '../../../models/users';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { isComposedState, userState } from '../../../recoil/users/user';
+import { useRecoilValue } from 'recoil';
+import { userState } from '../../../recoil/users/user';
 import { db } from '../../../lib/firebase';
 import { DeleteIcon } from '@chakra-ui/icons';
 
@@ -33,11 +33,17 @@ const WeightEditRecode: FC<Props> = ({
 }) => {
   //Global State
   const user = useRecoilValue(userState);
-  const [isComposed, setIsComposed] = useRecoilState(isComposedState);
 
   //Local State
-  const [recode, setRecode] = useState(items.value),
-    [editToggle, setEditToggle] = useState(items.editting);
+  const [recode, setRecode] = useState(items.value);
+  const [editToggle, setEditToggle] = useState(items.editting);
+  const inputRef = useRef<HTMLDivElement | null>(null);
+
+  const weightsRef = db
+    .collection('users')
+    .doc(user?.uid)
+    .collection('weights')
+    .doc(menuId);
 
   //新しく追加するための入力処理
   const handleChange = (valueAsString: string, _valueAsNumber: number) => {
@@ -51,13 +57,7 @@ const WeightEditRecode: FC<Props> = ({
     value: string
   ) => {
     if (user === null) return;
-    if (isComposed) return;
     if (e.key === 'Enter') {
-      const weightsRef = db
-        .collection('users')
-        .doc(user.uid)
-        .collection('weights')
-        .doc(menuId);
       const newRecodes = recodes;
       recodes[index] = { recodeId: index, value, editting: false };
       await weightsRef.update({ recodes: newRecodes }).then(() => {
@@ -72,13 +72,13 @@ const WeightEditRecode: FC<Props> = ({
   //記録の削除
   const deleteRecode = async (recodeId: number) => {
     const newRecodes = recodes.filter((_recode, idx) => idx !== recodeId);
-    if (!user) return;
-    const practicesRef = db
+    if (user === null) return;
+    const weightsRef = db
       .collection('users')
       .doc(user.uid)
-      .collection('practices')
+      .collection('weights')
       .doc(menuId);
-    await practicesRef.update({ recodes: newRecodes }).then(() => {
+    await weightsRef.update({ recodes: newRecodes }).then(() => {
       setRecodes(newRecodes);
     });
   };
@@ -94,30 +94,49 @@ const WeightEditRecode: FC<Props> = ({
   };
 
   //編集を離れた時
-  const handleBlur = (id: number, value: string) => {
+  const handleBlur = async (
+    e: FocusEvent<HTMLDivElement>,
+    id: number,
+    value: string
+  ) => {
     const selectedIndex = recodes.findIndex((recode) => recode.recodeId === id);
-    recodes[selectedIndex] = {
-      recodeId: id,
-      value: value,
-      editting: false,
-    };
-    setEditToggle(false);
-    setRecodes(recodes);
+    if (inputRef.current?.contains(e.target)) return;
+    if (recode === '') {
+      recodes[selectedIndex] = {
+        recodeId: id,
+        value: value,
+        editting: false,
+      };
+      setEditToggle(false);
+      setRecodes(recodes);
+    } else {
+      if (user === null) return;
+      const newRecodes = recodes;
+      recodes[selectedIndex] = {
+        recodeId: selectedIndex,
+        value,
+        editting: false,
+      };
+      await weightsRef.update({ recodes: newRecodes }).then(() => {
+        setRecodes(newRecodes);
+        setEditToggle(false);
+        setIndex(recodes.length);
+        setRecode('');
+      });
+    }
   };
 
   return (
     <Flex align="center">
       <Text color="gray.400" w="100%" maxW="45px">{`${idx + 1}set`}</Text>
       {editToggle ? (
-        <>
+        <Box ref={inputRef} bg="red.300">
           <Flex justify="space-between" align="center" w="100%" maxW="200px">
             <NumberInput
               value={recode}
               onChange={handleChange}
-              onBlur={() => handleBlur(items.recodeId, items.value)}
+              onBlur={(e) => handleBlur(e, items.recodeId, items.value)}
               onKeyDown={(e) => updateRecode(e, idx, recode)}
-              onCompositionStart={() => setIsComposed(true)}
-              onCompositionEnd={() => setIsComposed(false)}
             >
               <NumberInputField autoFocus />
             </NumberInput>
@@ -133,7 +152,7 @@ const WeightEditRecode: FC<Props> = ({
             onClick={() => deleteRecode(idx)}
             ml={1}
           />
-        </>
+        </Box>
       ) : (
         <>
           <Flex

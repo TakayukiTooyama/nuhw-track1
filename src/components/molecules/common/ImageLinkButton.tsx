@@ -17,11 +17,12 @@ const buttonStyles = {
   color: 'white',
   overflow: 'hidden',
   bg: 'gray.900',
+  zIndex: 0,
 };
 
 const backImageStyle = {
   w: '100%',
-  h: '200px',
+  h: 200,
   backgroundSize: 'cover',
   backgroundPosition: 'center 70%',
   backgroundRepeat: 'no-repeat',
@@ -44,15 +45,17 @@ const LinkBlock: VFC<Props> = ({ item }) => {
         </Text>
         <Box
           opacity="0.3"
-          _hover={{ opacity: 1, transition: 'opacity 0.3s ease-out' }}
+          transition="all 0.3s"
+          _hover={{ opacity: 1, transition: 'all 0.3s' }}
         >
           <Box
             pos="absolute"
             backgroundImage={`url(${item.image})`}
             {...backImageStyle}
+            transition="all 0.6s"
             _hover={{
               transform: 'scale(1.2)',
-              transition: 'transform 0.6s ease-out',
+              transition: 'all 0.6s',
             }}
           />
         </Box>
