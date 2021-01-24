@@ -1,5 +1,3 @@
-import React, { FC, useEffect, useState } from 'react';
-
 import {
   Box,
   Button,
@@ -10,12 +8,12 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react';
+import React, { FC, useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 
-import { selectedDateIdState, userState } from '../../../recoil/users/user';
-import { WeightMenu, WeightName } from '../../../models/users';
 import { db } from '../../../lib/firebase';
-import { WeightEditMenu } from '../../oraganisms';
+import { WeightMenu, WeightName } from '../../../models/users';
+import { selectedDateIdState, userState } from '../../../recoil/users/user';
 import {
   CountButton,
   DatePicker,
@@ -23,28 +21,29 @@ import {
   InputGroup,
   LinkButton,
 } from '../../molecules';
+import { WeightEditMenu } from '../../oraganisms';
 
 const WeightEditDetail: FC = () => {
-  //Global State
+  // Global State
   const user = useRecoilValue(userState);
   const dateId = useRecoilValue(selectedDateIdState);
 
-  //Local State
-  const [menus, setMenus] = useState<WeightMenu[]>([]),
-    [name, setName] = useState(''),
-    [weightNameList, setWeightNameList] = useState<WeightName[]>([]),
-    [filterNameList, setFilterNameList] = useState<WeightName[]>([]),
-    [toggleMenu, setToggleMenu] = useState(false),
-    [isLoading, setIsLoading] = useState(false),
-    [rm, setRm] = useState(3);
+  // Local State
+  const [menus, setMenus] = useState<WeightMenu[]>([]);
+    const [name, setName] = useState('');
+    const [weightNameList, setWeightNameList] = useState<WeightName[]>([]);
+    const [filterNameList, setFilterNameList] = useState<WeightName[]>([]);
+    const [toggleMenu, setToggleMenu] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [rm, setRm] = useState(3);
 
-  //ページ訪問時 & 選択された日付が変わった時
+  // ページ訪問時 & 選択された日付が変わった時
   useEffect(() => {
     fetchWeightData();
     fetchTeamWeightMenu();
   }, [user, dateId]);
 
-  //firestoreから選択された日付のデータを取ってくる処理
+  // firestoreから選択された日付のデータを取ってくる処理
   const fetchWeightData = async () => {
     if (user === null) return;
     const WeightsRef = db
@@ -54,7 +53,7 @@ const WeightEditDetail: FC = () => {
       .where('dateId', '==', dateId);
 
     await WeightsRef.get().then((snapshot) => {
-      let menusData: WeightMenu[] = [];
+      const menusData: WeightMenu[] = [];
       snapshot.forEach((doc) => {
         const data = doc.data() as WeightMenu;
         menusData.push(data);
@@ -63,7 +62,7 @@ const WeightEditDetail: FC = () => {
     });
   };
 
-  //チーム内のウエイトメニューを取得
+  // チーム内のウエイトメニューを取得
   const fetchTeamWeightMenu = async () => {
     if (user === null) return;
     const teamWeithMenusRef = db
@@ -72,7 +71,7 @@ const WeightEditDetail: FC = () => {
       .collection('weightMenus')
       .orderBy('name', 'asc');
     await teamWeithMenusRef.get().then((snapshot) => {
-      let menuList: WeightName[] = [];
+      const menuList: WeightName[] = [];
       snapshot.forEach((doc) => {
         const data = doc.data() as WeightName;
         menuList.push(data);
@@ -82,7 +81,7 @@ const WeightEditDetail: FC = () => {
     });
   };
 
-  //メニュー追加処理
+  // メニュー追加処理
   const addMenu = async (selectedName: string) => {
     if (user === null) return;
     setIsLoading(true);
@@ -96,7 +95,7 @@ const WeightEditDetail: FC = () => {
       dateId,
       menuId,
       name: selectedName,
-      rm: rm,
+      rm,
       setCount: 3,
       recodes: [],
     };
@@ -110,7 +109,7 @@ const WeightEditDetail: FC = () => {
       });
   };
 
-  //メニュー削除処理
+  // メニュー削除処理
   const deleteMenu = async (menuId: string) => {
     if (user === null) return;
     const weightsRef = db
@@ -124,7 +123,7 @@ const WeightEditDetail: FC = () => {
     });
   };
 
-  //メニューの名前入力処理
+  // メニューの名前入力処理
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
     if (e.target.value === '') {
@@ -132,7 +131,7 @@ const WeightEditDetail: FC = () => {
     }
   };
 
-  //入力処理を離れる時の処理
+  // 入力処理を離れる時の処理
   const handleBlur = () => {
     setToggleMenu(false);
     setName('');
@@ -184,7 +183,7 @@ const WeightEditDetail: FC = () => {
 
       {toggleMenu ? (
         <Flex justify="center" direction="column" align="center">
-          <InputGroup label="RM" value={rm < 0 ? 0 : rm} isReadOnly={true} />
+          <InputGroup label="RM" value={rm < 0 ? 0 : rm} isReadOnly />
           <Box mb={4} />
           <HStack spacing={2}>
             {countList.map((item) => (
@@ -237,7 +236,7 @@ const WeightEditDetail: FC = () => {
 
           <LinkButton
             label="追加したいメニューがない場合"
-            link={'/weight/createWeightMenu'}
+            link="/weight/createWeightMenu"
           />
         </Flex>
       ) : (

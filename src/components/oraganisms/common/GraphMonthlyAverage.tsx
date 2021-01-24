@@ -1,8 +1,9 @@
-import React, { FC, useEffect, useState } from 'react';
-import { Menu } from '../../../models/users';
 import dynamic from 'next/dynamic';
-import { selectedMakedMenuNameState } from '../../../recoil/users/user';
+import React, { FC, useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
+
+import { Menu } from '../../../models/users';
+import { selectedMakedMenuNameState } from '../../../recoil/users/user';
 
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
@@ -60,7 +61,7 @@ const GraphMonthlyAverage: FC<Props> = ({ data, format, label }) => {
     (item) => item.dateId.toString().substring(4, 6) === '12'
   );
 
-  //xLabel作成 (例2020/12)
+  // xLabel作成 (例2020/12)
   useEffect(() => {
     setMonthlyData([]);
     if (january.length > 0) {
@@ -143,38 +144,38 @@ const GraphMonthlyAverage: FC<Props> = ({ data, format, label }) => {
         categories: xLabel,
       },
       yaxis: {
-        formatter: function (val: number) {
+        formatter (val: number) {
           if (format === undefined) {
             return String(val);
-          } else {
+          } 
             return format(String(val));
-          }
+          
         },
       },
       tooltip: {
         shared: false,
         y: {
-          formatter: function (val: number) {
+          formatter (val: number) {
             if (format === undefined) {
               return String(val);
-            } else {
+            } 
               return format(String(val));
-            }
+            
           },
         },
       },
     });
   }, [xLabel]);
 
-  //Xラベル作成 (例 1月)
+  // Xラベル作成 (例 1月)
   const createXLabel = (xLabel: string) => {
     setXLabel((prev) => [...prev, xLabel]);
   };
 
-  //月平均式
+  // 月平均式
   const monthlyAverageFormula = (monthlyData: Menu[]) => {
     let sum = 0;
-    let totalAry: string[] = [];
+    const totalAry: string[] = [];
     monthlyData.forEach((data) => {
       data.recodes.forEach((recode) => {
         totalAry.push(recode.value);

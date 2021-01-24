@@ -1,29 +1,32 @@
 import { Box, Flex, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react';
+import moment from 'moment';
 import React, { FC, useEffect, useState } from 'react';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import moment from 'moment';
 
-import { TournamentRecode } from '../../../models/users';
-import { selectedMakedMenuNameState } from '../../../recoil/users/user';
-import { CalcWind200m, CalcWind100m } from './test';
-import { TournamentData, TournamentMenu } from '../../../models/users';
+import { fetchTournamentData } from '../../../lib/firestore/teams';
+import { fetchAnnualTournamentData } from '../../../lib/firestore/users';
 import {
+  TournamentData,
+  TournamentMenu,
+  TournamentRecode,
+} from '../../../models/users';
+import {
+  makedMenuNameListState,
+  selectedMakedMenuNameState,
   selectedTournamentDataState,
   userState,
-  makedMenuNameListState,
 } from '../../../recoil/users/user';
-import { db } from '../../../lib/firebase';
+import { LinkButton, SelectNameList, TabList } from '../../molecules';
 import {
   TournamentHeader,
   TournamentTodayData,
   TournamentYearData,
 } from '../../oraganisms';
-import { LinkButton, SelectNameList, TabList } from '../../molecules';
+import { CalcWind100m, CalcWind200m } from './WindConverting';
 
-//入力された文字列をタイム表記に変換
-export const timeNotation = (input: string) => {
-  return input.slice(0, 2) + '.' + input.slice(2, 4);
-};
+// 入力された文字列をタイム表記に変換
+export const timeNotation = (input: string) =>
+  `${input.slice(0, 2)}.${input.slice(2, 4)}`;
 export const undo = (returnNumber: number) => {
   let convertStr = String(returnNumber);
   const len = convertStr.length;
@@ -35,7 +38,7 @@ export const undo = (returnNumber: number) => {
 };
 
 const TournamentViewDetail: FC = () => {
-  //Global State
+  // Global State
   const user = useRecoilValue(userState);
   const setNameList = useSetRecoilState(makedMenuNameListState);
   const [selectedName, setSelectedName] = useRecoilState(
@@ -43,77 +46,31 @@ const TournamentViewDetail: FC = () => {
   );
   const selectedData = useRecoilValue(selectedTournamentDataState);
 
-  //Local State
+  // Local State
   const [toggleNoWind, setToggleNoWind] = useState(false);
   const [windLessMenus, setWindLessMenus] = useState<TournamentMenu[]>([]);
   const [menus, setMenus] = useState<TournamentMenu[]>([]);
   const [dataList, setDataList] = useState<TournamentData[]>([]);
 
-  const format = (date: Date | string, format: string) => {
-    return moment(date).format(format);
-  };
+  const format = (date: Date | string, format: string) =>
+    moment(date).format(format);
 
-  //今日の日付(2020年12月1日 → 20201201)
+  // 今日の日付(2020年12月1日 → 20201201)
   const today = Number(format(new Date(), 'YYYYMMDD'));
-  //一年前
+  // 一年前
   const year = today - 10000;
 
   useEffect(() => {
-    fetchYearData();
-    fetchTournamentData();
-  }, [user]);
+    fetchAnnualTournamentData(user, year, setNameList, setMenus);
+    fetchTournamentData(user, setDataList);
+  }, [user, fetchAnnualTournamentData]);
 
-  //一年分の大会結果を取得
-  const fetchYearData = async () => {
-    if (user === null) return;
-    const tournamentsRef = db
-      .collection('users')
-      .doc(user.uid)
-      .collection('tournaments')
-      .where('competitionDay', '>=', year);
-    await tournamentsRef.get().then((snapshot) => {
-      let menuData: TournamentMenu[] = [];
-      let nameList: string[] = [];
-      snapshot.forEach((doc) => {
-        const data = doc.data() as TournamentMenu;
-        const name = data.competitionName;
-        menuData.push(data);
-        nameList.push(name);
-      });
-      const DeduplicationNameList = [...new Set(nameList)];
-      setNameList(DeduplicationNameList);
-      setMenus(menuData);
-    });
-  };
-
-  //出場した大会を取得
-  const fetchTournamentData = async () => {
-    if (user === null) return;
-    if (!user.tournamentIds) return;
-    const tournamentMenusRef = db
-      .collection('teams')
-      .doc(user.teamInfo.teamId)
-      .collection('tournamentMenus');
-    await tournamentMenusRef.get().then((snapshot) => {
-      const dataList: TournamentData[] = [];
-      snapshot.forEach((doc) => {
-        const data = doc.data() as TournamentData;
-        user.tournamentIds.filter((id) => {
-          if (id === data.id) {
-            dataList.push(data);
-          }
-        });
-      });
-      setDataList(dataList);
-    });
-  };
-
-  //ページ遷移時選択している種目をリセット
+  // ページ遷移時選択している種目をリセット
   useEffect(() => {
     setSelectedName('選択してください');
   }, []);
 
-  //選択された種目と大会名によって表示を変える
+  // 選択された種目と大会名によって表示を変える
   const filterMenus1 =
     menus &&
     menus.filter(
@@ -122,7 +79,7 @@ const TournamentViewDetail: FC = () => {
         menu.data.name === selectedData.name
     );
 
-  //選択された種目によって表示を変える
+  // 選択された種目によって表示を変える
   const filterMenus2 =
     menus && menus.filter((menu) => menu.competitionName === selectedName);
 
@@ -133,20 +90,18 @@ const TournamentViewDetail: FC = () => {
     setToggleNoWind(true);
     if (name === '100M') {
       const menus100m: TournamentMenu[] = menus.map((menu) => {
-        const recodes: TournamentRecode[] = menu.recodes.map((recode) => {
-          return {
-            ...recode,
-            value: String(
-              undo(
-                CalcWind100m(
-                  Number(timeNotation(recode.value)),
-                  Number(recode.wind)
-                )
+        const recodes: TournamentRecode[] = menu.recodes.map((recode) => ({
+          ...recode,
+          value: String(
+            undo(
+              CalcWind100m(
+                Number(timeNotation(recode.value)),
+                Number(recode.wind)
               )
-            ),
-            wind: '0.0',
-          };
-        });
+            )
+          ),
+          wind: '0.0',
+        }));
         return {
           ...menu,
           recodes,
@@ -155,21 +110,19 @@ const TournamentViewDetail: FC = () => {
       setWindLessMenus(menus100m);
     } else {
       const menus200m = menus.map((menu) => {
-        const recodes: TournamentRecode[] = menu.recodes.map((recode) => {
-          return {
-            ...recode,
-            value: String(
-              undo(
-                CalcWind200m(
-                  Number(timeNotation(recode.value)),
-                  Number(recode.wind),
-                  Number(recode.lane)
-                )
+        const recodes: TournamentRecode[] = menu.recodes.map((recode) => ({
+          ...recode,
+          value: String(
+            undo(
+              CalcWind200m(
+                Number(timeNotation(recode.value)),
+                Number(recode.wind),
+                Number(recode.lane)
               )
-            ),
-            wind: '0.0',
-          };
-        });
+            )
+          ),
+          wind: '0.0',
+        }));
         return {
           ...menu,
           recodes,
@@ -188,7 +141,7 @@ const TournamentViewDetail: FC = () => {
 
       <Flex justify="space-between" align="center">
         <SelectNameList />
-        <LinkButton label="編集" link={'/tournament/edit'} />
+        <LinkButton label="編集" link="/tournament/edit" />
       </Flex>
       <Box mb={8} />
 

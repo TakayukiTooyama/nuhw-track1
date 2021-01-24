@@ -5,12 +5,10 @@ type Props = {
   title: string;
 };
 
-const Title: FC<Props> = ({ title }) => {
-  return (
+const Title: FC<Props> = ({ title }) => (
     <Box p="40px" color="white" bg="black" shadow="md">
       <Heading>{title}</Heading>
     </Box>
   );
-};
 
 export default Title;

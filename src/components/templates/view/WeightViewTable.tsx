@@ -1,8 +1,10 @@
+import moment from 'moment';
 import React, { useMemo, VFC } from 'react';
-import { useSortBy, useTable } from 'react-table';
-import { Column } from 'react-table';
+import { Column,useSortBy, useTable  } from 'react-table';
 import { useRecoilValue } from 'recoil';
 
+import { WeightMenu } from '../../../models/users';
+import { NumberToDisplay } from '../../../recoil/users/user';
 import {
   Table,
   TableBody,
@@ -11,9 +13,6 @@ import {
   TableHeader,
   TableRow,
 } from '../../oraganisms/common/TableStyle';
-import { WeightMenu } from '../../../models/users';
-import { NumberToDisplay } from '../../../recoil/users/user';
-import moment from 'moment';
 
 type WeightViewData = WeightMenu & {
   user: {
@@ -35,9 +34,9 @@ type Data = {
 const ViewTable: VFC<Props> = ({ menus, label = '', format }) => {
   const displayNumber = useRecoilValue(NumberToDisplay);
 
-  //データを動的に生成
+  // データを動的に生成
   const tableData = () => {
-    let tableDataAry: {
+    const tableDataAry: {
       date: string;
       name: string;
       [key: string]: string;
@@ -48,10 +47,10 @@ const ViewTable: VFC<Props> = ({ menus, label = '', format }) => {
         const strDateId = String(menu.dateId);
         const formatDate = moment(strDateId).format('YYYY/MM/DD');
 
-        let obj: Data = {};
+        const obj: Data = {};
         menu.recodes.forEach((recode, idx) => {
           const key = `recode${idx + 1}`;
-          const value = recode.value;
+          const {value} = recode;
           if (format) {
             obj[key] = format(value);
           } else {
@@ -68,14 +67,14 @@ const ViewTable: VFC<Props> = ({ menus, label = '', format }) => {
   };
   const DATA: Data[] = [...tableData()];
 
-  //先頭の見出しを動的に生成
+  // 先頭の見出しを動的に生成
   const columnData = (number: number) => {
-    let ary: number[] = [];
+    const ary: number[] = [];
     const len = number;
     for (let i = 0; i < len; i++) {
       ary.push(Math.random());
     }
-    let selectedNumberList: any = [];
+    const selectedNumberList: any = [];
     ary.forEach((_recode, idx) => {
       selectedNumberList.push({
         Header: `${idx + 1}${label}`,
@@ -132,13 +131,11 @@ const ViewTable: VFC<Props> = ({ menus, label = '', format }) => {
           prepareRow(row);
           return (
             <TableRow {...row.getRowProps()}>
-              {row.cells.map((cell) => {
-                return (
+              {row.cells.map((cell) => (
                   <TableCell {...cell.getCellProps()}>
                     {cell.render('Cell')}
                   </TableCell>
-                );
-              })}
+                ))}
             </TableRow>
           );
         })}

@@ -1,6 +1,6 @@
+import dynamic from 'next/dynamic';
 import React, { FC, useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
-import dynamic from 'next/dynamic';
 
 import { Menu } from '../../../models/users';
 import { selectedMakedMenuNameState } from '../../../recoil/users/user';
@@ -57,50 +57,50 @@ const GraphDailyAverage: FC<Props> = ({ data, format, label }) => {
         categories: xLabel,
       },
       yaxis: {
-        formatter: function (val: number) {
+        formatter (val: number) {
           if (format === undefined) {
             return String(val);
-          } else {
+          } 
             return format(String(val));
-          }
+          
         },
       },
       tooltip: {
         shared: false,
         y: {
-          formatter: function (val: number) {
+          formatter (val: number) {
             if (format === undefined) {
               return String(val);
-            } else {
+            } 
               return format(String(val));
-            }
+            
           },
         },
       },
     });
   }, [xLabel]);
 
-  //Xラベル作成 (例2020/12/02)
+  // Xラベル作成 (例2020/12/02)
   const createXLabel = () => {
-    let xLabelAry: string[] = [];
+    const xLabelAry: string[] = [];
     data.forEach((item) => {
       const strDateId = String(item.dateId);
-      const formatDateId = strDateId.slice(4, 6) + '/' + strDateId.slice(6, 8);
+      const formatDateId = `${strDateId.slice(4, 6)  }/${  strDateId.slice(6, 8)}`;
       xLabelAry.push(`${formatDateId}`);
     });
     setXLabel(xLabelAry);
   };
 
-  //1日の平均
+  // 1日の平均
   const dailyAverageFormula = () => {
-    let averageArray: number[] = [];
+    const averageArray: number[] = [];
     data.forEach((menu) => {
       let sum = 0;
       menu.recodes.forEach((recode) => {
         sum += Number(recode.value);
       });
       const len = menu.recodes.length;
-      //少数第二位四捨五入
+      // 少数第二位四捨五入
       const average = Math.floor(sum / len);
       averageArray.push(average);
     });

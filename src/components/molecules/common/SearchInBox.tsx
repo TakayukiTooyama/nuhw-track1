@@ -6,8 +6,7 @@ type Props = {
   setName: Dispatch<SetStateAction<string>>;
 };
 
-const SearchInBox: VFC<Props> = ({ nameList, setName }) => {
-  return (
+const SearchInBox: VFC<Props> = ({ nameList, setName }) => (
     <Stack
       w="100%"
       maxW="350px"
@@ -38,6 +37,5 @@ const SearchInBox: VFC<Props> = ({ nameList, setName }) => {
       )}
     </Stack>
   );
-};
 
 export default SearchInBox;

@@ -1,5 +1,5 @@
+import { Box,BoxProps } from '@chakra-ui/react';
 import React from 'react';
-import { BoxProps, Box } from '@chakra-ui/react';
 
 export function Table(props: BoxProps) {
   return (

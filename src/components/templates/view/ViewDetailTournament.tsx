@@ -15,6 +15,7 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react';
+import moment from 'moment';
 import React, {
   ChangeEvent,
   Dispatch,
@@ -25,14 +26,13 @@ import React, {
 } from 'react';
 import { QueryFunctionContext, useQuery } from 'react-query';
 import { useRecoilValue } from 'recoil';
-import moment from 'moment';
 
-import { TournamentViewTable } from '..';
 import { db } from '../../../lib/firebase';
 import { SearchName, TournamentMenu, User } from '../../../models/users';
 import { userState } from '../../../recoil/users/user';
 import { ErrorMessage, InputText, TopScrollButton } from '../../molecules';
 import SearchInBox from '../../molecules/common/SearchInBox';
+import { TournamentViewTable } from '..';
 
 type TournamenViewData = TournamentMenu & {
   user: {
@@ -52,12 +52,12 @@ const boxStyle = {
 };
 
 const TournamentViewDetail: VFC = () => {
-  //Global State
+  // Global State
   const user = useRecoilValue(userState);
   const teamId = user?.teamInfo.teamId;
   const genderInfo = user?.gender;
 
-  //Local State
+  // Local State
   const [name, setName] = useState('');
   const [event, setEvent] = useState('');
   const [gender, setGender] = useState(genderInfo);
@@ -70,7 +70,7 @@ const TournamentViewDetail: VFC = () => {
   const [toggleSearch, setToggleSearch] = useState(false);
   const [toggleMenu, setToggleMenu] = useState(false);
 
-  //チーム内の大会情報を取得
+  // チーム内の大会情報を取得
   const fetchTeamTournamentMenu = async (
     context: QueryFunctionContext<string>
   ) => {
@@ -83,7 +83,7 @@ const TournamentViewDetail: VFC = () => {
     return await teamTournamentMenusRef.get().then((snapshot) => {
       const nameList = snapshot.docs.map((doc) => {
         const data = doc.data() as SearchName;
-        const name = data.name;
+        const {name} = data;
         return name;
       });
       return [...nameList, '全試合'];
@@ -115,7 +115,7 @@ const TournamentViewDetail: VFC = () => {
       setErrorMessage('性別を選択してください。');
       return;
     }
-    //検索結果を初期化
+    // 検索結果を初期化
     setMenus([]);
     userData.forEach(async (item) => {
       const tournamentsRef = db
@@ -123,7 +123,7 @@ const TournamentViewDetail: VFC = () => {
         .doc(item.id)
         .collection('tournaments');
 
-      //全試合と全種目の場合分け
+      // 全試合と全種目の場合分け
       const tournamentMenusRef =
         name === '全試合'
           ? tournamentsRef.where('competitionName', '==', event)
@@ -156,10 +156,10 @@ const TournamentViewDetail: VFC = () => {
 
     return await usersRef.get().then((snapshot) => {
       const userData = snapshot.docs.map((doc) => {
-        const id = doc.id;
+        const {id} = doc;
         const data = doc.data() as User;
         const username = data.displayName;
-        const grade = data.grade;
+        const {grade} = data;
         return { id, username, grade };
       });
       return userData;
@@ -200,12 +200,10 @@ const TournamentViewDetail: VFC = () => {
     menus.length && moment(`${menus[0].data.startDate}`).format('MM/DD');
   const filterMenus =
     menus.length > 0 &&
-    menus.map((menu) => {
-      return {
+    menus.map((menu) => ({
         ...menu,
         recodes: menu.recodes.filter((recode) => Number(recode.wind) <= 2.0),
-      };
-    });
+      }));
 
   const tableMenu = [
     { toggle: hide, setToggle: setHide, label: '日付・学年', top: '40px' },

@@ -1,33 +1,22 @@
-import React, { useEffect, VFC } from 'react';
-import Link from 'next/link';
 import { Box, Divider, Heading } from '@chakra-ui/react';
+import Link from 'next/link';
+import React, { useEffect, VFC } from 'react';
 import { useRecoilState } from 'recoil';
 
-import GuideMenu from '../../oraganisms/common/GuideMenu';
+import { useAuthentication } from '../../../hooks';
+import { fetchUserInfo } from '../../../lib/firestore/users';
 import { userState } from '../../../recoil/users/user';
-import { User } from '../../../models/users';
-import { db } from '../../../lib/firebase';
-import { useAuthentication } from '../../../hooks/useAuthentication';
+import GuideMenu from '../../oraganisms/common/GuideMenu';
 
 const Header: VFC = () => {
   const [user, setUser] = useRecoilState(userState);
   const { userAuth } = useAuthentication();
 
-  //最初にユーザー情報がGlobalStateに入っているか確認
+  // 最初にユーザー情報がGlobalStateに入っているか確認
   useEffect(() => {
-    if (user) return;
-    fetchUserInfo();
-  }, [userAuth]);
-
-  //ユーザーの情報を取得
-  const fetchUserInfo = async () => {
-    if (userAuth === null) return;
-    const usersRef = db.collection('users').doc(userAuth.uid);
-    await usersRef.get().then((doc) => {
-      const data = doc.data() as User;
-      setUser(data);
-    });
-  };
+    if (user || !userAuth) return;
+    fetchUserInfo(userAuth, setUser);
+  }, [userAuth, setUser, user]);
 
   return (
     <>

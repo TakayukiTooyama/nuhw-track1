@@ -24,7 +24,7 @@ import React, {
 import { useRecoilValue } from 'recoil';
 
 import { db } from '../../../lib/firebase';
-import { TournamentRecode, TournamentMenu, Round } from '../../../models/users';
+import { Round,TournamentMenu, TournamentRecode } from '../../../models/users';
 import { userState } from '../../../recoil/users/user';
 import { ErrorMessage } from '../../molecules';
 
@@ -53,22 +53,22 @@ const TournamentRecodeCreator: FC<Props> = ({
   errorMessage,
   setErrorMessage,
 }) => {
-  //Global State
+  // Global State
   const user = useRecoilValue(userState);
 
-  //Local State
-  //ラウンド
+  // Local State
+  // ラウンド
   const [round, setRound] = useState<Round>('予選');
-  //記録
+  // 記録
   const [recode, setRecode] = useState('');
-  //風速
+  // 風速
   const [wind, setWind] = useState('');
   const [loading, setLoading] = useState(false);
   const [lane, setLane] = useState('1');
 
   const roundList: Round[] = ['予選', '準決勝', '決勝'];
 
-  //大会結果を追加
+  // 大会結果を追加
   const addRecode = async () => {
     if (user === null) return;
     const usersRef = db.collection('users').doc(user.uid);
@@ -78,12 +78,12 @@ const TournamentRecodeCreator: FC<Props> = ({
       menu.competitionName !== '400M' &&
       menu.competitionName !== '400H' &&
       menu.competitionName !== '800M';
-    //全て入力
+    // 全て入力
     if (recode === '' || (validation && wind === '')) {
       setErrorMessage('全ての項目を入力してください');
       return;
     }
-    //風速-9.9 ~ 9.9以内かつ小数点第一位まで入力
+    // 風速-9.9 ~ 9.9以内かつ小数点第一位まで入力
     if (
       (validation && wind.slice(0, 1) === '-' && wind.length > 4) ||
       (validation && wind.slice(0, 1) !== '-' && wind.length > 3) ||
@@ -92,7 +92,7 @@ const TournamentRecodeCreator: FC<Props> = ({
       setErrorMessage('2.0 or -2.0の形で入力してください');
       return;
     }
-    //10分以内(800mまでなので10分以上かからない)
+    // 10分以内(800mまでなので10分以上かからない)
     const regex1 = /[^0-9]/g;
     const regex2 = /[^0-9.-]/g;
     const resultRecode = regex1.test(recode);

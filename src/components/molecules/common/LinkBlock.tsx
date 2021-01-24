@@ -1,6 +1,7 @@
 import { Button } from '@chakra-ui/react';
 import Link from 'next/link';
 import React, { ReactElement, VFC } from 'react';
+
 import { LinkContent } from '../../../models/users';
 
 type Props = {
@@ -17,8 +18,7 @@ const buttonStyles = {
   fontSize: '25px',
 };
 
-const LinkBlock: VFC<Props> = ({ item, leftIcon, rightIcon }) => {
-  return (
+const LinkBlock: VFC<Props> = ({ item, leftIcon, rightIcon }) => (
     <Link href={`/${item.id}/${item.link}`} passHref>
       <Button
         {...buttonStyles}
@@ -30,6 +30,5 @@ const LinkBlock: VFC<Props> = ({ item, leftIcon, rightIcon }) => {
       </Button>
     </Link>
   );
-};
 
 export default LinkBlock;

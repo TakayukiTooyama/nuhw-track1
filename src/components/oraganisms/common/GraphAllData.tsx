@@ -1,10 +1,10 @@
-import React, { FC, useEffect, useState } from 'react';
+import moment from 'moment';
 import dynamic from 'next/dynamic';
+import React, { FC, useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 
 import { Menu } from '../../../models/users';
 import { selectedMakedMenuNameState } from '../../../recoil/users/user';
-import moment from 'moment';
 
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
@@ -25,7 +25,7 @@ const GraphAllData: FC<Props> = ({ data, format, label, axisLabel }) => {
   const [dataList, setDataList] = useState<Data[]>([]);
   const [options, setOptions] = useState({});
 
-  //xLabel作成 (例2020/12/02 1本目)
+  // xLabel作成 (例2020/12/02 1本目)
   useEffect(() => {
     createXLabel();
     dailyFormula();
@@ -60,23 +60,23 @@ const GraphAllData: FC<Props> = ({ data, format, label, axisLabel }) => {
         categories: xLabel,
       },
       yaxis: {
-        formatter: function (val: number) {
+        formatter (val: number) {
           if (format === undefined) {
             return String(val);
-          } else {
+          } 
             return format(String(val));
-          }
+          
         },
       },
       tooltip: {
         shared: false,
         y: {
-          formatter: function (val: number) {
+          formatter (val: number) {
             if (format === undefined) {
               return String(val);
-            } else {
+            } 
               return format(String(val));
-            }
+            
           },
         },
       },
@@ -84,7 +84,7 @@ const GraphAllData: FC<Props> = ({ data, format, label, axisLabel }) => {
   }, [xLabel]);
 
   const createXLabel = () => {
-    let xLabelAry: string[] = [];
+    const xLabelAry: string[] = [];
     data.forEach((item) => {
       item.recodes.forEach((recode, idx) => {
         if (recode.value === '') return;
@@ -96,9 +96,9 @@ const GraphAllData: FC<Props> = ({ data, format, label, axisLabel }) => {
     setXLabel(xLabelAry);
   };
 
-  //日にちごとの変化
+  // 日にちごとの変化
   const dailyFormula = () => {
-    let array: number[] = [];
+    const array: number[] = [];
     data.forEach((menu) => {
       menu.recodes.forEach((recode) => {
         array.push(Number(recode.value));

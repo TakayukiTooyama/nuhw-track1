@@ -1,6 +1,7 @@
 import { Box, Button, Img, Stack } from '@chakra-ui/react';
 import React, { Dispatch, SetStateAction, useState, VFC } from 'react';
 import { SetterOrUpdater } from 'recoil';
+
 import { db } from '../../../lib/firebase';
 import { User } from '../../../models/users';
 import { InputText } from '../../molecules';
@@ -24,8 +25,8 @@ const ProfileEdit: VFC<Props> = ({ user, setUser, setToggleEdit }) => {
     const newData: User = {
       ...user,
       displayName: name,
-      grade: grade,
-      blockName: blockName,
+      grade,
+      blockName,
     };
     const usersRef = db.collection('users');
     await usersRef

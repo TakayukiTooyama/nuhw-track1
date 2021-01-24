@@ -1,9 +1,9 @@
 import { Box, Flex, StatGroup, Text } from '@chakra-ui/react';
 import React, { Dispatch, SetStateAction, VFC } from 'react';
 
-import { GraphAllData, TableView } from '..';
-import { Menu, Comparison } from '../../../models/users';
+import { Comparison,Menu } from '../../../models/users';
 import { Heading2, PinInput, Stat } from '../../molecules';
+import { GraphAllData, TableView } from '..';
 
 type Props = {
   todayData: Menu[];
@@ -29,8 +29,7 @@ const TodayData: VFC<Props> = ({
   changeNumber,
   setChangeNumber,
   comparisonAry,
-}) => {
-  return (
+}) => (
     <div>
       {todayData.length > 0 && lastTimeData.length > 0 ? (
         <>
@@ -80,6 +79,5 @@ const TodayData: VFC<Props> = ({
       )}
     </div>
   );
-};
 
 export default TodayData;

@@ -1,6 +1,7 @@
 import { Input, InputGroup, InputRightElement } from '@chakra-ui/react';
 import React, { ChangeEvent, KeyboardEvent, VFC } from 'react';
 import { useSetRecoilState } from 'recoil';
+
 import { isComposedState } from '../../../recoil/users/user';
 
 type Props = {

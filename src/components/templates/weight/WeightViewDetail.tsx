@@ -1,8 +1,9 @@
 import { Box, Flex, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react';
 import React, { FC, useEffect, useState } from 'react';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+
 import { db } from '../../../lib/firebase';
-import { Menu, Comparison } from '../../../models/users';
+import { Comparison,Menu } from '../../../models/users';
 import {
   formatTodaysDateState,
   makedMenuNameListState,
@@ -11,7 +12,7 @@ import {
   selectedMakedMenuNameState,
   userState,
 } from '../../../recoil/users/user';
-import { Heading1, LinkButton, TabList, SelectNameList } from '../../molecules';
+import { Heading1, LinkButton, SelectNameList,TabList } from '../../molecules';
 import { TodayData, WeightMonthlyData } from '../../oraganisms';
 
 const WeightViewDetail: FC = () => {
@@ -30,15 +31,15 @@ const WeightViewDetail: FC = () => {
   const [comparisonAry, setComparisonAry] = useState<Comparison[]>([]);
   const [judgLastTime, setJudgLastTime] = useState(false);
 
-  //選択されたメニューの名前によって表示されるmenusを変えるためフィルタリング
+  // 選択されたメニューの名前によって表示されるmenusを変えるためフィルタリング
   const filterMenus = menus.filter((menu) => menu.name === selectedName);
-  //今日
+  // 今日
   const todayData = filterMenus.filter((menu) => menu.dateId === today);
-  //3ヶ月
+  // 3ヶ月
   const threeMonthsData = filterMenus.filter(
     (menu) => menu.dateId >= today - 300
   );
-  //6ヶ月
+  // 6ヶ月
   const sixMonthsData = filterMenus.filter(
     (menu) => menu.dateId >= today - 600
   );
@@ -65,11 +66,11 @@ const WeightViewDetail: FC = () => {
       .collection('weights')
       .where('dateId', '>=', year);
     await weightsRef.get().then((snapshot) => {
-      let menuData: Menu[] = [];
-      let nameList: string[] = [];
+      const menuData: Menu[] = [];
+      const nameList: string[] = [];
       snapshot.forEach((doc) => {
         const data = doc.data() as Menu;
-        const name = data.name;
+        const {name} = data;
         menuData.push(data);
         nameList.push(name);
       });
@@ -84,8 +85,8 @@ const WeightViewDetail: FC = () => {
     const sortMenus = menus.filter((menu) => menu.name === selectedName).sort();
     const lastIndex = sortMenus.length - 1;
     if (sortMenus.length > 0) {
-      let comparisonAry1: number[] = [];
-      let comparisonAry2: number[] = [];
+      const comparisonAry1: number[] = [];
+      const comparisonAry2: number[] = [];
 
       if (sortMenus[lastIndex]) {
         sortMenus[lastIndex].recodes.forEach((recode) => {
@@ -119,13 +120,11 @@ const WeightViewDetail: FC = () => {
         setLastTimeData([sortMenus[lastIndex], sortMenus[lastIndex - 1]]);
       }
     } else {
-      return;
+      
     }
   };
 
-  const format = (input: string) => {
-    return `${input}kg`;
-  };
+  const format = (input: string) => `${input}kg`;
 
   const tabList = ['今日', '3ヶ月', '6ヶ月', '年間'];
   const tabDataList = [

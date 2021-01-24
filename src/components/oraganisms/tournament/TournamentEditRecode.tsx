@@ -1,4 +1,4 @@
-import { FC, useState, Dispatch, SetStateAction } from 'react';
+import { ChevronDownIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
@@ -14,14 +14,14 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react';
-
-import { Round, TournamentMenu, TournamentRecode } from '../../../models/users';
-import { useRecoilValue } from 'recoil';
-import { userState } from '../../../recoil/users/user';
-import { db } from '../../../lib/firebase';
-import { ChevronDownIcon } from '@chakra-ui/icons';
+import { Dispatch, FC, SetStateAction,useState } from 'react';
 import { AiFillDelete } from 'react-icons/ai';
+import { useRecoilValue } from 'recoil';
+
 import { insertStr } from '../../../hooks/useInsertStr';
+import { db } from '../../../lib/firebase';
+import { Round, TournamentMenu, TournamentRecode } from '../../../models/users';
+import { userState } from '../../../recoil/users/user';
 import { ErrorMessage, InputNumber } from '../../molecules';
 import InputBox from '../../molecules/common/InputBox';
 
@@ -44,10 +44,10 @@ const TournamentEditRecode: FC<Props> = ({
   setIndex,
   setToggleEdit,
 }) => {
-  //Global State
+  // Global State
   const user = useRecoilValue(userState);
 
-  //Local State
+  // Local State
   const [round, setRound] = useState(items.round);
   const [recode, setRecode] = useState(items.value);
   const [wind, setWind] = useState(items.wind);
@@ -55,7 +55,7 @@ const TournamentEditRecode: FC<Props> = ({
   const [toggleRecodes, setToggleRecodes] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  //記録の編集処理
+  // 記録の編集処理
   const updateRecode = async (
     round: Round,
     value: string,
@@ -80,12 +80,12 @@ const TournamentEditRecode: FC<Props> = ({
       menu.competitionName !== '400M' &&
       menu.competitionName !== '400H' &&
       menu.competitionName !== '800M';
-    //全て入力
+    // 全て入力
     if (recode === '' || (validation && wind === '')) {
       setErrorMessage('全ての項目を入力してください');
       return;
     }
-    //風速-9.9 ~ 9.9以内かつ小数点第一位まで入力
+    // 風速-9.9 ~ 9.9以内かつ小数点第一位まで入力
     if (
       (validation && wind.slice(0, 1) === '-' && wind.length > 4) ||
       (validation && wind.slice(0, 1) !== '-' && wind.length > 3) ||
@@ -94,7 +94,7 @@ const TournamentEditRecode: FC<Props> = ({
       setErrorMessage('2.0 or -2.0の形で入力してください');
       return;
     }
-    //10分以内(800mまでなので10分以上かからない)
+    // 10分以内(800mまでなので10分以上かからない)
     const regex = /[^0-9]/g;
     const result = regex.test(recode);
     if (recode.length > 5 || result || recode.slice(0, 1) === '0') {
@@ -112,7 +112,7 @@ const TournamentEditRecode: FC<Props> = ({
     });
   };
 
-  //編集への切り替え(recodeクリック時の処理)
+  // 編集への切り替え(recodeクリック時の処理)
   const handleClick = () => {
     setRound(items.round);
     setRecode(items.value);
@@ -134,7 +134,7 @@ const TournamentEditRecode: FC<Props> = ({
     setToggleRecodes(true);
   };
 
-  //編集を離れた時
+  // 編集を離れた時
   const handleBlur = () => {
     const selectedIndex = recodes.findIndex(
       (recode) => recode.recodeId === items.recodeId
@@ -160,7 +160,7 @@ const TournamentEditRecode: FC<Props> = ({
     setErrorMessage('');
   };
 
-  //大会結果削除
+  // 大会結果削除
   const deleteRecode = async (id: number) => {
     if (user === null) return;
     const tournamentsRef = db

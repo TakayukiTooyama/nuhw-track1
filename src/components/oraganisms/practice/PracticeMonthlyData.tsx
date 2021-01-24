@@ -1,11 +1,12 @@
 import React, { VFC } from 'react';
+
+import { Menu } from '../../../models/users';
 import {
   GraphAllData,
   GraphDailyAverage,
   GraphMonthlyAverage,
   TableView,
 } from '..';
-import { Menu } from '../../../models/users';
 
 type Props = {
   data: Menu[];
@@ -23,8 +24,7 @@ const PracticeMonthlyData: VFC<Props> = ({
   firstHeaderLabel,
   label,
   format,
-}) => {
-  return (
+}) => (
     <>
       <GraphAllData
         data={data}
@@ -54,6 +54,5 @@ const PracticeMonthlyData: VFC<Props> = ({
       />
     </>
   );
-};
 
 export default PracticeMonthlyData;

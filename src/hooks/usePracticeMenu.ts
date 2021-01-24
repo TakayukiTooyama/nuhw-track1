@@ -9,19 +9,20 @@ import {
   userState,
 } from '../recoil/users/user';
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const usePracticeMenu = (menusData: Menu[]) => {
-  //Global State
+  // Global State
   const user = useRecoilValue(userState);
   const dateId = useRecoilValue(selectedDateIdState);
   const isComposed = useRecoilValue(isComposedState);
 
-  //Local State
+  // Local State
   const [menus, setMenus] = useState<Menu[]>(menusData);
   const [name, setName] = useState('');
   const [toggleMenu, setToggleMenu] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  //メニュー追加処理
+  // メニュー追加処理
   const addMenu = async (e: React.KeyboardEvent<HTMLElement>) => {
     if (isComposed) return;
     if (name === '') {
@@ -68,7 +69,7 @@ const usePracticeMenu = (menusData: Menu[]) => {
     }
   };
 
-  //メニュー削除処理
+  // メニュー削除処理
   const deleteMenu = async (menuId: string) => {
     if (user === null) return;
     const practicesRef = db
@@ -82,12 +83,12 @@ const usePracticeMenu = (menusData: Menu[]) => {
     });
   };
 
-  //メニューの名前入力処理
+  // メニューの名前入力処理
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
   };
 
-  //入力処理を離れる時の処理
+  // 入力処理を離れる時の処理
   const handleBlur = () => {
     setToggleMenu(false);
     setName('');

@@ -1,6 +1,6 @@
-import React, { FC, useState } from 'react';
-import { Box, Button } from '@chakra-ui/react';
 import { ChevronDownIcon } from '@chakra-ui/icons';
+import { Box, Button } from '@chakra-ui/react';
+import React, { FC, useState } from 'react';
 
 type Props = {
   label: string;

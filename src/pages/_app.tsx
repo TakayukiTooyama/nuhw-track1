@@ -1,18 +1,18 @@
-import React, { useEffect } from 'react';
-import Head from 'next/head';
+import { ChakraProvider } from '@chakra-ui/react';
 import { AppProps } from 'next/app';
+import Head from 'next/head';
+import React, { useEffect, VFC } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
-import { ChakraProvider } from '@chakra-ui/react';
 import { RecoilRoot } from 'recoil';
 
 import customTheme from '../utils/theme';
 
-const App = ({ Component, pageProps }: AppProps) => {
+const App: VFC<AppProps> = ({ Component, pageProps }) => {
   useEffect(() => {
     const jssStyles = document.querySelector('#jss-server-side');
-    if (jssStyles) {
-      jssStyles.parentElement!.removeChild(jssStyles);
+    if (jssStyles && jssStyles.parentElement) {
+      jssStyles.parentElement.removeChild(jssStyles);
     }
   }, []);
 

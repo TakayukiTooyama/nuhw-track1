@@ -1,17 +1,15 @@
-import React, { useEffect, VFC } from 'react';
 import { Box, Button, Flex, Heading, Stack } from '@chakra-ui/react';
+import React, { useEffect, VFC } from 'react';
 import { useRecoilValue } from 'recoil';
 
-import DatePicker from '../../molecules/common/DatePicker';
-import { selectedDateIdState, userState } from '../../../recoil/users/user';
-import { Menu } from '../../../models/users';
-import { PracticeEditMenu } from '../../oraganisms';
 import usePracticeMenu from '../../../hooks/usePracticeMenu';
-import { db } from '../../../lib/firebase';
-import { LinkButton, InputKeyDown, ErrorMessage } from '../../molecules';
+import { fetchPracticeData } from '../../../lib/firestore/users';
+import { selectedDateIdState, userState } from '../../../recoil/users/user';
+import { ErrorMessage, InputKeyDown, LinkButton } from '../../molecules';
+import DatePicker from '../../molecules/common/DatePicker';
+import { PracticeEditMenu } from '../../oraganisms';
 
 export const PracticeEditDetail: VFC = () => {
-  //カスタムフック
   const {
     menus,
     setMenus,
@@ -26,36 +24,18 @@ export const PracticeEditDetail: VFC = () => {
     deleteMenu,
   } = usePracticeMenu([]);
 
-  //Global State
   const user = useRecoilValue(userState);
   const dateId = useRecoilValue(selectedDateIdState);
 
-  // //ページ訪問時 & 選択された日付が変わった時
+  // ページ訪問時 & 選択された日付が変わった時
   useEffect(() => {
-    fetchPracticeData();
-  }, [user, dateId]);
+    fetchPracticeData(user, dateId, setMenus);
+  }, [user, dateId, setMenus]);
 
-  const fetchPracticeData = async () => {
-    if (user === null) return;
-    const practicesDoc = await db
-      .collection('users')
-      .doc(user.uid)
-      .collection('practices')
-      .where('dateId', '==', dateId)
-      .get();
-
-    const menusData: Menu[] = practicesDoc.docs.map((doc) => {
-      const menuDoc = doc.data() as Menu;
-      return {
-        ...menuDoc,
-      };
-    });
-    setMenus(menusData);
-  };
-
+  // 練習メニュー名に変更があった時
   useEffect(() => {
     setErrorMessage('');
-  }, [name]);
+  }, [name, setErrorMessage]);
 
   return (
     <>

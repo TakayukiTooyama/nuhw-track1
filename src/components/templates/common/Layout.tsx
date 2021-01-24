@@ -1,9 +1,9 @@
-import React, { FC, ReactNode } from 'react';
-import Head from 'next/head';
 import { Container } from '@chakra-ui/react';
+import Head from 'next/head';
+import React, { FC, ReactNode } from 'react';
 
-import Header from './Header';
 import { NavBar } from '../../oraganisms';
+import Header from './Header';
 
 type Props = {
   children: ReactNode;
@@ -15,8 +15,7 @@ const Layout: FC<Props> = ({
   children,
   title = 'NUHW TRACK',
   noHeader = false,
-}) => {
-  return (
+}) => (
     <>
       <Head>
         <title>{title}</title>
@@ -28,6 +27,5 @@ const Layout: FC<Props> = ({
       {noHeader ? null : <NavBar />}
     </>
   );
-};
 
 export default Layout;

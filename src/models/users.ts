@@ -1,13 +1,15 @@
 import { ReactElement } from 'react';
-import { TeamInfo } from './teams';
 
-//ユーザー情報
+import type { TeamInfo } from './teams';
+
+// ユーザーの認証情報
 export type UserAuth = {
   uid: string;
   photoURL?: string;
   displayName: string;
 };
 
+// ユーザーの詳細情報
 export type UserInfo = {
   blockName: string;
   gender: string;
@@ -16,7 +18,21 @@ export type UserInfo = {
   tournamentIds: string[];
 };
 
+// ユーザーの認証と詳細情報
 export type User = UserAuth & UserInfo;
+
+// ユーザープロフィール
+export type Profile = {
+  blockName: string;
+  grade: string;
+  gender: string;
+};
+
+// タイムスタンプ
+export type TimeStamp = {
+  createdAt: TimeStamp;
+  updatedAt: TimeStamp;
+};
 
 export type LinkContent = {
   id: string;
@@ -27,24 +43,19 @@ export type LinkContent = {
   image?: string;
 };
 
-export type TimeStamp = {
-  createdAt: TimeStamp;
-  updatedAt: TimeStamp;
-};
-
-//選択しているnameListの型
+// 選択しているnameListの型
 export type SelectNameList = {
   id: string;
   name: string;
 };
 
-//前回の記録との比較
+// 前回の記録との比較
 export type Comparison = {
   type: 'increase' | 'decrease';
   data: number;
 };
 
-//練習メニュー
+// 練習メニュー
 export type Recode = {
   recodeId: number;
   value: string;
@@ -58,7 +69,7 @@ export type Menu = {
   recodes: Recode[];
 };
 
-//ウエイト
+// ウエイト
 export type WeightMenu = {
   dateId: number;
   menuId: string;
@@ -73,7 +84,7 @@ export type WeightName = {
   name: string;
 };
 
-//大会結果
+// 大会結果
 export type Round = '予選' | '準決勝' | '決勝';
 
 export type TournamentRecode = {
@@ -100,7 +111,7 @@ export type TournamentData = {
   endDate: string;
 };
 
-//閲覧ページ
+// 閲覧ページ
 export type SearchName = {
   id: string;
   name: string;

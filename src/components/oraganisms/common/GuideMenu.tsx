@@ -9,11 +9,12 @@ import {
 import Router from 'next/router';
 import React, { useState, VFC } from 'react';
 import {
-  AiOutlineSetting,
-  AiOutlineRead,
   AiOutlineHome,
   AiOutlineLogout,
+  AiOutlineRead,
+  AiOutlineSetting,
 } from 'react-icons/ai';
+
 import { auth } from '../../../lib/firebase';
 
 const GuideMenu: VFC = () => {

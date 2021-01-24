@@ -1,12 +1,12 @@
-import { FC, useState } from 'react';
+import { DeleteIcon } from '@chakra-ui/icons';
 import { Box, HStack, IconButton, Text } from '@chakra-ui/react';
+import { FC, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 
+import { insertStr } from '../../../hooks/useInsertStr';
+import { db } from '../../../lib/firebase';
 import { Recode } from '../../../models/users';
 import { userState } from '../../../recoil/users/user';
-import { db } from '../../../lib/firebase';
-import { insertStr } from '../../../hooks/useInsertStr';
-import { DeleteIcon } from '@chakra-ui/icons';
 import { InputNumber } from '../../molecules';
 
 type Props = {
@@ -26,12 +26,12 @@ const PracticeEditRecode: FC<Props> = ({
   setRecodes,
   setIndex,
 }) => {
-  //Global State
+  // Global State
   const user = useRecoilValue(userState);
 
-  //Local State
-  const [recode, setRecode] = useState(items.value),
-    [editToggle, setEditToggle] = useState(items.editting);
+  // Local State
+  const [recode, setRecode] = useState(items.value);
+    const [editToggle, setEditToggle] = useState(items.editting);
 
   const practicesRef = db
     .collection('users')
@@ -39,12 +39,12 @@ const PracticeEditRecode: FC<Props> = ({
     .collection('practices')
     .doc(menuId);
 
-  //新しく追加するための入力処理
+  // 新しく追加するための入力処理
   const handleChange = (valueAsString: string) => {
     setRecode(valueAsString);
   };
 
-  //記録の編集処理
+  // 記録の編集処理
   const updateRecode = async (
     e: React.KeyboardEvent<HTMLElement>,
     idx: number,
@@ -63,7 +63,7 @@ const PracticeEditRecode: FC<Props> = ({
     }
   };
 
-  //記録の削除
+  // 記録の削除
   const deleteRecode = async (recodeId: number) => {
     const newRecodes = recodes.filter((_recode, idx) => idx !== recodeId);
     if (!user) return;
@@ -77,7 +77,7 @@ const PracticeEditRecode: FC<Props> = ({
     });
   };
 
-  //編集への切り替え(recodeクリック時の処理)
+  // 編集への切り替え(recodeクリック時の処理)
   const handleClick = (id: number, value: string) => {
     setRecode(value);
     setIndex(id);
@@ -87,12 +87,12 @@ const PracticeEditRecode: FC<Props> = ({
     setEditToggle(true);
   };
 
-  //編集を離れた時
+  // 編集を離れた時
   const handleBlur = (id: number, value: string) => {
     const selectedIndex = recodes.findIndex((recode) => recode.recodeId === id);
     recodes[selectedIndex] = {
       recodeId: id,
-      value: value,
+      value,
       editting: false,
     };
     setEditToggle(false);

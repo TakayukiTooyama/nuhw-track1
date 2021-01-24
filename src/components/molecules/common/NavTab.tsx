@@ -9,8 +9,7 @@ type Props = {
   link: string;
 };
 
-const NavTab: VFC<Props> = ({ name, icon, link }) => {
-  return (
+const NavTab: VFC<Props> = ({ name, icon, link }) => (
     <Link href={link} passHref text-align="center">
       <Box
         flex="1"
@@ -26,6 +25,5 @@ const NavTab: VFC<Props> = ({ name, icon, link }) => {
       </Box>
     </Link>
   );
-};
 
 export default NavTab;

@@ -1,8 +1,10 @@
+import moment from 'moment';
 import React, { FC, useMemo } from 'react';
-import { useSortBy, useTable } from 'react-table';
-import { Column } from 'react-table';
+import { Column,useSortBy, useTable  } from 'react-table';
 import { useRecoilValue } from 'recoil';
 
+import { Menu } from '../../../models/users';
+import { NumberToDisplay } from '../../../recoil/users/user';
 import {
   Table,
   TableBody,
@@ -11,9 +13,6 @@ import {
   TableHeader,
   TableRow,
 } from './TableStyle';
-import { Menu } from '../../../models/users';
-import { NumberToDisplay } from '../../../recoil/users/user';
-import moment from 'moment';
 
 type Props = {
   menus: Menu[];
@@ -32,11 +31,11 @@ const TableView: FC<Props> = ({
   format,
 }) => {
   const displayNumber = useRecoilValue(NumberToDisplay);
-  const name = menus[0].name;
+  const {name} = menus[0];
 
-  //データを動的に生成
+  // データを動的に生成
   const tableData = () => {
-    let tableDataAry: {
+    const tableDataAry: {
       date: string;
       [key: string]: string;
     }[] = [];
@@ -46,10 +45,10 @@ const TableView: FC<Props> = ({
         const strDateId = String(menu.dateId);
         const formatDate = moment(strDateId).format('YYYY/MM/DD');
 
-        let obj: Data = {};
+        const obj: Data = {};
         menu.recodes.forEach((recode, idx) => {
           const key = `recode${idx + 1}`;
-          const value = recode.value;
+          const {value} = recode;
           if (format) {
             obj[key] = format(value);
           } else {
@@ -65,14 +64,14 @@ const TableView: FC<Props> = ({
   };
   const DATA: Data[] = [...tableData()];
 
-  //先頭の見出しを動的に生成
+  // 先頭の見出しを動的に生成
   const columnData = (number: number) => {
-    let ary: number[] = [];
+    const ary: number[] = [];
     const len = number;
     for (let i = 0; i < len; i++) {
       ary.push(Math.random());
     }
-    let selectedNumberList: any = [];
+    const selectedNumberList: any = [];
     ary.forEach((_recode, idx) => {
       selectedNumberList.push({
         Header: `${idx + 1}${label}`,
@@ -125,13 +124,11 @@ const TableView: FC<Props> = ({
           prepareRow(row);
           return (
             <TableRow {...row.getRowProps()}>
-              {row.cells.map((cell) => {
-                return (
+              {row.cells.map((cell) => (
                   <TableCell {...cell.getCellProps()}>
                     {cell.render('Cell')}
                   </TableCell>
-                );
-              })}
+                ))}
             </TableRow>
           );
         })}

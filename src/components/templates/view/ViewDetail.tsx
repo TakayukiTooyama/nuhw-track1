@@ -1,5 +1,6 @@
 import { Stack } from '@chakra-ui/react';
 import React, { VFC } from 'react';
+
 import { LinkContent } from '../../../models/users';
 import { LinkBlock } from '../../molecules';
 
@@ -20,14 +21,12 @@ const content: LinkContent[] = [
   },
 ];
 
-const ViewDetail: VFC<Props> = () => {
-  return (
+const ViewDetail: VFC<Props> = () => (
     <Stack spacing={4}>
       {content.map((item) => (
         <LinkBlock key={item.name} item={item} />
       ))}
     </Stack>
   );
-};
 
 export default ViewDetail;

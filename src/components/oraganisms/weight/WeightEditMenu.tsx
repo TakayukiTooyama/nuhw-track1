@@ -1,4 +1,3 @@
-import React, { FC, useEffect, useState } from 'react';
 import {
   Box,
   Flex,
@@ -8,6 +7,7 @@ import {
   InputRightElement,
   Stack,
 } from '@chakra-ui/react';
+import React, { FC, useEffect, useState } from 'react';
 import { AiFillDelete } from 'react-icons/ai';
 
 import { WeightMenu } from '../../../models/users';
@@ -20,13 +20,13 @@ type Props = {
 };
 
 const WeightEditMenu: FC<Props> = ({ items, setMenus, deleteMenu }) => {
-  //Local State
-  const [recodes, setRecodes] = useState(items.recodes),
-    [name] = useState(items.name),
-    [toggleEdit, setToggleEdit] = useState(false),
-    [index, setIndex] = useState(0);
+  // Local State
+  const [recodes, setRecodes] = useState(items.recodes);
+    const [name] = useState(items.name);
+    const [toggleEdit, setToggleEdit] = useState(false);
+    const [index, setIndex] = useState(0);
 
-  //リフレッシュ後でもインデックスを続きから始めるための処理
+  // リフレッシュ後でもインデックスを続きから始めるための処理
   useEffect(() => {
     setIndex(recodes.length);
   }, [recodes.length]);
@@ -35,7 +35,7 @@ const WeightEditMenu: FC<Props> = ({ items, setMenus, deleteMenu }) => {
     <Box bg="white" w="100%" p={4} rounded={5} shadow="base">
       <Flex justify="space-between" align="center">
         <InputGroup w="100%" maxW="300px" mr={1}>
-          <Input defaultValue={name} readOnly={true} />
+          <Input defaultValue={name} readOnly />
           <InputRightElement
             color="gray.400"
             children={`${items.rm}RM`}

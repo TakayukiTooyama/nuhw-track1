@@ -1,6 +1,7 @@
 import { Box } from '@chakra-ui/react';
 import React, { VFC } from 'react';
 import { AiOutlineHome, AiOutlineRead, AiOutlineSetting } from 'react-icons/ai';
+
 import { NavTab } from '../../molecules';
 
 const navList = [
@@ -9,8 +10,7 @@ const navList = [
   { name: '設定', icon: AiOutlineSetting, link: `/mypage` },
 ];
 
-const NavBar: VFC = () => {
-  return (
+const NavBar: VFC = () => (
     <>
       <Box
         pos="fixed"
@@ -35,6 +35,5 @@ const NavBar: VFC = () => {
       </Box>
     </>
   );
-};
 
 export default NavBar;

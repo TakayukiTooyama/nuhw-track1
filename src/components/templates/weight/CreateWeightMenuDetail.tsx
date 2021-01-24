@@ -1,4 +1,3 @@
-import React, { FC, useEffect, useState } from 'react';
 import {
   Box,
   Button,
@@ -8,6 +7,7 @@ import {
   Spinner,
   Text,
 } from '@chakra-ui/react';
+import React, { FC, useEffect, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
 import { db } from '../../../lib/firebase';
@@ -17,14 +17,14 @@ import {
   selectedDateIdState,
   userState,
 } from '../../../recoil/users/user';
-import { InputKeyDown, LinkButton, Heading1 } from '../../molecules';
+import { Heading1,InputKeyDown, LinkButton } from '../../molecules';
 
 const CreateWeightMenuDetail: FC = () => {
   const user = useRecoilValue(userState);
   const [isComposed, setIsComposed] = useRecoilState(isComposedState);
   const dateId = useRecoilValue(selectedDateIdState);
 
-  //Local State
+  // Local State
   const [menus, setMenus] = useState<WeightName[]>([]);
   const [toggleEdit, setToggleEdit] = useState(false);
   const [toggleEditMenu, setToggleEditMenu] = useState(false);
@@ -43,7 +43,7 @@ const CreateWeightMenuDetail: FC = () => {
       .collection('weightMenus')
       .orderBy('name', 'asc');
     await weightsRef.get().then((snapshot) => {
-      let weightMenus: WeightName[] = [];
+      const weightMenus: WeightName[] = [];
       snapshot.forEach((doc) => {
         const data = doc.data() as WeightName;
         weightMenus.push(data);
@@ -52,18 +52,18 @@ const CreateWeightMenuDetail: FC = () => {
     });
   };
 
-  //追加するメニューの入力処理
+  // 追加するメニューの入力処理
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
   };
 
-  //メニュー入力を離れた時の処理
+  // メニュー入力を離れた時の処理
   const createBlur = () => {
     setToggleEdit(false);
     setName('');
   };
 
-  //チーム内の新しいメニュー追加処理
+  // チーム内の新しいメニュー追加処理
   const addTeamWeightMenu = async (e: React.KeyboardEvent<HTMLElement>) => {
     if (user === null) return;
     if (isComposed) return;
@@ -72,7 +72,7 @@ const CreateWeightMenuDetail: FC = () => {
       .doc(user.teamInfo.teamId)
       .collection('weightMenus');
     if (e.key === 'Enter') {
-      const id = weightsRef.doc().id;
+      const {id} = weightsRef.doc();
       const newData: WeightName = { id, name };
       await weightsRef
         .doc(id)
@@ -84,7 +84,7 @@ const CreateWeightMenuDetail: FC = () => {
     }
   };
 
-  //チーム内のメニューを編集する処理
+  // チーム内のメニューを編集する処理
   const editWeigthMenu = async (
     e: React.KeyboardEvent<HTMLElement>,
     id: string,
@@ -110,7 +110,7 @@ const CreateWeightMenuDetail: FC = () => {
     }
   };
 
-  //メニューの編集のためにそれぞれをクリックした時の処理
+  // メニューの編集のためにそれぞれをクリックした時の処理
   const handleClick = (id: string, name: string) => {
     setName(name);
     setSelectedIndex(id);
@@ -146,7 +146,7 @@ const CreateWeightMenuDetail: FC = () => {
                   onCompositionEnd={() => setIsComposed(false)}
                 />
               );
-            } else {
+            } 
               return (
                 <Box
                   key={menu.id}
@@ -162,7 +162,7 @@ const CreateWeightMenuDetail: FC = () => {
                   <Text color="gray.400">{menu.name}</Text>
                 </Box>
               );
-            }
+            
           })}
           <Box mb={8} />
           {toggleEdit ? (

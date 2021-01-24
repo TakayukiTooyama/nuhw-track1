@@ -11,12 +11,12 @@ type Props = {
 };
 
 const SelectMenu: FC<Props> = ({ dataList }) => {
-  //Global State
+  // Global State
   const setSelectedTournamentData = useSetRecoilState(
     selectedTournamentDataState
   );
 
-  //Local State
+  // Local State
   const [label, setLabel] = useState('選択してください');
 
   const dataListOnClick = (data: TournamentData) => {

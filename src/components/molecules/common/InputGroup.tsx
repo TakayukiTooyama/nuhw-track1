@@ -19,13 +19,11 @@ const InputGroup: VFC<Props> = ({
   label,
   width = '100%',
   maxW = '300px',
-}) => {
-  return (
+}) => (
     <Group bg="white" w={width} maxW={maxW}>
       <Input value={value} isReadOnly={isReadOnly} textAlign="center" />
       <InputRightElement children={label} />
     </Group>
   );
-};
 
 export default InputGroup;

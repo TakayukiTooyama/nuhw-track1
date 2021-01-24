@@ -7,8 +7,7 @@ type Props = {
   setValue: React.Dispatch<React.SetStateAction<any>>;
 };
 
-const SelectRadio: FC<Props> = ({ value, setValue, contents }) => {
-  return (
+const SelectRadio: FC<Props> = ({ value, setValue, contents }) => (
     <RadioGroup onChange={setValue} value={value}>
       <Stack direction="row">
         {contents.map((item) => (
@@ -19,6 +18,5 @@ const SelectRadio: FC<Props> = ({ value, setValue, contents }) => {
       </Stack>
     </RadioGroup>
   );
-};
 
 export default SelectRadio;

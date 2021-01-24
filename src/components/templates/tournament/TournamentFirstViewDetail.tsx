@@ -1,20 +1,20 @@
 import { Box } from '@chakra-ui/react';
 import React, { VFC } from 'react';
+import { QueryFunctionContext, useQuery } from 'react-query';
 import { useRecoilValue } from 'recoil';
 
 import { db } from '../../../lib/firebase';
 import { TournamentData } from '../../../models/users';
 import { userState } from '../../../recoil/users/user';
-import { TournamentDataTable } from '../../oraganisms';
 import { Heading1, LinkButton } from '../../molecules';
-import { QueryFunctionContext, useQuery } from 'react-query';
+import { TournamentDataTable } from '../../oraganisms';
 
 const TournamentFirstViewDetail: VFC = () => {
-  //Global State
+  // Global State
   const user = useRecoilValue(userState);
   const teamId = user?.teamInfo.teamId;
 
-  //team内で登録されている大会の情報を取得
+  // team内で登録されている大会の情報を取得
   const fetchTournametData = async (context: QueryFunctionContext<string>) => {
     const teamId = context.queryKey[1];
     const tournamentMenusRef = db
@@ -23,7 +23,7 @@ const TournamentFirstViewDetail: VFC = () => {
       .collection('tournamentMenus')
       .orderBy('startDate', 'desc');
     return await tournamentMenusRef.get().then((snapshot) => {
-      let tournamentDataList: TournamentData[] = [];
+      const tournamentDataList: TournamentData[] = [];
       snapshot.forEach((doc) => {
         const data = doc.data() as TournamentData;
         tournamentDataList.push(data);
@@ -47,7 +47,7 @@ const TournamentFirstViewDetail: VFC = () => {
           <Box mb={4} />
           <LinkButton
             label="追加したい大会がない場合"
-            link={'/tournament/create'}
+            link="/tournament/create"
           />
         </>
       )}

@@ -19,8 +19,7 @@ const InputText: VFC<Props> = ({
   onChange,
   maxW = '350px',
   textAlign = 'left',
-}) => {
-  return (
+}) => (
     <Input
       autoFocus={autoFocus}
       placeholder={placeholder}
@@ -33,6 +32,5 @@ const InputText: VFC<Props> = ({
       textAlign={textAlign}
     />
   );
-};
 
 export default InputText;

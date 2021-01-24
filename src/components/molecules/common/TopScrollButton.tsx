@@ -2,8 +2,7 @@ import { ArrowUpIcon } from '@chakra-ui/icons';
 import { IconButton } from '@chakra-ui/react';
 import React, { VFC } from 'react';
 
-const TopScrollButton: VFC = () => {
-  return (
+const TopScrollButton: VFC = () => (
     <IconButton
       aria-label="top-scroll"
       shadow="base"
@@ -15,6 +14,5 @@ const TopScrollButton: VFC = () => {
       icon={<ArrowUpIcon />}
     />
   );
-};
 
 export default TopScrollButton;

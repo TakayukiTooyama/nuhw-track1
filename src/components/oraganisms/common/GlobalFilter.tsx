@@ -1,5 +1,6 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
 import React, { Dispatch, SetStateAction, VFC } from 'react';
+
 import { InputText } from '../../molecules';
 
 type Props = {
@@ -7,8 +8,7 @@ type Props = {
   setFilter: Dispatch<SetStateAction<string>>;
 };
 
-const GlobalFilter: VFC<Props> = ({ filter, setFilter }) => {
-  return (
+const GlobalFilter: VFC<Props> = ({ filter, setFilter }) => (
     <Flex align="center">
       <Text>検索:</Text>
       <Box mr={1} />
@@ -18,6 +18,5 @@ const GlobalFilter: VFC<Props> = ({ filter, setFilter }) => {
       />
     </Flex>
   );
-};
 
 export default GlobalFilter;

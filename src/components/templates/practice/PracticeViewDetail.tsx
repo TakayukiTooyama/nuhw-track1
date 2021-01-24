@@ -9,9 +9,12 @@ import {
 } from '@chakra-ui/react';
 import React, { useEffect, useState, VFC } from 'react';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import { insertStr } from '../../../hooks/useInsertStr';
 
-import { db } from '../../../lib/firebase';
+import { insertStr } from '../../../hooks/useInsertStr';
+import {
+  fetchAnnualPracticeData,
+  fetchLastTimeData,
+} from '../../../lib/firestore/users';
 import { Menu } from '../../../models/users';
 import {
   formatTodaysDateState,
@@ -22,7 +25,7 @@ import {
   userState,
 } from '../../../recoil/users/user';
 import { LinkButton, SelectNameList, TabList } from '../../molecules';
-import { PracticeTodayData, PracticeMonthlyData } from '../../oraganisms';
+import { PracticeMonthlyData, PracticeTodayData } from '../../oraganisms';
 
 export type Comparison = {
   type: 'increase' | 'decrease';
@@ -39,96 +42,48 @@ const PracticeViewDetail: VFC = () => {
   );
   const setNameList = useSetRecoilState(makedMenuNameListState);
   const [displayNumber, setDisplayNumber] = useRecoilState(NumberToDisplay);
+
   const [menus, setMenus] = useState<Menu[]>([]);
   const [changeNumber, setChangeNumber] = useState(displayNumber);
   const [lastTimeData, setLastTimeData] = useState<Menu[]>([]);
   const [comparisonAry, setComparisonAry] = useState<Comparison[]>([]);
 
-  //選択されたメニューの名前によって表示されるmenusを変えるためフィルタリング
+  // 選択されたメニューの名前によって表示されるmenusを変えるためフィルタリング
   const filterMenus = menus.filter((menu) => menu.name === selectedName);
-  //今日
+  // 今日
   const todaysData = filterMenus.filter((menu) => menu.dateId === today);
-  //3ヶ月
+  // 3ヶ月
   const threeMonthsData = filterMenus.filter(
     (menu) => menu.dateId >= today - 300
   );
-  //6ヶ月
+  // 6ヶ月
   const sixMonthsData = filterMenus.filter(
     (menu) => menu.dateId >= today - 600
   );
-  //タブメニュー
+  // タブメニュー
   const tabList = ['今日', '3ヶ月', '6ヶ月', '年間'];
 
+  // 初回
   useEffect(() => {
-    fetchAnnualData();
+    fetchAnnualPracticeData(user, year, setMenus, setNameList);
     setSelectedName('選択してください');
-  }, [user]);
+  }, [user, year, setNameList, setSelectedName]);
 
+  // 初回
+  useEffect(() => {
+    fetchLastTimeData(menus, selectedName, setComparisonAry, setLastTimeData);
+  }, [selectedName, menus]);
+
+  // 練習タイムの表示数を変更した時
   useEffect(() => {
     if (changeNumber === '') return;
     setDisplayNumber(changeNumber);
-  }, [changeNumber]);
+  }, [changeNumber, setDisplayNumber]);
 
-  useEffect(() => {
-    LastTimeData();
-  }, [selectedName]);
-
-  const fetchAnnualData = async () => {
-    if (user === null) return;
-    const practicesRef = db
-      .collection('users')
-      .doc(user.uid)
-      .collection('practices')
-      .where('dateId', '>=', year);
-    await practicesRef.get().then((snapshot) => {
-      let nameList: string[] = [];
-      const menuData = snapshot.docs.map((doc) => {
-        const data = doc.data() as Menu;
-        const name = data.name;
-        nameList.push(name);
-        return { ...data };
-      });
-      setMenus(menuData);
-      const DeduplicationNameList = [...new Set(nameList)];
-      setNameList(DeduplicationNameList);
-    });
-  };
-
-  const LastTimeData = async () => {
-    const sortMenus = menus.filter((menu) => menu.name === selectedName).sort();
-    const lastIndex = sortMenus.length - 1;
-    if (sortMenus.length) {
-      let comparisonAry1: number[] = [];
-      let comparisonAry2: number[] = [];
-
-      if (sortMenus[lastIndex]) {
-        sortMenus[lastIndex].recodes.forEach((recode) => {
-          comparisonAry1.push(+recode.value);
-        });
-      }
-      if (sortMenus[lastIndex - 1]) {
-        sortMenus[lastIndex - 1].recodes.forEach((recode) => {
-          comparisonAry2.push(+recode.value);
-        });
-      }
-
-      const len = comparisonAry1.length;
-      const newAry: Comparison[] = [];
-      for (let i = 0; i < len; i++) {
-        const number = comparisonAry1[i] - comparisonAry2[i];
-        const firstLetter = String(number).slice(0, 1);
-        if (firstLetter === '-') {
-          newAry.push({ type: 'increase', data: Math.abs(number) });
-        } else {
-          newAry.push({ type: 'decrease', data: Math.abs(number) });
-        }
-      }
-      setComparisonAry(newAry);
-      setLastTimeData([sortMenus[lastIndex], sortMenus[lastIndex - 1]]);
-    } else {
-      return;
-    }
-  };
+  /*
+    dateNumber: 3 → 3ヶ月
+    data: threeMonthsData → 3ヶ月分の練習タイムのデータ
+   */
   const tabDataList = [
     {
       dateNumber: 3,
@@ -166,8 +121,8 @@ const PracticeViewDetail: VFC = () => {
               <Text pl={4}>まだ登録されていません</Text>
             )}
           </TabPanel>
-          {tabDataList.map((item, idx) => (
-            <TabPanel key={idx} p={0} pt={4}>
+          {tabDataList.map((item) => (
+            <TabPanel key={`${item.dateNumber}`} p={0} pt={4}>
               {item.data.length ? (
                 <PracticeMonthlyData
                   data={item.data}

@@ -1,12 +1,13 @@
+import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { Box, Button, Flex, HStack } from '@chakra-ui/react';
 import React, { Dispatch, SetStateAction, useState, VFC } from 'react';
 import { useRecoilValue } from 'recoil';
+
+import { TournamentMenu } from '../../../models/users';
 import { selectedMakedMenuNameState } from '../../../recoil/users/user';
+import { Heading2 } from '../../molecules';
 import GraphAllData from './GraphAllData';
 import TableView from './TableView';
-import { Heading2 } from '../../molecules';
-import { TournamentMenu } from '../../../models/users';
-import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 
 type Props = {
   windlessCalculation: (name: '100M' | '200M', menus: TournamentMenu[]) => void;

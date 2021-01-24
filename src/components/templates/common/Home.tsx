@@ -1,13 +1,13 @@
-import React, { VFC } from 'react';
 import { Stack } from '@chakra-ui/react';
+import React, { VFC } from 'react';
 import { useRecoilValue } from 'recoil';
 
-import { ImageLinkButton } from '../../molecules';
-import { selectedDateIdState } from '../../../recoil/users/user';
 import { LinkContent } from '../../../models/users';
+import { selectedDateIdState } from '../../../recoil/users/user';
+import { ImageLinkButton } from '../../molecules';
 
 const Home: VFC = () => {
-  //Global state
+  // Global state
   const selectedDateId = useRecoilValue(selectedDateIdState);
 
   const contents: LinkContent[] = [

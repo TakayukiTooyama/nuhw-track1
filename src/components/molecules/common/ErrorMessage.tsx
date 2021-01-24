@@ -6,12 +6,10 @@ type Props = {
   textAlign?: 'right' | 'left' | 'center';
 };
 
-const ErrorMessage: VFC<Props> = ({ message, textAlign = 'left' }) => {
-  return (
+const ErrorMessage: VFC<Props> = ({ message, textAlign = 'left' }) => (
     <Text color="red.400" textAlign={textAlign}>
       {message}
     </Text>
   );
-};
 
 export default ErrorMessage;

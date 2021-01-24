@@ -1,4 +1,3 @@
-import React, { FC, useEffect, useState } from 'react';
 import {
   Box,
   Button,
@@ -11,22 +10,24 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react';
-import { useRecoilValue } from 'recoil';
 import moment from 'moment';
+import React, { FC, useEffect, useState } from 'react';
+import { useRecoilValue } from 'recoil';
 
 import { db } from '../../../lib/firebase';
+import { fetchTournamentMenu } from '../../../lib/firestore/teams';
 import { TournamentData } from '../../../models/users';
 import { userState } from '../../../recoil/users/user';
-import { DateRangePicker, LinkButton, Heading1 } from '../../molecules';
+import { DateRangePicker, Heading1, LinkButton } from '../../molecules';
 
 const CreateTournamentMenuDetail: FC = () => {
-  //moment.js
+  // moment.js
   const date = moment().toDate();
 
-  //Global State
+  // Global State
   const user = useRecoilValue(userState);
 
-  //Local State
+  // Local State
   const [menus, setMenus] = useState<TournamentData[]>([]);
   const [toggleEdit, setToggleEdit] = useState(false);
   const [toggleEditMenu, setToggleEditMenu] = useState(false);
@@ -40,29 +41,8 @@ const CreateTournamentMenuDetail: FC = () => {
   const formatEndDate = moment(endDate).format('YYYYMMDD');
 
   useEffect(() => {
-    fetchTournamentMenu();
+    fetchTournamentMenu(user, setMenus);
   }, [user]);
-
-  /*
-    現状一度リフレッシュをしてしまうとstartDateやendDate
-    に望まないデータが入ってきてしまう
-  */
-  const fetchTournamentMenu = async () => {
-    if (user === null) return;
-    const tournamentsRef = db
-      .collection('teams')
-      .doc(user.teamInfo.teamId)
-      .collection('tournamentMenus')
-      .orderBy('startDate', 'desc');
-    await tournamentsRef.get().then((snapshot) => {
-      let tournamentMenus: TournamentData[] = [];
-      snapshot.forEach((doc) => {
-        const data = doc.data() as TournamentData;
-        tournamentMenus.push(data);
-      });
-      setMenus(tournamentMenus);
-    });
-  };
 
   // //チーム内の大会リストに新しく追加する処理
   const addTournamentMenu = async () => {
@@ -72,7 +52,7 @@ const CreateTournamentMenuDetail: FC = () => {
       .collection('teams')
       .doc(user.teamInfo.teamId)
       .collection('tournamentMenus');
-    const id = tournamentsRef.doc().id;
+    const { id } = tournamentsRef.doc();
     const newData: TournamentData = {
       id,
       name,
@@ -93,7 +73,7 @@ const CreateTournamentMenuDetail: FC = () => {
       });
   };
 
-  //チーム内の大会リストを編集する処理
+  // チーム内の大会リストを編集する処理
   const editTournamentMenu = async (id: string, idx: number) => {
     if (user === null) return;
     const tournamentsRef = db
@@ -120,27 +100,19 @@ const CreateTournamentMenuDetail: FC = () => {
       });
   };
 
-  //大会リストの編集のためにそれぞれをクリックした時の処理
-  const handleClick = (
-    id: string,
-    name: string,
-    venue: string,
-    startDate: string,
-    endDate: string
-  ) => {
+  // 大会リストの編集のためにそれぞれをクリックした時の処理
+  const handleClick = (id: string) => {
     const editStartDate = new Date(
-      startDate.slice(0, 4) +
-        '/' +
-        startDate.slice(4, 6) +
-        '/' +
-        startDate.slice(6, 8)
+      `${formatStartDate.slice(0, 4)}/${formatStartDate.slice(
+        4,
+        6
+      )}/${formatStartDate.slice(6, 8)}`
     );
     const editEndDate = new Date(
-      endDate.slice(0, 4) +
-        '/' +
-        endDate.slice(4, 6) +
-        '/' +
-        endDate.slice(6, 8)
+      `${formatEndDate.slice(0, 4)}/${formatEndDate.slice(
+        4,
+        6
+      )}/${formatEndDate.slice(6, 8)}`
     );
     setToggleEdit(false);
     setName(name);
@@ -163,7 +135,7 @@ const CreateTournamentMenuDetail: FC = () => {
     <div>
       <Flex justify="space-between" align="center">
         <Heading1 label="大会の追加" />
-        <LinkButton label="戻る" link={`/tournament/search`} />
+        <LinkButton label="戻る" link="/tournament/search" />
       </Flex>
       <Box mb={8} />
       {/* 追加された大会 */}
@@ -206,31 +178,22 @@ const CreateTournamentMenuDetail: FC = () => {
                   <Box mb={4} />
                 </Stack>
               );
-            } else {
-              return (
-                <Box
-                  key={menu.id}
-                  h="40px"
-                  bg="white"
-                  lineHeight="40px"
-                  align="center"
-                  cursor="pointer"
-                  _hover={{ bg: 'gray.50' }}
-                  onClick={() =>
-                    handleClick(
-                      menu.id,
-                      menu.name,
-                      menu.venue,
-                      menu.startDate,
-                      menu.endDate
-                    )
-                  }
-                >
-                  <Text color="gray.400">{menu.name}</Text>
-                  <Divider />
-                </Box>
-              );
             }
+            return (
+              <Box
+                key={menu.id}
+                h="40px"
+                bg="white"
+                lineHeight="40px"
+                align="center"
+                cursor="pointer"
+                _hover={{ bg: 'gray.50' }}
+                onClick={() => handleClick(menu.id)}
+              >
+                <Text color="gray.400">{menu.name}</Text>
+                <Divider />
+              </Box>
+            );
           })}
           <Box mb={4} />
           {toggleEdit ? (

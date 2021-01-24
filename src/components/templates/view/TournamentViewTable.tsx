@@ -1,8 +1,10 @@
-import React, { FC, useMemo } from 'react';
-import { useGlobalFilter, useSortBy, useTable } from 'react-table';
-import { Column } from 'react-table';
+import { Box } from '@chakra-ui/react';
 import moment from 'moment';
+import React, { FC, useMemo } from 'react';
+import { Column,useGlobalFilter, useSortBy, useTable  } from 'react-table';
 
+import { Round, TournamentMenu } from '../../../models/users';
+import { GlobalFilter } from '../../oraganisms';
 import {
   Table,
   TableBody,
@@ -11,9 +13,6 @@ import {
   TableHeader,
   TableRow,
 } from '../../oraganisms/common/TableStyle';
-import { Round, TournamentMenu } from '../../../models/users';
-import { GlobalFilter } from '../../oraganisms';
-import { Box } from '@chakra-ui/react';
 
 type TournamenViewData = TournamentMenu & {
   user: {
@@ -39,37 +38,37 @@ type Data = {
 
 const TournamentViewTable: FC<Props> = ({ menus, hide, toggleSearch }) => {
   const name = menus[0].competitionName;
-  const recodes = menus[0].recodes;
+  const {recodes} = menus[0];
 
-  //入力された文字列をタイム表記に変換
+  // 入力された文字列をタイム表記に変換
   const insertStr = (input: string) => {
     const len = input.length;
     if (len > 2 && len < 5)
-      return input.slice(0, len - 2) + '"' + input.slice(len - 2, len);
+      return `${input.slice(0, len - 2)  }"${  input.slice(len - 2, len)}`;
     if (len > 4 && len < 7)
       return (
-        input.slice(0, len - 4) +
-        "'" +
-        input.slice(len - 4, len - 2) +
-        '"' +
-        input.slice(len - 2, len)
+        `${input.slice(0, len - 4) 
+        }'${ 
+        input.slice(len - 4, len - 2) 
+        }"${ 
+        input.slice(len - 2, len)}`
       );
     return input;
   };
 
-  //データを動的に生成
+  // データを動的に生成
   const tableData = () => {
-    let dataAry: Data[] = [];
+    const dataAry: Data[] = [];
     menus.map((menu) => {
       const formatDate = moment(String(menu.competitionDay)).format(
         'YYYY/MM/DD'
       );
-      const username = menu.user.username;
-      const grade = menu.user.grade;
+      const {username} = menu.user;
+      const {grade} = menu.user;
       menu.recodes.forEach((recode) => {
         dataAry.push({
-          username: username,
-          grade: grade,
+          username,
+          grade,
           date: formatDate,
           round: recode.round,
           recode: insertStr(recode.value),
@@ -179,7 +178,7 @@ const TournamentViewTable: FC<Props> = ({ menus, hide, toggleSearch }) => {
 
   const changeColumn = () => {
     if (recodes.length) {
-      let ary: string[] = [];
+      const ary: string[] = [];
       recodes.forEach((recode) => {
         if (recode.wind !== '') {
           ary.push(recode.wind);
@@ -187,21 +186,21 @@ const TournamentViewTable: FC<Props> = ({ menus, hide, toggleSearch }) => {
       });
       if (hide) {
         if (ary.length) {
-          //大会なし、風速あり
+          // 大会なし、風速あり
           return useMemo(() => COLUMNS3, [menus, hide]);
         }
-        //大会なし、風速なし
+        // 大会なし、風速なし
         return useMemo(() => COLUMNS4, [menus, hide]);
-      } else {
+      } 
         if (ary.length) {
-          //大会なし、風速あり
+          // 大会なし、風速あり
           return useMemo(() => COLUMNS1, [menus, hide]);
         }
-        //大会なし、風速なし
+        // 大会なし、風速なし
         return useMemo(() => COLUMNS2, [menus, hide]);
-      }
+      
     }
-    //まだ記録が登録されていない
+    // まだ記録が登録されていない
     return useMemo(() => COLUMNS5, [menus, hide]);
   };
   const columns: any = changeColumn();
@@ -255,13 +254,11 @@ const TournamentViewTable: FC<Props> = ({ menus, hide, toggleSearch }) => {
                 {...row.getRowProps()}
                 // onClick={() => selectTableRow(row.original)}
               >
-                {row.cells.map((cell) => {
-                  return (
+                {row.cells.map((cell) => (
                     <TableCell {...cell.getCellProps()}>
                       {cell.render('Cell')}
                     </TableCell>
-                  );
-                })}
+                  ))}
               </TableRow>
             );
           })}

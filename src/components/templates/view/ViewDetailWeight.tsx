@@ -1,4 +1,5 @@
-import { QueryFunctionContext, useQuery } from 'react-query';
+import { SearchIcon } from '@chakra-ui/icons';
+import { Box, HStack, IconButton } from '@chakra-ui/react';
 import React, {
   ChangeEvent,
   Dispatch,
@@ -7,14 +8,14 @@ import React, {
   useState,
   VFC,
 } from 'react';
+import { QueryFunctionContext, useQuery } from 'react-query';
 import { useRecoilValue } from 'recoil';
+
 import { db } from '../../../lib/firebase';
+import { SearchName, User, WeightMenu } from '../../../models/users';
 import { userState } from '../../../recoil/users/user';
 import { ErrorMessage, InputText, TopScrollButton } from '../../molecules';
-import { Box, HStack, IconButton } from '@chakra-ui/react';
 import SearchInBox from '../../molecules/common/SearchInBox';
-import { SearchName, User, WeightMenu } from '../../../models/users';
-import { SearchIcon } from '@chakra-ui/icons';
 import { WeightViewTable } from '..';
 
 type WeightViewData = WeightMenu & {
@@ -25,18 +26,18 @@ type WeightViewData = WeightMenu & {
 };
 
 const WeightViewDetail: VFC = () => {
-  //Global State
+  // Global State
   const user = useRecoilValue(userState);
   const teamId = user?.teamInfo.teamId;
   const gender = user?.gender;
 
-  //Local State
+  // Local State
   const [name, setName] = useState('');
   const [rm, setRm] = useState('');
   const [menus, setMenus] = useState<WeightViewData[]>([]);
   const [errorMessage, setErrorMessage] = useState('');
 
-  //チーム内のウエイトメニューを取得
+  // チーム内のウエイトメニューを取得
   const fetchTeamWeightMenu = async (context: QueryFunctionContext<string>) => {
     const teamId = context.queryKey[1];
     const teamWeithMenusRef = db
@@ -47,7 +48,7 @@ const WeightViewDetail: VFC = () => {
     return await teamWeithMenusRef.get().then((snapshot) => {
       const nameList = snapshot.docs.map((doc) => {
         const data = doc.data() as SearchName;
-        const name = data.name;
+        const {name} = data;
         return name;
       });
       return nameList;
@@ -79,7 +80,7 @@ const WeightViewDetail: VFC = () => {
       setErrorMessage('RMを入力してください。');
       return;
     }
-    //検索結果を初期化
+    // 検索結果を初期化
     setMenus([]);
 
     userData.forEach(async (item) => {
@@ -111,7 +112,7 @@ const WeightViewDetail: VFC = () => {
 
     return await usersRef.get().then((snapshot) => {
       const userData = snapshot.docs.map((doc) => {
-        const id = doc.id;
+        const {id} = doc;
         const data = doc.data() as User;
         const username = data.displayName;
         return { id, username };
@@ -141,7 +142,7 @@ const WeightViewDetail: VFC = () => {
     }
   );
 
-  //クリック時にリフェッチ
+  // クリック時にリフェッチ
   // const { data: project } = useQuery(
   //   ['weightMenu', ids],
   //   fetchWeightSearchConditions,
@@ -160,9 +161,7 @@ const WeightViewDetail: VFC = () => {
     setErrorMessage('');
   }, [name, rm]);
 
-  const format = (input: string) => {
-    return `${input}kg`;
-  };
+  const format = (input: string) => `${input}kg`;
 
   return (
     <Box width="100%" maxW="500px" mx="auto">

@@ -1,11 +1,11 @@
-import React, { FC } from 'react';
 import { Box, Flex, Text } from '@chakra-ui/react';
-import { useRecoilValue } from 'recoil';
 import moment from 'moment';
+import React, { FC } from 'react';
+import { useRecoilValue } from 'recoil';
 
+import { TournamentData } from '../../../models/users';
 import { selectedTournamentDataState } from '../../../recoil/users/user';
 import { SelectMenu } from '../../molecules';
-import { TournamentData } from '../../../models/users';
 
 type Props = {
   dataList: TournamentData[];
@@ -13,12 +13,10 @@ type Props = {
 
 const TournamentHeader: FC<Props> = ({ dataList }) => {
   const selectedData = useRecoilValue(selectedTournamentDataState);
-  const format = (date: Date | string, format: string) => {
-    return moment(date).format(format);
-  };
-  //開催日
+  const format = (date: Date | string, format: string) => moment(date).format(format);
+  // 開催日
   const formatStartDate = format(selectedData.startDate, 'YYYY/MM/DD');
-  //最終日
+  // 最終日
   const formatEndDate = format(selectedData.endDate, 'MM/DD');
 
   return (
@@ -39,7 +37,7 @@ const TournamentHeader: FC<Props> = ({ dataList }) => {
         </Text>
         <Text variant="sub">{selectedData.venue}</Text>
       </Flex>
-      <Box mb={4}></Box>
+      <Box mb={4} />
     </>
   );
 };

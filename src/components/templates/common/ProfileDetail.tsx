@@ -1,9 +1,10 @@
-import React, { useState, VFC } from 'react';
-import { Box, Divider, IconButton, Img, Stack, Text } from '@chakra-ui/react';
-import { userState } from '../../../recoil/users/user';
-import { useRecoilState } from 'recoil';
-import { ProfileEdit } from '..';
 import { CloseIcon, EditIcon } from '@chakra-ui/icons';
+import { Box, Divider, IconButton, Img, Stack, Text } from '@chakra-ui/react';
+import React, { useState, VFC } from 'react';
+import { useRecoilState } from 'recoil';
+
+import { userState } from '../../../recoil/users/user';
+import { ProfileEdit } from '../../oraganisms';
 
 const ProfileDetail: VFC = () => {
   const [user, setUser] = useRecoilState(userState);
@@ -21,8 +22,8 @@ const ProfileDetail: VFC = () => {
       >
         {toggleEdit ? <CloseIcon /> : <EditIcon />}
       </IconButton>
-      {user ? (
-        toggleEdit ? (
+      {user &&
+        (toggleEdit ? (
           <ProfileEdit
             user={user}
             setUser={setUser}
@@ -48,8 +49,7 @@ const ProfileDetail: VFC = () => {
               <Divider />
             </Stack>
           </Box>
-        )
-      ) : null}
+        ))}
     </Box>
   );
 };

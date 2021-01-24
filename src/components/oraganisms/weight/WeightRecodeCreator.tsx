@@ -27,10 +27,10 @@ const WeightRecodeCreator: FC<Props> = ({
   toggleEdit,
   setToggleEdit,
 }) => {
-  //Global State
+  // Global State
   const user = useRecoilValue(userState);
 
-  //Local State
+  // Local State
   const [recode, setRecode] = useState('');
 
   const practicesRef = db
@@ -39,7 +39,7 @@ const WeightRecodeCreator: FC<Props> = ({
     .collection('weights')
     .doc(menuId);
 
-  //編集を離れて場合 or 変更後の処理
+  // 編集を離れて場合 or 変更後の処理
   const handleBlur = async () => {
     if (recode === '') {
       setToggleEdit(false);
@@ -58,12 +58,12 @@ const WeightRecodeCreator: FC<Props> = ({
     }
   };
 
-  //記録入力処理
+  // 記録入力処理
   const handleChange = (valueAsString: string) => {
     setRecode(valueAsString);
   };
 
-  //新しく記録を追加するための処理
+  // 新しく記録を追加するための処理
   const addRecode = async (e: React.KeyboardEvent<HTMLElement>) => {
     if (user === null) return;
     if (e.key === 'Enter') {
@@ -78,7 +78,7 @@ const WeightRecodeCreator: FC<Props> = ({
     }
   };
 
-  //入力モードへ切り替え & indexを戻す
+  // 入力モードへ切り替え & indexを戻す
   const InputToggle = () => {
     setIndex(recodes.length);
     setToggleEdit(true);

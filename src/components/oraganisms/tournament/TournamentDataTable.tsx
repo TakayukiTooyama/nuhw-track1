@@ -1,9 +1,10 @@
-import React, { FC, useEffect, useMemo, useState } from 'react';
-import { useSortBy, useTable } from 'react-table';
-import { Column } from 'react-table';
-import { useSetRecoilState } from 'recoil';
 import Router from 'next/router';
+import React, { FC, useEffect, useMemo, useState } from 'react';
+import { Column,useSortBy, useTable  } from 'react-table';
+import { useSetRecoilState } from 'recoil';
 
+import { TournamentData } from '../../../models/users';
+import { selectedTournamentDataState } from '../../../recoil/users/user';
 import {
   Table,
   TableBody,
@@ -12,8 +13,6 @@ import {
   TableHeader,
   TableRow,
 } from '../common/TableStyle';
-import { TournamentData } from '../../../models/users';
-import { selectedTournamentDataState } from '../../../recoil/users/user';
 
 type Props = {
   dataList: TournamentData[];
@@ -25,29 +24,25 @@ type Data = {
 };
 
 // YYYY/MM/DDに変換
-const format1 = (date: string) => {
-  return date.slice(0, 4) + '/' + date.slice(4, 6) + '/' + date.slice(6, 8);
-};
+const format1 = (date: string) => `${date.slice(0, 4)  }/${  date.slice(4, 6)  }/${  date.slice(6, 8)}`;
 
 // MM/DDに変換
-const format2 = (date: string) => {
-  return date.slice(4, 6) + '/' + date.slice(6, 8);
-};
+const format2 = (date: string) => `${date.slice(4, 6)  }/${  date.slice(6, 8)}`;
 
 const TournamentDataTable: FC<Props> = ({ dataList }) => {
-  //Global State
+  // Global State
   const setSelectedData = useSetRecoilState(selectedTournamentDataState);
 
-  //Local State
+  // Local State
   const [routeId, setRouteId] = useState('');
 
-  //データを動的に生成
+  // データを動的に生成
   const tableData = () => {
-    let tableDataList: { date: string; name: string }[] = [];
+    const tableDataList: { date: string; name: string }[] = [];
     dataList.length > 0 &&
       dataList.forEach((data) => {
         const date = `${format1(data.startDate)} 〜 ${format2(data.endDate)}`;
-        const name = data.name;
+        const {name} = data;
         tableDataList.push({ date, name });
       });
     return tableDataList;
@@ -89,7 +84,7 @@ const TournamentDataTable: FC<Props> = ({ dataList }) => {
 
   useEffect(() => {
     if (routeId === '') {
-      return;
+      
     } else {
       Router.push(`/tournament`);
       setRouteId('');
@@ -122,13 +117,11 @@ const TournamentDataTable: FC<Props> = ({ dataList }) => {
               {...row.getRowProps()}
               onClick={() => selectTableRow(row.original)}
             >
-              {row.cells.map((cell) => {
-                return (
+              {row.cells.map((cell) => (
                   <TableCell {...cell.getCellProps()}>
                     {cell.render('Cell')}
                   </TableCell>
-                );
-              })}
+                ))}
             </TableRow>
           );
         })}

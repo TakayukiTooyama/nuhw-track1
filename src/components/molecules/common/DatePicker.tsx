@@ -1,12 +1,13 @@
+import 'react-datepicker/dist/react-datepicker.css';
+
 import { Button } from '@chakra-ui/react';
+import { addDays } from 'date-fns';
+import ja from 'date-fns/locale/ja';
+import moment from 'moment';
+import Router from 'next/router';
 import React, { FC, useEffect } from 'react';
 import ReactDatePicker, { registerLocale } from 'react-datepicker';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import ja from 'date-fns/locale/ja';
-import 'react-datepicker/dist/react-datepicker.css';
-import { addDays } from 'date-fns';
-import Router from 'next/router';
-import moment from 'moment';
 
 import {
   selectedDateIdState,
@@ -27,10 +28,8 @@ const DatePicker: FC<Props> = ({ bg }) => {
     Router.push(`${dateId}`);
   }, [date]);
 
-  //フォーマット変更 → 2020/12/26
-  const getFormatDate = (date: Date) => {
-    return moment(date).format('YYYY / MM / DD');
-  };
+  // フォーマット変更 → 2020/12/26
+  const getFormatDate = (date: Date) => moment(date).format('YYYY / MM / DD');
 
   return (
     <ReactDatePicker

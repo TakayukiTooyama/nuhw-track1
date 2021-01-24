@@ -1,8 +1,8 @@
+import { Button, HStack, Text } from '@chakra-ui/react';
+import ja from 'date-fns/locale/ja';
+import moment from 'moment';
 import React, { FC } from 'react';
 import ReactDatePicker, { registerLocale } from 'react-datepicker';
-import ja from 'date-fns/locale/ja';
-import { Button, HStack, Text } from '@chakra-ui/react';
-import moment from 'moment';
 
 registerLocale('ja', ja);
 
@@ -19,10 +19,8 @@ const DateRangePicker: FC<Props> = ({
   endDate,
   setEndDate,
 }) => {
-  //フォーマット変更 → 2020/12/26
-  const getFormatDate = (date: Date) => {
-    return moment(date).format('YYYY/MM/DD');
-  };
+  // フォーマット変更 → 2020/12/26
+  const getFormatDate = (date: Date) => moment(date).format('YYYY/MM/DD');
 
   return (
     <HStack spacing={2}>

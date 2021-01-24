@@ -2,6 +2,7 @@ import { ChevronDownIcon } from '@chakra-ui/icons';
 import { Box, Button } from '@chakra-ui/react';
 import React, { FC, useState } from 'react';
 import { useSetRecoilState } from 'recoil';
+
 import { TournamentData } from '../../../models/users';
 import { selectedTournamentDataState } from '../../../recoil/users/user';
 
@@ -20,10 +21,10 @@ const BoxStyle = {
 };
 
 const SelectMenu: FC<Props> = ({ name, dataList }) => {
-  //Global State
+  // Global State
   const setSelectedData = useSetRecoilState(selectedTournamentDataState);
 
-  //Locla State
+  // Locla State
   const [toggleMenu, setToggleMenu] = useState(false);
 
   const selectedMenu = (data: TournamentData) => {

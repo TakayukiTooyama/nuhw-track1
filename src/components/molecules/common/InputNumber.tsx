@@ -17,8 +17,7 @@ const InputNumber: VFC<Props> = ({
   onChange,
   onBlur,
   onKeyDown,
-}) => {
-  return (
+}) => (
     <NumberInput
       value={value}
       w="100%"
@@ -30,6 +29,5 @@ const InputNumber: VFC<Props> = ({
       <NumberInputField autoFocus placeholder={placeholder} />
     </NumberInput>
   );
-};
 
 export default InputNumber;

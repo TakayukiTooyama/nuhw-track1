@@ -1,11 +1,12 @@
 import { Box, Flex, StatGroup } from '@chakra-ui/react';
 import React, { Dispatch, VFC } from 'react';
-import { GraphAllData, TableView } from '..';
+
 import { insertStr } from '../../../hooks/useInsertStr';
 import { Menu } from '../../../models/users';
-import { Stat, PinInput } from '../../molecules';
+import { PinInput,Stat } from '../../molecules';
 import { Heading2 } from '../../molecules/common/Heading';
 import { Comparison } from '../../templates/practice/PracticeViewDetail';
+import { GraphAllData, TableView } from '..';
 
 type Props = {
   data: Menu[];
@@ -25,20 +26,20 @@ const PracticeTodayData: VFC<Props> = ({
   const format = (input: string) => {
     const len = input.length;
     if (len === 1) {
-      return '0"0' + input;
+      return `0"0${  input}`;
     }
     if (len === 2) {
-      return '0"' + input;
+      return `0"${  input}`;
     }
     if (len > 2 && len < 5)
-      return input.slice(0, len - 2) + '"' + input.slice(len - 2, len);
+      return `${input.slice(0, len - 2)  }"${  input.slice(len - 2, len)}`;
     if (len > 4 && len < 7)
       return (
-        input.slice(0, len - 4) +
-        "'" +
-        input.slice(len - 4, len - 2) +
-        '"' +
-        input.slice(len - 2, len)
+        `${input.slice(0, len - 4) 
+        }'${ 
+        input.slice(len - 4, len - 2) 
+        }"${ 
+        input.slice(len - 2, len)}`
       );
     return input;
   };

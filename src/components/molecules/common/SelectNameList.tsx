@@ -2,6 +2,7 @@ import { ChevronDownIcon } from '@chakra-ui/icons';
 import { Button, Menu, MenuButton, MenuItem, MenuList } from '@chakra-ui/react';
 import React, { VFC } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
+
 import {
   makedMenuNameListState,
   selectedMakedMenuNameState,
@@ -12,11 +13,9 @@ const SelectNameList: VFC = () => {
     selectedMakedMenuNameState
   );
   const nameList = useRecoilValue(makedMenuNameListState);
-  //ソートしたメニューの名前リスト
+  // ソートしたメニューの名前リスト
 
-  const sortNameList = nameList.slice().sort((a: any, b: any) => {
-    return a.match(/\d+/) - b.match(/\d+/);
-  });
+  const sortNameList = nameList.slice().sort((a: any, b: any) => a.match(/\d+/) - b.match(/\d+/));
 
   return (
     <Menu>

@@ -1,5 +1,5 @@
-import React, { useEffect, useState, VFC } from 'react';
 import { Box, Flex, IconButton, Input, Stack } from '@chakra-ui/react';
+import React, { useEffect, useState, VFC } from 'react';
 import { AiFillDelete } from 'react-icons/ai';
 
 import { Menu, Recode } from '../../../models/users';
@@ -12,12 +12,12 @@ type Props = {
 };
 
 const PracticeEditMenu: VFC<Props> = ({ items, setMenus, deleteMenu }) => {
-  //Local State
-  const [recodes, setRecodes] = useState<Recode[]>(items.recodes),
-    [toggleEdit, setToggleEdit] = useState(false),
-    [index, setIndex] = useState(0);
+  // Local State
+  const [recodes, setRecodes] = useState<Recode[]>(items.recodes);
+    const [toggleEdit, setToggleEdit] = useState(false);
+    const [index, setIndex] = useState(0);
 
-  //リフレッシュ後でもインデックスを続きから始めるための処理
+  // リフレッシュ後でもインデックスを続きから始めるための処理
   useEffect(() => {
     setIndex(recodes.length);
   }, [recodes.length]);

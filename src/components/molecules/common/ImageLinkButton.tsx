@@ -1,6 +1,7 @@
 import { Box, Text } from '@chakra-ui/react';
 import Link from 'next/link';
 import React, { ReactElement, VFC } from 'react';
+
 import { LinkContent } from '../../../models/users';
 
 type Props = {
@@ -28,8 +29,7 @@ const backImageStyle = {
   backgroundRepeat: 'no-repeat',
 };
 
-const LinkBlock: VFC<Props> = ({ item }) => {
-  return (
+const LinkBlock: VFC<Props> = ({ item }) => (
     <Link href={`/${item.id}/${item.link}`} passHref>
       <Box pos="relative" {...buttonStyles}>
         <Text
@@ -62,6 +62,5 @@ const LinkBlock: VFC<Props> = ({ item }) => {
       </Box>
     </Link>
   );
-};
 
 export default LinkBlock;

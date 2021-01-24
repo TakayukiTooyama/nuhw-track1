@@ -13,9 +13,9 @@ const Statistics: FC<Props> = ({ idx, type, data, label, format }) => {
   const formatData = () => {
     if (format) {
       return format(String(data));
-    } else {
+    } 
       return data;
-    }
+    
   };
   const statData = formatData();
 

@@ -1,8 +1,9 @@
-import React, { FC, useEffect, useState } from 'react';
 import { Box, Flex, IconButton, Input, Stack } from '@chakra-ui/react';
+import React, { FC, useEffect, useState } from 'react';
 import { AiFillDelete } from 'react-icons/ai';
-import { TournamentEditRecode, TournamentRecodeCreator } from '..';
+
 import { TournamentMenu, TournamentRecode } from '../../../models/users';
+import { TournamentEditRecode, TournamentRecodeCreator } from '..';
 
 type Props = {
   items: TournamentMenu;
@@ -10,11 +11,11 @@ type Props = {
 };
 
 const TournamentEditMenu: FC<Props> = ({ items, deleteMenu }) => {
-  //Local State
-  const [recodes, setRecodes] = useState<TournamentRecode[]>(items.recodes),
-    [toggleEdit, setToggleEdit] = useState(false),
-    [index, setIndex] = useState(0),
-    [errorMessage, setErrorMessage] = useState('');
+  // Local State
+  const [recodes, setRecodes] = useState<TournamentRecode[]>(items.recodes);
+    const [toggleEdit, setToggleEdit] = useState(false);
+    const [index, setIndex] = useState(0);
+    const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     setIndex(recodes.length);

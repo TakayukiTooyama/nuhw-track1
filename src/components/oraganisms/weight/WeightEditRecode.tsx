@@ -1,4 +1,4 @@
-import { FC, FocusEvent, useRef, useState } from 'react';
+import { DeleteIcon } from '@chakra-ui/icons';
 import {
   Box,
   Flex,
@@ -7,12 +7,12 @@ import {
   NumberInputField,
   Text,
 } from '@chakra-ui/react';
-
-import { Recode } from '../../../models/users';
+import { FC, FocusEvent, useRef, useState } from 'react';
 import { useRecoilValue } from 'recoil';
-import { userState } from '../../../recoil/users/user';
+
 import { db } from '../../../lib/firebase';
-import { DeleteIcon } from '@chakra-ui/icons';
+import { Recode } from '../../../models/users';
+import { userState } from '../../../recoil/users/user';
 
 type Props = {
   idx: number;
@@ -31,10 +31,10 @@ const WeightEditRecode: FC<Props> = ({
   setRecodes,
   setIndex,
 }) => {
-  //Global State
+  // Global State
   const user = useRecoilValue(userState);
 
-  //Local State
+  // Local State
   const [recode, setRecode] = useState(items.value);
   const [editToggle, setEditToggle] = useState(items.editting);
   const inputRef = useRef<HTMLDivElement | null>(null);
@@ -45,12 +45,12 @@ const WeightEditRecode: FC<Props> = ({
     .collection('weights')
     .doc(menuId);
 
-  //新しく追加するための入力処理
+  // 新しく追加するための入力処理
   const handleChange = (valueAsString: string, _valueAsNumber: number) => {
     setRecode(valueAsString);
   };
 
-  //記録の編集処理
+  // 記録の編集処理
   const updateRecode = async (
     e: React.KeyboardEvent<HTMLElement>,
     index: number,
@@ -69,7 +69,7 @@ const WeightEditRecode: FC<Props> = ({
     }
   };
 
-  //記録の削除
+  // 記録の削除
   const deleteRecode = async (recodeId: number) => {
     const newRecodes = recodes.filter((_recode, idx) => idx !== recodeId);
     if (user === null) return;
@@ -83,7 +83,7 @@ const WeightEditRecode: FC<Props> = ({
     });
   };
 
-  //編集への切り替え(recodeクリック時の処理)
+  // 編集への切り替え(recodeクリック時の処理)
   const handleClick = (id: number, value: string) => {
     setRecode(value);
     setIndex(id);
@@ -93,7 +93,7 @@ const WeightEditRecode: FC<Props> = ({
     setEditToggle(true);
   };
 
-  //編集を離れた時
+  // 編集を離れた時
   const handleBlur = async (
     e: FocusEvent<HTMLDivElement>,
     id: number,
@@ -104,7 +104,7 @@ const WeightEditRecode: FC<Props> = ({
     if (recode === '') {
       recodes[selectedIndex] = {
         recodeId: id,
-        value: value,
+        value,
         editting: false,
       };
       setEditToggle(false);
