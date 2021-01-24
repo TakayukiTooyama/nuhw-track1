@@ -2,13 +2,15 @@ import { DeleteIcon } from '@chakra-ui/icons';
 import {
   Box,
   Flex,
+  HStack,
   IconButton,
   NumberInput,
   NumberInputField,
   Text,
 } from '@chakra-ui/react';
-import { FC, FocusEvent, useRef, useState } from 'react';
+import { FC, useRef, useState } from 'react';
 import { useRecoilValue } from 'recoil';
+import { useOutsideClick } from '../../../hooks';
 
 import { db } from '../../../lib/firebase';
 import { Recode } from '../../../models/users';
@@ -31,13 +33,12 @@ const WeightEditRecode: FC<Props> = ({
   setRecodes,
   setIndex,
 }) => {
-  // Global State
   const user = useRecoilValue(userState);
 
-  // Local State
   const [recode, setRecode] = useState(items.value);
   const [editToggle, setEditToggle] = useState(items.editting);
-  const inputRef = useRef<HTMLDivElement | null>(null);
+
+  const ref = useRef<HTMLDivElement>(null);
 
   const weightsRef = db
     .collection('users')
@@ -94,48 +95,40 @@ const WeightEditRecode: FC<Props> = ({
   };
 
   // 編集を離れた時
-  const handleBlur = async (
-    e: FocusEvent<HTMLDivElement>,
-    id: number,
-    value: string
-  ) => {
+  const handleBlur = async (id: number, value: string) => {
     const selectedIndex = recodes.findIndex((recode) => recode.recodeId === id);
-    if (inputRef.current?.contains(e.target)) return;
+
+    const newRecodes = recodes;
+    recodes[selectedIndex] = {
+      recodeId: selectedIndex,
+      value,
+      editting: false,
+    };
+
     if (recode === '') {
-      recodes[selectedIndex] = {
-        recodeId: id,
-        value,
-        editting: false,
-      };
       setEditToggle(false);
       setRecodes(recodes);
     } else {
-      if (user === null) return;
-      const newRecodes = recodes;
-      recodes[selectedIndex] = {
-        recodeId: selectedIndex,
-        value,
-        editting: false,
-      };
       await weightsRef.update({ recodes: newRecodes }).then(() => {
         setRecodes(newRecodes);
         setEditToggle(false);
-        setIndex(recodes.length);
         setRecode('');
+        setIndex(recodes.length);
       });
     }
   };
+
+  useOutsideClick(ref, () => handleBlur(items.recodeId, recode));
 
   return (
     <Flex align="center">
       <Text color="gray.400" w="100%" maxW="45px">{`${idx + 1}set`}</Text>
       {editToggle ? (
-        <Box ref={inputRef} bg="red.300">
+        <HStack spacing={2} ref={ref}>
           <Flex justify="space-between" align="center" w="100%" maxW="200px">
             <NumberInput
               value={recode}
               onChange={handleChange}
-              onBlur={(e) => handleBlur(e, items.recodeId, items.value)}
               onKeyDown={(e) => updateRecode(e, idx, recode)}
             >
               <NumberInputField autoFocus />
@@ -152,7 +145,7 @@ const WeightEditRecode: FC<Props> = ({
             onClick={() => deleteRecode(idx)}
             ml={1}
           />
-        </Box>
+        </HStack>
       ) : (
         <>
           <Flex

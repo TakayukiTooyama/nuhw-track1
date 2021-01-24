@@ -32,16 +32,34 @@ const PracticeRecodeCreator: FC<Props> = ({
   toggleEdit,
   setToggleEdit,
 }) => {
-  // Global State
   const user = useRecoilValue(userState);
 
-  // Local State
   const [recode, setRecode] = useState('');
 
+  const practicesRef = db
+    .collection('users')
+    .doc(user?.uid)
+    .collection('practices')
+    .doc(menuId);
+
   // 編集を離れて場合 or 変更後の処理
-  const handleBlur = () => {
-    setToggleEdit(false);
-    setRecode('');
+  const handleBlur = async () => {
+    if (recode === '') {
+      setToggleEdit(false);
+      setRecode('');
+    } else {
+      if (user === null) return;
+      const newRecode = { recodeId: index, value: recode, editting: false };
+      await practicesRef
+        .update({ recodes: [...recodes, newRecode] })
+        .then(() => {
+          setRecodes((prev) => [...prev, newRecode]);
+          setIndex(index + 1);
+          setToggleEdit(false);
+          setRecode('');
+          setToggleEdit(true);
+        });
+    }
   };
 
   // 記録入力処理
@@ -52,11 +70,6 @@ const PracticeRecodeCreator: FC<Props> = ({
   // 新しく記録を追加するための処理
   const addRecode = async (e: React.KeyboardEvent<HTMLElement>) => {
     if (user === null) return;
-    const practicesRef = db
-      .collection('users')
-      .doc(user.uid)
-      .collection('practices')
-      .doc(menuId);
     if (e.key === 'Enter') {
       const newRecode = { recodeId: index, value: recode, editting: false };
       await practicesRef

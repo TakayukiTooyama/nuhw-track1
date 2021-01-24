@@ -1,7 +1,8 @@
 import { DeleteIcon } from '@chakra-ui/icons';
 import { Box, HStack, IconButton, Text } from '@chakra-ui/react';
-import { FC, useState } from 'react';
+import { FC, useRef, useState } from 'react';
 import { useRecoilValue } from 'recoil';
+import { useOutsideClick } from '../../../hooks';
 
 import { insertStr } from '../../../hooks/useInsertStr';
 import { db } from '../../../lib/firebase';
@@ -26,12 +27,12 @@ const PracticeEditRecode: FC<Props> = ({
   setRecodes,
   setIndex,
 }) => {
-  // Global State
   const user = useRecoilValue(userState);
 
-  // Local State
   const [recode, setRecode] = useState(items.value);
-    const [editToggle, setEditToggle] = useState(items.editting);
+  const [editToggle, setEditToggle] = useState(items.editting);
+
+  const ref = useRef<HTMLDivElement>(null);
 
   const practicesRef = db
     .collection('users')
@@ -88,27 +89,39 @@ const PracticeEditRecode: FC<Props> = ({
   };
 
   // 編集を離れた時
-  const handleBlur = (id: number, value: string) => {
+  const handleBlur = async (id: number, value: string) => {
     const selectedIndex = recodes.findIndex((recode) => recode.recodeId === id);
+
+    const newRecodes = recodes;
     recodes[selectedIndex] = {
-      recodeId: id,
+      recodeId: selectedIndex,
       value,
       editting: false,
     };
-    setEditToggle(false);
-    setRecodes(recodes);
+    if (recode === '') {
+      setEditToggle(false);
+      setRecodes(recodes);
+    } else {
+      await practicesRef.update({ recodes: newRecodes }).then(() => {
+        setRecodes(newRecodes);
+        setEditToggle(false);
+        setRecode('');
+        setIndex(recodes.length);
+      });
+    }
   };
+
+  useOutsideClick(ref, () => handleBlur(items.recodeId, recode));
 
   return (
     <>
       <HStack spacing={2}>
         <Text color="gray.400" w="100%" maxW="45px">{`${idx + 1}本目`}</Text>
         {editToggle ? (
-          <>
+          <HStack spacing={2} ref={ref}>
             <InputNumber
               value={recode}
               onChange={handleChange}
-              onBlur={() => handleBlur(items.recodeId, items.value)}
               onKeyDown={(e) => updateRecode(e, idx, recode)}
             />
             <IconButton
@@ -118,7 +131,7 @@ const PracticeEditRecode: FC<Props> = ({
               icon={<DeleteIcon color="red.400" />}
               onClick={() => deleteRecode(idx)}
             />
-          </>
+          </HStack>
         ) : (
           <Box
             align="left"
