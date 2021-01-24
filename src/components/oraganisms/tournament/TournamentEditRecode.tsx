@@ -14,7 +14,7 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react';
-import { Dispatch, FC, SetStateAction,useState } from 'react';
+import { Dispatch, FC, SetStateAction, useState } from 'react';
 import { AiFillDelete } from 'react-icons/ai';
 import { useRecoilValue } from 'recoil';
 
@@ -152,11 +152,12 @@ const TournamentEditRecode: FC<Props> = ({
 
   const roundList: Round[] = ['予選', '準決勝', '決勝'];
 
-  const handleChange = (
-    valueAsString: string,
-    setValue: Dispatch<SetStateAction<string>>
-  ) => {
-    setValue(valueAsString);
+  const changeRecode = (valueAsString: string) => {
+    setRecode(valueAsString);
+    setErrorMessage('');
+  };
+  const changeWind = (valueAsString: string) => {
+    setWind(valueAsString);
     setErrorMessage('');
   };
 
@@ -212,21 +213,11 @@ const TournamentEditRecode: FC<Props> = ({
             ) : null}
             <Box mb={2} />
             <Stack>
-              <InputNumber
-                value={recode}
-                onChange={(valueAsString) =>
-                  handleChange(valueAsString, setRecode)
-                }
-              />
+              <InputNumber value={recode} onChange={changeRecode} />
               {menu.competitionName !== '400M' &&
               menu.competitionName !== '800M' &&
               menu.competitionName !== '400H' ? (
-                <InputNumber
-                  value={wind}
-                  onChange={(valueAsString) =>
-                    handleChange(valueAsString, setWind)
-                  }
-                />
+                <InputNumber value={wind} onChange={changeWind} />
               ) : null}
             </Stack>
             <Box mb={2} />
