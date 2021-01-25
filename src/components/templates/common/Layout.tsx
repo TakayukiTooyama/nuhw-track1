@@ -1,4 +1,4 @@
-import { Container } from '@chakra-ui/react';
+import { Box, Container } from '@chakra-ui/react';
 import Head from 'next/head';
 import React, { FC, ReactNode } from 'react';
 
@@ -16,16 +16,16 @@ const Layout: FC<Props> = ({
   title = 'NUHW TRACK',
   noHeader = false,
 }) => (
-    <>
-      <Head>
-        <title>{title}</title>
-      </Head>
-      {noHeader ? null : <Header />}
-      <Container pt={8} pb={16} zIndex={2}>
-        {children}
-      </Container>
-      {noHeader ? null : <NavBar />}
-    </>
-  );
+  <Box h="100%">
+    <Head>
+      <title>{title}</title>
+    </Head>
+    {noHeader ? null : <Header />}
+    <Container pt={8} pb={16} zIndex={2}>
+      {children}
+    </Container>
+    {noHeader ? null : <NavBar />}
+  </Box>
+);
 
 export default Layout;

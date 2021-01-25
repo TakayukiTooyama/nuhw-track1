@@ -7,6 +7,7 @@ import {
   Stack,
   Container,
   Button,
+  Input,
 } from '@chakra-ui/react';
 import React, { useState } from 'react';
 
@@ -87,6 +88,10 @@ const Test = () => {
         >
           ＋
         </Button>
+        <Input type="number" placeholder="number" />
+        <Input type="number" placeholder="number" />
+        <Input type=" text" placeholder="text" />
+        <Input type=" tel" placeholder="tel" />
       </Stack>
     </Container>
   );

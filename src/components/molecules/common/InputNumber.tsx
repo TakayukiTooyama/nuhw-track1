@@ -19,7 +19,7 @@ const InputNumber: VFC<Props> = (props) => {
     value,
     placeholder,
     maxW = '200px',
-    inputMode = 'text',
+    inputMode = 'none',
     onChange,
     onBlur,
     onKeyDown,

@@ -23,6 +23,7 @@ const NavBar: VFC = () => (
       borderTop="1px solid"
       borderColor="gray.100"
       zIndex="2"
+      overflow="hidden"
     >
       {navList.map((item) => (
         <NavTab

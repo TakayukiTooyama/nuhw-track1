@@ -85,8 +85,6 @@ const PracticeEditRecode: FC<Props> = ({
     const selectedIndex = recodes.findIndex((recode) => recode.recodeId === id);
     recodes[selectedIndex] = { recodeId: id, value, editting: true };
     setRecodes(recodes);
-    console.log('click');
-    setEditToggle(true);
   };
 
   // 編集を離れた時
@@ -101,8 +99,6 @@ const PracticeEditRecode: FC<Props> = ({
     };
 
     if (recode === '' || recode === items.value) {
-      console.log('blur');
-      setEditToggle(false);
       setRecodes(recodes);
     } else {
       await practicesRef.update({ recodes: newRecodes }).then(() => {
