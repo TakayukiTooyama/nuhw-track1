@@ -85,6 +85,7 @@ const PracticeEditRecode: FC<Props> = ({
     const selectedIndex = recodes.findIndex((recode) => recode.recodeId === id);
     recodes[selectedIndex] = { recodeId: id, value, editting: true };
     setRecodes(recodes);
+    console.log('click');
     setEditToggle(true);
   };
 
@@ -98,7 +99,9 @@ const PracticeEditRecode: FC<Props> = ({
       value,
       editting: false,
     };
-    if (recode === '') {
+
+    if (recode === '' || recode === items.value) {
+      console.log('blur');
       setEditToggle(false);
       setRecodes(recodes);
     } else {

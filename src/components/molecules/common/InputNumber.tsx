@@ -29,6 +29,7 @@ const InputNumber: VFC<Props> = (props) => {
       value={value}
       w="100%"
       maxW={maxW}
+      type="number"
       inputMode={inputMode}
       onChange={onChange}
       onBlur={onBlur}

@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   HStack,
   NumberInput,
@@ -90,27 +91,28 @@ const PracticeRecodeCreator: FC<Props> = ({
 
   return (
     <>
-      {toggleEdit ? (
-        <HStack>
-          <Text color="gray.400" w="45px">
-            記録
-          </Text>
-          <NumberInput
-            maxW="200px"
-            value={recode}
-            placeholder={`${index + 1}本目`}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            onKeyDown={addRecode}
-          >
-            <NumberInputField autoFocus />
-          </NumberInput>
-        </HStack>
-      ) : (
-        <Button w="100%" maxW="255px" shadow="base" onClick={InputToggle}>
-          ＋
-        </Button>
-      )}
+      <Box mb={4}>
+        {toggleEdit ? (
+          <HStack>
+            <Text color="gray.400" w="45px">
+              {index + 1}本目
+            </Text>
+            <NumberInput
+              maxW="200px"
+              value={recode}
+              placeholder={`${index + 1}本目`}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              onKeyDown={addRecode}
+            >
+              <NumberInputField autoFocus />
+            </NumberInput>
+          </HStack>
+        ) : null}
+      </Box>
+      <Button ml={12} w="100%" maxW="200px" shadow="base" onClick={InputToggle}>
+        ＋
+      </Button>
     </>
   );
 };

@@ -14,8 +14,8 @@ type Props = {
 const PracticeEditMenu: VFC<Props> = ({ items, setMenus, deleteMenu }) => {
   // Local State
   const [recodes, setRecodes] = useState<Recode[]>(items.recodes);
-    const [toggleEdit, setToggleEdit] = useState(false);
-    const [index, setIndex] = useState(0);
+  const [toggleEdit, setToggleEdit] = useState(false);
+  const [index, setIndex] = useState(0);
 
   // リフレッシュ後でもインデックスを続きから始めるための処理
   useEffect(() => {
@@ -55,7 +55,7 @@ const PracticeEditMenu: VFC<Props> = ({ items, setMenus, deleteMenu }) => {
             />
           ))}
       </Stack>
-      <Box mb={4} />
+      <Box mb={1} />
 
       <PracticeRecodeCreator
         menuId={items.menuId}
