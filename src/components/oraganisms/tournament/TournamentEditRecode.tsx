@@ -18,10 +18,10 @@ import { Dispatch, FC, SetStateAction, useState } from 'react';
 import { AiFillDelete } from 'react-icons/ai';
 import { useRecoilValue } from 'recoil';
 
-import { insertStr } from '../../../hooks/useInsertStr';
 import { db } from '../../../lib/firebase';
 import { Round, TournamentMenu, TournamentRecode } from '../../../models/users';
 import { userState } from '../../../recoil/users/user';
+import { formatTimeNotationAtInput } from '../../../utils/formatTimeNotationAtInput';
 import { ErrorMessage, InputNumber } from '../../molecules';
 import InputBox from '../../molecules/common/InputBox';
 
@@ -278,7 +278,7 @@ const TournamentEditRecode: FC<Props> = ({
           </Flex>
           <Flex>
             <InputBox
-              value={insertStr(items.value)}
+              value={formatTimeNotationAtInput(items.value)}
               maxW="100%"
               textAlign="center"
               borderRadius="none"

@@ -9,7 +9,7 @@ type Props = NumberInputProps & {
   value: string;
   placeholder?: string;
   maxW?: string;
-  onChange: (valueAsString: string) => void;
+  onChange?: (valueAsString: string) => void;
   onBlur?: (e: React.FocusEvent<HTMLDivElement>) => void;
   onKeyDown?: (e: React.KeyboardEvent<HTMLDivElement>) => void;
 };

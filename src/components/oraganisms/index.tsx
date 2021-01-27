@@ -9,6 +9,8 @@ export { default as ProfileEdit } from './common/ProfileEdit';
 export { default as SelectMenu } from './common/SelectMenu';
 export { default as TableView } from './common/TableView';
 export { default as TodayData } from './common/TodayData';
+export { default as MobileNumberKeyboard } from './common/MobileNumberKeyboard';
+export { default as ModalDisplayRecord } from './common/ModalDisplayRecord';
 
 // 認証
 export { default as SignInBottom } from './auth/SignInBottom';

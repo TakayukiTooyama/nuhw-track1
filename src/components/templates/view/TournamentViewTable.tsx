@@ -1,7 +1,7 @@
 import { Box } from '@chakra-ui/react';
 import moment from 'moment';
 import React, { FC, useMemo } from 'react';
-import { Column,useGlobalFilter, useSortBy, useTable  } from 'react-table';
+import { Column, useGlobalFilter, useSortBy, useTable } from 'react-table';
 
 import { Round, TournamentMenu } from '../../../models/users';
 import { GlobalFilter } from '../../oraganisms';
@@ -38,21 +38,18 @@ type Data = {
 
 const TournamentViewTable: FC<Props> = ({ menus, hide, toggleSearch }) => {
   const name = menus[0].competitionName;
-  const {recodes} = menus[0];
+  const { recodes } = menus[0];
 
   // 入力された文字列をタイム表記に変換
-  const insertStr = (input: string) => {
+  const formatTimeNotationAtInput = (input: string) => {
     const len = input.length;
     if (len > 2 && len < 5)
-      return `${input.slice(0, len - 2)  }"${  input.slice(len - 2, len)}`;
+      return `${input.slice(0, len - 2)}"${input.slice(len - 2, len)}`;
     if (len > 4 && len < 7)
-      return (
-        `${input.slice(0, len - 4) 
-        }'${ 
-        input.slice(len - 4, len - 2) 
-        }"${ 
-        input.slice(len - 2, len)}`
-      );
+      return `${input.slice(0, len - 4)}'${input.slice(
+        len - 4,
+        len - 2
+      )}"${input.slice(len - 2, len)}`;
     return input;
   };
 
@@ -63,15 +60,15 @@ const TournamentViewTable: FC<Props> = ({ menus, hide, toggleSearch }) => {
       const formatDate = moment(String(menu.competitionDay)).format(
         'YYYY/MM/DD'
       );
-      const {username} = menu.user;
-      const {grade} = menu.user;
+      const { username } = menu.user;
+      const { grade } = menu.user;
       menu.recodes.forEach((recode) => {
         dataAry.push({
           username,
           grade,
           date: formatDate,
           round: recode.round,
-          recode: insertStr(recode.value),
+          recode: formatTimeNotationAtInput(recode.value),
           wind: recode.wind,
         });
       });
@@ -191,14 +188,13 @@ const TournamentViewTable: FC<Props> = ({ menus, hide, toggleSearch }) => {
         }
         // 大会なし、風速なし
         return useMemo(() => COLUMNS4, [menus, hide]);
-      } 
-        if (ary.length) {
-          // 大会なし、風速あり
-          return useMemo(() => COLUMNS1, [menus, hide]);
-        }
-        // 大会なし、風速なし
-        return useMemo(() => COLUMNS2, [menus, hide]);
-      
+      }
+      if (ary.length) {
+        // 大会なし、風速あり
+        return useMemo(() => COLUMNS1, [menus, hide]);
+      }
+      // 大会なし、風速なし
+      return useMemo(() => COLUMNS2, [menus, hide]);
     }
     // まだ記録が登録されていない
     return useMemo(() => COLUMNS5, [menus, hide]);
@@ -255,10 +251,10 @@ const TournamentViewTable: FC<Props> = ({ menus, hide, toggleSearch }) => {
                 // onClick={() => selectTableRow(row.original)}
               >
                 {row.cells.map((cell) => (
-                    <TableCell {...cell.getCellProps()}>
-                      {cell.render('Cell')}
-                    </TableCell>
-                  ))}
+                  <TableCell {...cell.getCellProps()}>
+                    {cell.render('Cell')}
+                  </TableCell>
+                ))}
               </TableRow>
             );
           })}

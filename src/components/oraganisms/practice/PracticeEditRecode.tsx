@@ -1,30 +1,34 @@
 import { DeleteIcon } from '@chakra-ui/icons';
-import { Box, HStack, IconButton, Text } from '@chakra-ui/react';
+import { HStack, IconButton, Text, useDisclosure } from '@chakra-ui/react';
 import { FC, useRef, useState } from 'react';
 import { useRecoilValue } from 'recoil';
-import { useOutsideClick } from '../../../hooks';
+import { MobileNumberKeyboard, ModalDisplayRecord } from '..';
+import { useDeviceInfo, useOutsideClick } from '../../../hooks';
 
-import { insertStr } from '../../../hooks/useInsertStr';
 import { db } from '../../../lib/firebase';
 import { Recode } from '../../../models/users';
 import { userState } from '../../../recoil/users/user';
-import { InputNumber } from '../../molecules';
+import { formatTimeNotationAtInput } from '../../../utils/formatTimeNotationAtInput';
+
+import { InputNumber, InputReadonly } from '../../molecules';
 
 type Props = {
-  idx: number;
   menuId: string;
   items: Recode;
   recodes: Recode[];
   setRecodes: React.Dispatch<React.SetStateAction<Recode[]>>;
+  idx: number;
+  index: number;
   setIndex: React.Dispatch<React.SetStateAction<number>>;
 };
 
 const PracticeEditRecode: FC<Props> = ({
-  items,
-  idx,
   menuId,
+  items,
   recodes,
   setRecodes,
+  index,
+  idx,
   setIndex,
 }) => {
   const user = useRecoilValue(userState);
@@ -33,6 +37,8 @@ const PracticeEditRecode: FC<Props> = ({
   const [editToggle, setEditToggle] = useState(items.editting);
 
   const ref = useRef<HTMLDivElement>(null);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { deviceInfo } = useDeviceInfo();
 
   const practicesRef = db
     .collection('users')
@@ -64,10 +70,29 @@ const PracticeEditRecode: FC<Props> = ({
     }
   };
 
+  // スマホでの編集処理
+  const updateRecodeInMobile = async (inputValue: string, idx: number) => {
+    if (user === null) return;
+    if (idx === recodes.length) {
+      const newRecode = { recodeId: idx, value: inputValue, editting: false };
+      setRecodes((prev) => [...prev, newRecode]);
+      setIndex(idx + 1);
+      setRecode('');
+      await practicesRef.update({ recodes: [...recodes, newRecode] });
+    } else {
+      const newRecodes = recodes;
+      recodes[idx] = { recodeId: idx, value: inputValue, editting: false };
+      setRecodes(newRecodes);
+      setIndex(recodes.length);
+      setRecode('');
+      await practicesRef.update({ recodes: newRecodes });
+    }
+  };
+
   // 記録の削除
   const deleteRecode = async (recodeId: number) => {
     const newRecodes = recodes.filter((_recode, idx) => idx !== recodeId);
-    if (!user) return;
+    if (user === null) return;
     const practicesRef = db
       .collection('users')
       .doc(user.uid)
@@ -79,34 +104,35 @@ const PracticeEditRecode: FC<Props> = ({
   };
 
   // 編集への切り替え(recodeクリック時の処理)
-  const handleClick = (id: number, value: string) => {
+  const handleClick = (idx: number, value: string) => {
     setRecode(value);
-    setIndex(id);
-    const selectedIndex = recodes.findIndex((recode) => recode.recodeId === id);
-    recodes[selectedIndex] = { recodeId: id, value, editting: true };
+    setIndex(idx);
+    const selectedIndex = recodes.findIndex(
+      (recode) => recode.recodeId === idx
+    );
+    recodes[selectedIndex] = { recodeId: idx, value, editting: true };
     setRecodes(recodes);
+
+    if (deviceInfo === 'Mobile') {
+      onOpen();
+    } else {
+      setEditToggle(true);
+    }
   };
 
   // 編集を離れた時
   const handleBlur = async (id: number, value: string) => {
-    const selectedIndex = recodes.findIndex((recode) => recode.recodeId === id);
-
-    const newRecodes = recodes;
-    recodes[selectedIndex] = {
-      recodeId: selectedIndex,
-      value,
-      editting: false,
-    };
-
-    if (recode === '' || recode === items.value) {
+    if (deviceInfo === 'Desktop') {
+      const selectedIndex = recodes.findIndex(
+        (recode) => recode.recodeId === id
+      );
+      recodes[selectedIndex] = {
+        recodeId: selectedIndex,
+        value,
+        editting: false,
+      };
       setRecodes(recodes);
-    } else {
-      await practicesRef.update({ recodes: newRecodes }).then(() => {
-        setRecodes(newRecodes);
-        setEditToggle(false);
-        setRecode('');
-        setIndex(recodes.length);
-      });
+      setEditToggle(false);
     }
   };
 
@@ -132,22 +158,29 @@ const PracticeEditRecode: FC<Props> = ({
             />
           </HStack>
         ) : (
-          <Box
-            align="left"
-            w="100%"
-            maxW="200px"
-            px="1rem"
-            lineHeight="2.4rem"
-            height="2.5rem"
-            borderRadius="0.375rem"
-            border="1px solid"
-            borderColor="inherit"
-            onClick={() => handleClick(items.recodeId, items.value)}
-          >
-            {insertStr(items.value)}
-          </Box>
+          <InputReadonly
+            defaultValue={formatTimeNotationAtInput(items.value)}
+            onClick={() => handleClick(idx, items.value)}
+          />
         )}
       </HStack>
+      <MobileNumberKeyboard
+        disableStrings={['+/-', '.']}
+        idx={index}
+        isOpen={isOpen}
+        onClose={onClose}
+        inputValue={recode}
+        setInputValue={setRecode}
+        writeRecode={updateRecodeInMobile}
+        label="本目"
+        format={formatTimeNotationAtInput}
+      >
+        <ModalDisplayRecord
+          recodes={recodes}
+          setRecodes={setRecodes}
+          menuId={menuId}
+        />
+      </MobileNumberKeyboard>
     </>
   );
 };

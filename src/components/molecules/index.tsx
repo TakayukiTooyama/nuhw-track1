@@ -22,3 +22,4 @@ export { default as Stat } from './common/Stat';
 export { default as TabList } from './common/TabList';
 export { default as Title } from './common/Title';
 export { default as TopScrollButton } from './common/TopScrollButton';
+export { default as InputReadonly } from './common/InputReadOnly';

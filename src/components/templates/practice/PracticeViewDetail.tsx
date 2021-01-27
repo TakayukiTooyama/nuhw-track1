@@ -10,7 +10,6 @@ import {
 import React, { useEffect, useState, VFC } from 'react';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
-import { insertStr } from '../../../hooks/useInsertStr';
 import {
   fetchAnnualPracticeData,
   fetchLastTimeData,
@@ -24,6 +23,7 @@ import {
   selectedMakedMenuNameState,
   userState,
 } from '../../../recoil/users/user';
+import { formatTimeNotationAtInput } from '../../../utils/formatTimeNotationAtInput';
 import { LinkButton, SelectNameList, TabList } from '../../molecules';
 import { PracticeMonthlyData, PracticeTodayData } from '../../oraganisms';
 
@@ -129,7 +129,7 @@ const PracticeViewDetail: VFC = () => {
                   dateNumber={item.dateNumber}
                   axisLabel="本目"
                   label="タイム"
-                  format={insertStr}
+                  format={formatTimeNotationAtInput}
                 />
               ) : (
                 <Text pl={4}>まだ登録されていません</Text>

@@ -1,7 +1,7 @@
 import moment from 'moment';
 import { atom, selector } from 'recoil';
 
-import { TournamentData,User, UserAuth } from '../../models/users';
+import { TournamentData, User, UserAuth } from '../../models/users';
 
 // ユーザーデータを保持
 export const userAuthState = atom<UserAuth | null>({
@@ -18,6 +18,12 @@ export const userState = atom<User | null>({
 export const loadingState = atom<boolean>({
   key: 'loading',
   default: false,
+});
+
+// 自作キーボードで入力している時の値
+export const inputValueState = atom<string>({
+  key: 'inputValue',
+  default: '',
 });
 
 // 今日の日付をフォーマット(例2020年12月1日 → 20201201)した形で保持

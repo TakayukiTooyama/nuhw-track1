@@ -75,7 +75,12 @@ export const PracticeEditDetail: VFC = () => {
           <ErrorMessage message={errorMessage} />
         </>
       ) : (
-        <Button shadow="base" onClick={() => setToggleMenu(true)}>
+        <Button
+          shadow="base"
+          w="100%"
+          borderRadius="30px"
+          onClick={() => setToggleMenu(true)}
+        >
           メニューを追加
         </Button>
       )}
