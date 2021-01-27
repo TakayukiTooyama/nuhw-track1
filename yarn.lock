@@ -6174,13 +6174,6 @@ react-style-singleton@^2.1.0:
     invariant "^2.2.4"
     tslib "^1.0.0"
 
-react-swipe-to-delete-component@^0.5.5:
-  version "0.5.5"
-  resolved "https://registry.yarnpkg.com/react-swipe-to-delete-component/-/react-swipe-to-delete-component-0.5.5.tgz#218a031e6d9c57bdeaa2359c9e65d8b1200e4dfe"
-  integrity sha512-UGPcUWYH80QKaSSPpCDyhChVl2eMEXbO4jaCyUn3c1oQa3cxoIZ5pXhnISd012bM36gN62LDndDlSmf7ISXbkA==
-  dependencies:
-    "@babel/runtime" "^7.12.5"
-
 react-table@^7.6.2:
   version "7.6.2"
   resolved "https://registry.yarnpkg.com/react-table/-/react-table-7.6.2.tgz#b60932fa6d457c2bca0da49815cd6a8fe9451f77"
