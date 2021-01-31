@@ -8,5 +8,5 @@ export const formatTimeNotation = (input: string): string => {
       len - 4,
       len - 2
     )}"${input.slice(len - 2, len)}`;
-  return `${input}"00`;
+  return len === 0 ? input : `${input}"00`;
 };

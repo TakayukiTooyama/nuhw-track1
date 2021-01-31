@@ -6,7 +6,7 @@ const useScreenHeight = () => {
   useEffect(() => {
     const screenHeight = window.innerHeight;
     setScreenHeight(screenHeight);
-  }, []);
+  }, [window.innerHeight]);
 
   return { screenHeight };
 };
