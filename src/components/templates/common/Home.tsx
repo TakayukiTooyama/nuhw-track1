@@ -15,19 +15,19 @@ const Home: VFC = () => {
       id: 'practice',
       name: '練習タイム',
       link: selectedDateId,
-      image: '/orange-track.jpg',
+      image: '/track.jpg',
     },
     {
       id: 'weight',
       name: 'ウエイト',
       link: selectedDateId,
-      image: '/running.jpg',
+      image: '/weight-tool.jpg',
     },
     {
       id: 'tournament',
       name: '大会結果',
       link: 'search',
-      image: '/blue-track.jpg',
+      image: '/trophy.jpg',
     },
   ];
 

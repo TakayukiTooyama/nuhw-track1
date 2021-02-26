@@ -19,25 +19,25 @@ const Header: VFC = () => {
   }, [userAuth, setUser, user]);
 
   return (
-    <>
-      <Box color="grey" py={2} px={4}>
-        <Box
-          maxW="6xl"
-          mx="auto"
-          display="flex"
-          alignItems="center"
-          justifyContent="space-between"
-        >
-          <Link href="/">
-            <Heading as="h1" size="md">
-              NUHW TRACK
-            </Heading>
-          </Link>
-          <GuideMenu />
-        </Box>
+    <Box color="grey" bg="black" boxShadow="0 0 10px rgba(0, 0, 0, 0.6)">
+      <Box
+        px={4}
+        h="60px"
+        maxW="6xl"
+        mx="auto"
+        display="flex"
+        alignItems="center"
+        justifyContent="space-between"
+        color="white"
+      >
+        <Link href="/">
+          <Heading as="h1" size="md" cursor="pointer">
+            NUHW TRACK
+          </Heading>
+        </Link>
+        <GuideMenu />
       </Box>
-      <Divider />
-    </>
+    </Box>
   );
 };
 

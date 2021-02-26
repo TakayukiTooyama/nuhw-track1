@@ -22,9 +22,9 @@ type Props = {
 const WeightEditMenu: FC<Props> = ({ items, setMenus, deleteMenu }) => {
   // Local State
   const [recodes, setRecodes] = useState(items.recodes);
-    const [name] = useState(items.name);
-    const [toggleEdit, setToggleEdit] = useState(false);
-    const [index, setIndex] = useState(0);
+  const [name] = useState(items.name);
+  const [toggleEdit, setToggleEdit] = useState(false);
+  const [index, setIndex] = useState(0);
 
   // リフレッシュ後でもインデックスを続きから始めるための処理
   useEffect(() => {
@@ -39,12 +39,13 @@ const WeightEditMenu: FC<Props> = ({ items, setMenus, deleteMenu }) => {
           <InputRightElement
             color="gray.400"
             children={`${items.rm}RM`}
-            pl={0}
+            pr={4}
           />
         </InputGroup>
         <IconButton
           aria-label="menu-delete"
           shadow="inner"
+          bg="red.200"
           onClick={() => deleteMenu(items.menuId)}
           icon={<AiFillDelete fontSize="20px" />}
         />

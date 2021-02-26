@@ -3,7 +3,7 @@ import React, { FC, useEffect, useState } from 'react';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
 import { db } from '../../../lib/firebase';
-import { Comparison,Menu } from '../../../models/users';
+import { Comparison, Menu } from '../../../models/users';
 import {
   formatTodaysDateState,
   makedMenuNameListState,
@@ -12,7 +12,7 @@ import {
   selectedMakedMenuNameState,
   userState,
 } from '../../../recoil/users/user';
-import { Heading1, LinkButton, SelectNameList,TabList } from '../../molecules';
+import { Heading1, LinkButton, SelectNameList, TabList } from '../../molecules';
 import { TodayData, WeightMonthlyData } from '../../oraganisms';
 
 const WeightViewDetail: FC = () => {
@@ -70,7 +70,7 @@ const WeightViewDetail: FC = () => {
       const nameList: string[] = [];
       snapshot.forEach((doc) => {
         const data = doc.data() as Menu;
-        const {name} = data;
+        const { name } = data;
         menuData.push(data);
         nameList.push(name);
       });
@@ -116,11 +116,10 @@ const WeightViewDetail: FC = () => {
         setComparisonAry(newAry);
         setLastTimeData([sortMenus[lastIndex]]);
       } else {
+        setJudgLastTime(false);
         setComparisonAry(newAry);
         setLastTimeData([sortMenus[lastIndex], sortMenus[lastIndex - 1]]);
       }
-    } else {
-      
     }
   };
 
@@ -139,7 +138,7 @@ const WeightViewDetail: FC = () => {
       <Box mb={8} />
       <Flex justify="space-between" align="center">
         <SelectNameList />
-        <LinkButton label="編集" link={`/weight/edit/${dateId}`} />
+        <LinkButton ml={2} label="編集" link={`/weight/edit/${dateId}`} />
       </Flex>
       <Box mb={8} />
       <Tabs variant="enclosed">

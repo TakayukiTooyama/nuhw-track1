@@ -1,4 +1,4 @@
-import { Box, Flex, StatGroup } from '@chakra-ui/react';
+import { Box, Flex, SimpleGrid, Text } from '@chakra-ui/react';
 import React, { Dispatch, VFC } from 'react';
 
 import { Menu } from '../../../models/users';
@@ -54,22 +54,26 @@ const PracticeTodayData: VFC<Props> = ({
       />
       <Box mb={12} />
 
-      <Heading2 label="前回比較" />
-      <StatGroup ml={6}>
-        {comparisonAry.map((item, idx) => (
-          <Stat
-            key={idx.toString()}
-            type={item.type}
-            data={item.data}
-            label="本目"
-            idx={idx}
-            format={format}
-          />
-        ))}
-      </StatGroup>
+      <Heading2 label="前回比較" mb={4} />
+      {comparisonAry.some((items) => items.data >= 0) ? (
+        <SimpleGrid columns={[3, 5, 6]} spacing={4}>
+          {comparisonAry.map((item, idx) => (
+            <Stat
+              key={idx.toString()}
+              type={item.type}
+              data={item.data}
+              label="本目"
+              idx={idx}
+              format={format}
+            />
+          ))}
+        </SimpleGrid>
+      ) : (
+        <Text align="center">前回の記録がありません</Text>
+      )}
       <Box mb={12} />
 
-      <Heading2 label="記録遷移グラフ" />
+      <Heading2 label="記録遷移グラフ" mb={4} />
       <GraphAllData
         data={data}
         format={formatTimeNotationAtInput}

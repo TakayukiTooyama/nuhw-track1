@@ -43,7 +43,7 @@ export const PracticeEditDetail: VFC = () => {
       <Box mb={8} />
 
       <Flex justify="space-between" align="center">
-        <DatePicker bg="orange.400" />
+        <DatePicker />
         <LinkButton label="終了" link={`/practice/${dateId}`} />
       </Flex>
       <Box mb={8} />
@@ -79,6 +79,7 @@ export const PracticeEditDetail: VFC = () => {
           shadow="base"
           w="100%"
           borderRadius="30px"
+          colorScheme="orange"
           onClick={() => setToggleMenu(true)}
         >
           メニューを追加

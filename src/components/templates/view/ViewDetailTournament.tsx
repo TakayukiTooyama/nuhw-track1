@@ -83,7 +83,7 @@ const TournamentViewDetail: VFC = () => {
     return await teamTournamentMenusRef.get().then((snapshot) => {
       const nameList = snapshot.docs.map((doc) => {
         const data = doc.data() as SearchName;
-        const {name} = data;
+        const { name } = data;
         return name;
       });
       return [...nameList, '全試合'];
@@ -156,10 +156,10 @@ const TournamentViewDetail: VFC = () => {
 
     return await usersRef.get().then((snapshot) => {
       const userData = snapshot.docs.map((doc) => {
-        const {id} = doc;
+        const { id } = doc;
         const data = doc.data() as User;
         const username = data.displayName;
-        const {grade} = data;
+        const { grade } = data;
         return { id, username, grade };
       });
       return userData;
@@ -201,9 +201,9 @@ const TournamentViewDetail: VFC = () => {
   const filterMenus =
     menus.length > 0 &&
     menus.map((menu) => ({
-        ...menu,
-        recodes: menu.recodes.filter((recode) => Number(recode.wind) <= 2.0),
-      }));
+      ...menu,
+      recodes: menu.recodes.filter((recode) => Number(recode.wind) <= 2.0),
+    }));
 
   const tableMenu = [
     { toggle: hide, setToggle: setHide, label: '日付・学年', top: '40px' },
@@ -223,9 +223,10 @@ const TournamentViewDetail: VFC = () => {
 
   return (
     <Box width="100%" maxW="500px" mx="auto">
-      <HStack spacing={2} align="flex-start">
+      <Stack spacing={2} align="flex-start" direction={['column', 'row']}>
         <Box width="100%">
           <InputText
+            maxW="100%"
             textAlign="center"
             value={name}
             placeholder="大会名"
@@ -236,52 +237,57 @@ const TournamentViewDetail: VFC = () => {
             <SearchInBox nameList={filterNameList} setName={setName} />
           )}
         </Box>
-        <Stack spacing={1}>
-          <Box
-            as={Button}
-            {...boxStyle}
-            color="black"
-            onClick={() => {
-              setToggleGender((prev) => !prev), setGender('性別');
-            }}
-          >
-            {gender && !toggleGender ? gender : '性別'}
+        <HStack alignItems="flex-start" w="100%">
+          <Stack spacing={1}>
+            <Box
+              as={Button}
+              {...boxStyle}
+              color="black"
+              onClick={() => {
+                setToggleGender((prev) => !prev), setGender('性別');
+              }}
+            >
+              {gender && !toggleGender ? gender : '性別'}
+            </Box>
+            {toggleGender ? (
+              <>
+                {['男', '女'].map((gender) => (
+                  <Box
+                    as={Button}
+                    key={gender}
+                    onClick={() => {
+                      setGender(gender), setToggleGender(false);
+                    }}
+                    {...boxStyle}
+                  >
+                    {gender}
+                  </Box>
+                ))}
+              </>
+            ) : null}
+          </Stack>
+          <Box w="100%">
+            <InputText
+              maxW="100%"
+              textAlign="center"
+              value={event}
+              placeholder=" 競技種目"
+              onChange={(e) => handleChange(e, setEvent)}
+            />
+            {filterEventList &&
+            filterEventList.some((item) => item === event) ? null : (
+              <SearchInBox nameList={filterEventList} setName={setEvent} />
+            )}
           </Box>
-          {toggleGender ? (
-            <>
-              {['男', '女'].map((gender) => (
-                <Box
-                  as={Button}
-                  key={gender}
-                  onClick={() => {
-                    setGender(gender), setToggleGender(false);
-                  }}
-                  {...boxStyle}
-                >
-                  {gender}
-                </Box>
-              ))}
-            </>
-          ) : null}
-        </Stack>
-        <Box width="100%" maxW="150px">
-          <InputText
-            textAlign="center"
-            value={event}
-            placeholder=" 競技種目"
-            onChange={(e) => handleChange(e, setEvent)}
+          <IconButton
+            aria-label="Search database"
+            icon={<SearchIcon />}
+            onClick={() =>
+              userData && fetchTournamentSearchConditions(userData)
+            }
           />
-          {filterEventList &&
-          filterEventList.some((item) => item === event) ? null : (
-            <SearchInBox nameList={filterEventList} setName={setEvent} />
-          )}
-        </Box>
-        <IconButton
-          aria-label="Search database"
-          icon={<SearchIcon />}
-          onClick={() => userData && fetchTournamentSearchConditions(userData)}
-        />
-      </HStack>
+        </HStack>
+      </Stack>
       <Box mb={1} />
       <ErrorMessage message={errorMessage} textAlign="left" />
       <Box mb={8} />

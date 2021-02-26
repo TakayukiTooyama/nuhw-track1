@@ -1,7 +1,7 @@
-import { Box, Flex, StatGroup, Text } from '@chakra-ui/react';
+import { Box, Flex, SimpleGrid, StatGroup, Text } from '@chakra-ui/react';
 import React, { Dispatch, SetStateAction, VFC } from 'react';
 
-import { Comparison,Menu } from '../../../models/users';
+import { Comparison, Menu } from '../../../models/users';
 import { Heading2, PinInput, Stat } from '../../molecules';
 import { GraphAllData, TableView } from '..';
 
@@ -29,7 +29,8 @@ const TodayData: VFC<Props> = ({
   changeNumber,
   setChangeNumber,
   comparisonAry,
-}) => (
+}) => {
+  return (
     <div>
       {todayData.length > 0 && lastTimeData.length > 0 ? (
         <>
@@ -47,11 +48,9 @@ const TodayData: VFC<Props> = ({
 
           <Heading2 label="前回比較" />
           <Box mb={4} />
-          <StatGroup ml={6}>
-            {judgLastTime ? (
-              <Text>前回の記録がありません</Text>
-            ) : (
-              comparisonAry.map((item, idx) => (
+          {comparisonAry.some((items) => items.data >= 0) ? (
+            <SimpleGrid columns={[3, 5, 6]} spacing={4}>
+              {comparisonAry.map((item, idx) => (
                 <Stat
                   key={idx.toString()}
                   type={item.type}
@@ -60,9 +59,11 @@ const TodayData: VFC<Props> = ({
                   idx={idx}
                   format={format}
                 />
-              ))
-            )}
-          </StatGroup>
+              ))}
+            </SimpleGrid>
+          ) : (
+            <Text align="center">前回の記録がありません</Text>
+          )}
           <Box mb={12} />
 
           <Heading2 label="記録遷移グラフ" />
@@ -79,5 +80,6 @@ const TodayData: VFC<Props> = ({
       )}
     </div>
   );
+};
 
 export default TodayData;

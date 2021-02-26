@@ -82,7 +82,7 @@ const PracticeViewDetail: VFC = () => {
 
   /*
     dateNumber: 3 → 3ヶ月
-    data: threeMonthsData → 3ヶ月分の練習タイムのデータ
+    data: threeMonthsData → 3ヶ月分の練zzzzzzzzzzzz習タイムのデータ
    */
   const tabDataList = [
     {
@@ -101,7 +101,7 @@ const PracticeViewDetail: VFC = () => {
       <Flex justify="space-between" align="center">
         <SelectNameList />
         <Box mr={4} />
-        <LinkButton label="編集" link={`/practice/edit/${dateId}`} />
+        <LinkButton ml={2} label="編集" link={`/practice/edit/${dateId}`} />
       </Flex>
       <Box mb={8} />
 

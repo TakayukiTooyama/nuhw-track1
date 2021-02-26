@@ -152,7 +152,7 @@ const WeightEditRecode: FC<Props> = ({
             justify="space-between"
             align="center"
             w="100%"
-            maxW="200px"
+            maxW="255px"
             px={4}
             lineHeight="2.4rem"
             height="2.5rem"
@@ -164,7 +164,6 @@ const WeightEditRecode: FC<Props> = ({
             <Text>{items.value}</Text>
             <Text color="gray.400">kg</Text>
           </Flex>
-          <Box w="100%" maxW="40px" h="40px" ml={1} />
         </>
       )}
     </Flex>

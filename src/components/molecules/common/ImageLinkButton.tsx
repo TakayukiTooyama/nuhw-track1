@@ -10,57 +10,61 @@ type Props = {
   leftIcon?: ReactElement;
 };
 
-const buttonStyles = {
+const boxStyles = {
+  cursor: 'pointer',
+  w: '100%',
+  h: 200,
   borderRadius: '30px',
   shadow: 'base',
-  w: '100%',
-  h: 200,
-  color: 'white',
   overflow: 'hidden',
-  bg: 'gray.900',
-  zIndex: 0,
-};
-
-const backImageStyle = {
-  w: '100%',
-  h: 200,
   backgroundSize: 'cover',
-  backgroundPosition: 'center 70%',
   backgroundRepeat: 'no-repeat',
 };
 
+const boxAfterStyle = {
+  content: `""`,
+  w: '100%',
+  bgGradient: 'linear(to-l,transparent, #000 60%)',
+  position: 'absolute',
+  left: 0,
+  top: 0,
+  bottom: 0,
+};
+
+const backgroundImage = {
+  w: '70%',
+  h: 200,
+  right: -10,
+  backgroundSize: 'cover',
+  backgroundPosition: 'center',
+  backgroundRepeat: 'no-repeat',
+};
+
+const textStyle = {
+  color: 'white',
+  fontSize: ['25px', '30px'],
+  fontWeight: 'bold',
+  zIndex: '1',
+  top: '50%',
+  left: '15%',
+  transform: 'translateY(-50%)',
+  bgGradient: 'linear(to-l, #FF57B9, #A704FD)',
+  bgClip: 'text',
+};
+
 const LinkBlock: VFC<Props> = ({ item }) => (
-    <Link href={`/${item.id}/${item.link}`} passHref>
-      <Box pos="relative" {...buttonStyles}>
-        <Text
-          pos="absolute"
-          top="50%"
-          left="50%"
-          transform="translate(-50%,-50%)"
-          fontSize="25px"
-          fontWeight="bold"
-          zIndex="1"
-        >
-          {item.name}
-        </Text>
-        <Box
-          opacity="0.3"
-          transition="all 0.3s"
-          _hover={{ opacity: 1, transition: 'all 0.3s' }}
-        >
-          <Box
-            pos="absolute"
-            backgroundImage={`url(${item.image})`}
-            {...backImageStyle}
-            transition="all 0.6s"
-            _hover={{
-              transform: 'scale(1.2)',
-              transition: 'all 0.6s',
-            }}
-          />
-        </Box>
-      </Box>
-    </Link>
-  );
+  <Link href={`/${item.id}/${item.link}`} passHref>
+    <Box pos="relative" {...boxStyles} _after={{ ...boxAfterStyle }}>
+      <Box
+        pos="absolute"
+        backgroundImage={`url(${item.image})`}
+        {...backgroundImage}
+      />
+      <Text pos="absolute" {...textStyle}>
+        {item.name}
+      </Text>
+    </Box>
+  </Link>
+);
 
 export default LinkBlock;

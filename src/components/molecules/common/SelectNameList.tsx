@@ -15,14 +15,19 @@ const SelectNameList: VFC = () => {
   const nameList = useRecoilValue(makedMenuNameListState);
   // ソートしたメニューの名前リスト
 
-  const sortNameList = nameList.slice().sort((a: any, b: any) => a.match(/\d+/) - b.match(/\d+/));
+  const sortNameList = nameList
+    .slice()
+    .sort((a: any, b: any) => a.match(/\d+/) - b.match(/\d+/));
 
   return (
     <Menu>
       <MenuButton
         as={Button}
         rightIcon={<ChevronDownIcon />}
-        shadow="base"
+        bg="gray.100"
+        border="2px solid"
+        borderColor="gray.300"
+        borderRadius="30px"
         w="100%"
         maxW={['220px', '300px', '350px']}
       >

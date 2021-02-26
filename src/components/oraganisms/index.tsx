@@ -11,6 +11,7 @@ export { default as TableView } from './common/TableView';
 export { default as TodayData } from './common/TodayData';
 export { default as MobileNumberKeyboard } from './common/MobileNumberKeyboard';
 export { default as ModalDisplayRecord } from './common/ModalDisplayRecord';
+export { default as MenuDeleteModal } from './common/MenuDeleteModal';
 
 // 認証
 export { default as SignInBottom } from './auth/SignInBottom';

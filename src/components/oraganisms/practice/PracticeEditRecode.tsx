@@ -1,6 +1,6 @@
 import { DeleteIcon } from '@chakra-ui/icons';
 import { HStack, IconButton, Text, useDisclosure } from '@chakra-ui/react';
-import { FC, useRef, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import { MobileNumberKeyboard, ModalDisplayRecord } from '..';
 import { useDeviceInfo, useOutsideClick } from '../../../hooks';
@@ -63,9 +63,8 @@ const PracticeEditRecode: FC<Props> = ({
       recodes[idx] = { recodeId: idx, value, editting: false };
       await practicesRef.update({ recodes: newRecodes }).then(() => {
         setRecodes(newRecodes);
-        setEditToggle(false);
         setIndex(recodes.length);
-        setRecode('');
+        setEditToggle(false);
       });
     }
   };
@@ -121,27 +120,18 @@ const PracticeEditRecode: FC<Props> = ({
   };
 
   // 編集を離れた時
-  const handleBlur = async (id: number, value: string) => {
+  const handleBlur = () => {
     if (deviceInfo === 'Desktop') {
-      const selectedIndex = recodes.findIndex(
-        (recode) => recode.recodeId === id
-      );
-      recodes[selectedIndex] = {
-        recodeId: selectedIndex,
-        value,
-        editting: false,
-      };
       setRecodes(recodes);
       setEditToggle(false);
     }
   };
-
-  useOutsideClick(ref, () => handleBlur(items.recodeId, recode));
+  useOutsideClick(ref, () => handleBlur());
 
   return (
     <>
       <HStack spacing={2}>
-        <Text color="gray.400" w="100%" maxW="45px">{`${idx + 1}本目`}</Text>
+        <Text color="gray.400" w="100%" maxW="50px">{`${idx + 1}本目`}</Text>
         {editToggle ? (
           <HStack spacing={2} ref={ref}>
             <InputNumber

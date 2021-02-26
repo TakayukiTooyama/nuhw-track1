@@ -1,8 +1,9 @@
-import { Button, HStack, Text } from '@chakra-ui/react';
+import { Box, Button, Icon, Stack, Text } from '@chakra-ui/react';
 import ja from 'date-fns/locale/ja';
 import moment from 'moment';
 import React, { FC } from 'react';
 import ReactDatePicker, { registerLocale } from 'react-datepicker';
+import { FcCalendar } from 'react-icons/fc';
 
 registerLocale('ja', ja);
 
@@ -20,41 +21,59 @@ const DateRangePicker: FC<Props> = ({
   setEndDate,
 }) => {
   // フォーマット変更 → 2020/12/26
-  const getFormatDate = (date: Date) => moment(date).format('YYYY/MM/DD');
+  const formatDate = (date: Date) => moment(date).format('YYYY/MM/DD');
 
   return (
-    <HStack spacing={2}>
-      <ReactDatePicker
-        locale="ja"
-        selected={startDate}
-        onChange={(date: Date) => setStartDate(date)}
-        selectsStart
-        startDate={startDate}
-        endDate={endDate}
-        customInput={
-          <Button shadow="base" color="gray.600">
-            {getFormatDate(startDate)}
-          </Button>
-        }
-      />
-      <Text fontSize="xl" color="gray.600">
-        〜
-      </Text>
-      <ReactDatePicker
-        locale="ja"
-        selected={endDate}
-        onChange={(date: Date) => setEndDate(date)}
-        selectsEnd
-        startDate={startDate}
-        endDate={endDate}
-        minDate={startDate}
-        customInput={
-          <Button shadow="base" color="gray.600">
-            {getFormatDate(endDate)}
-          </Button>
-        }
-      />
-    </HStack>
+    <Stack direction={['column', 'row']} spacing={2}>
+      <Box>
+        <Text ml={2}>開催日</Text>
+        <ReactDatePicker
+          locale="ja"
+          selected={startDate}
+          onChange={(date: Date) => setStartDate(date)}
+          selectsStart
+          startDate={startDate}
+          endDate={endDate}
+          customInput={
+            <Button
+              bg="gray.100"
+              border="2px solid"
+              borderColor="gray.300"
+              borderRadius="30px"
+              iconSpacing={4}
+              rightIcon={<Icon as={FcCalendar} w={6} h={6} />}
+            >
+              {formatDate(startDate)}
+            </Button>
+          }
+        />
+      </Box>
+      <Box>
+        <Text ml={2}>終了日</Text>
+        <ReactDatePicker
+          locale="ja"
+          selected={endDate}
+          onChange={(date: Date) => setEndDate(date)}
+          selectsEnd
+          startDate={startDate}
+          endDate={endDate}
+          minDate={startDate}
+          customInput={
+            <Button
+              w="100%"
+              bg="gray.100"
+              border="2px solid"
+              borderColor="gray.300"
+              borderRadius="30px"
+              iconSpacing={4}
+              rightIcon={<Icon as={FcCalendar} w={6} h={6} />}
+            >
+              {formatDate(endDate)}
+            </Button>
+          }
+        />
+      </Box>
+    </Stack>
   );
 };
 

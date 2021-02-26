@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Center,
+  Divider,
   Flex,
   Input,
   Spinner,
@@ -17,7 +18,7 @@ import {
   selectedDateIdState,
   userState,
 } from '../../../recoil/users/user';
-import { Heading1,InputKeyDown, LinkButton } from '../../molecules';
+import { Heading1, InputKeyDown, LinkButton } from '../../molecules';
 
 const CreateWeightMenuDetail: FC = () => {
   const user = useRecoilValue(userState);
@@ -72,7 +73,7 @@ const CreateWeightMenuDetail: FC = () => {
       .doc(user.teamInfo.teamId)
       .collection('weightMenus');
     if (e.key === 'Enter') {
-      const {id} = weightsRef.doc();
+      const { id } = weightsRef.doc();
       const newData: WeightName = { id, name };
       await weightsRef
         .doc(id)
@@ -131,6 +132,7 @@ const CreateWeightMenuDetail: FC = () => {
       <Box mb={8} />
       {menus.length ? (
         <>
+          <Divider />
           {menus.map((menu, idx) => {
             if (toggleEditMenu && selectedIndex === menu.id) {
               return (
@@ -146,23 +148,24 @@ const CreateWeightMenuDetail: FC = () => {
                   onCompositionEnd={() => setIsComposed(false)}
                 />
               );
-            } 
-              return (
-                <Box
-                  key={menu.id}
-                  h="40px"
-                  bg="white"
-                  lineHeight="40px"
-                  textAlign="center"
-                  overflow="hidden"
-                  borderBottom="1px solid"
-                  borderColor="gray.200"
-                  onClick={() => handleClick(menu.id, menu.name)}
-                >
-                  <Text color="gray.400">{menu.name}</Text>
-                </Box>
-              );
-            
+            }
+            return (
+              <Box
+                key={menu.id}
+                h="40px"
+                bg="white"
+                lineHeight="40px"
+                textAlign="center"
+                overflow="hidden"
+                borderBottom="1px solid"
+                borderColor="gray.200"
+                cursor="pointer"
+                _hover={{ bg: 'gray.50' }}
+                onClick={() => handleClick(menu.id, menu.name)}
+              >
+                <Text color="gray.400">{menu.name}</Text>
+              </Box>
+            );
           })}
           <Box mb={8} />
           {toggleEdit ? (

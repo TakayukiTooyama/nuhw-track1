@@ -107,7 +107,7 @@ const PracticeRecodeCreator: FC<Props> = ({
       <Box mb={4}>
         {isOpenInput ? (
           <HStack>
-            <Text color="gray.400" w="100%" maxW="45px">
+            <Text color="gray.400" w="100%" maxW="50px">
               {index + 1}本目
             </Text>
             <NumberInput
@@ -123,7 +123,7 @@ const PracticeRecodeCreator: FC<Props> = ({
           </HStack>
         ) : (
           <HStack>
-            <Box minW="45px" />
+            <Box minW="50px" />
             <Button w="100%" maxW="200px" shadow="base" onClick={InputToggle}>
               ＋
             </Button>

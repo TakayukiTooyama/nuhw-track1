@@ -92,20 +92,19 @@ const WeightRecodeCreator: FC<Props> = ({
             {`${index + 1}set`}
           </Text>
           <InputNumber
+            maxW="255px"
             value={recode}
             placeholder="重量"
             onChange={handleChange}
             onBlur={handleBlur}
             onKeyDown={addRecode}
           />
-          <Box w="100%" maxW="40px" h="40px" ml={1} />
         </Flex>
       ) : (
         <Flex>
-          <Button w="253px" shadow="base" onClick={InputToggle}>
+          <Button w="100%" maxW="300px" shadow="base" onClick={InputToggle}>
             ＋
           </Button>
-          <Box w="100%" maxW="40px" h="40px" ml={1} />
         </Flex>
       )}
     </>

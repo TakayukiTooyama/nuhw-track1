@@ -1,13 +1,14 @@
 import 'react-datepicker/dist/react-datepicker.css';
 
-import { Button } from '@chakra-ui/react';
+import { Button, Icon } from '@chakra-ui/react';
 import { addDays } from 'date-fns';
 import ja from 'date-fns/locale/ja';
 import moment from 'moment';
 import Router from 'next/router';
-import React, { FC, useEffect } from 'react';
+import React, { useEffect, VFC } from 'react';
 import ReactDatePicker, { registerLocale } from 'react-datepicker';
 import { useRecoilState, useRecoilValue } from 'recoil';
+import { FcCalendar } from 'react-icons/fc';
 
 import {
   selectedDateIdState,
@@ -16,11 +17,7 @@ import {
 
 registerLocale('ja', ja);
 
-type Props = {
-  bg: string;
-};
-
-const DatePicker: FC<Props> = ({ bg }) => {
+const DatePicker: VFC = () => {
   const [date, setDate] = useRecoilState(selectedDateState);
   const dateId = useRecoilValue(selectedDateIdState);
 
@@ -29,7 +26,7 @@ const DatePicker: FC<Props> = ({ bg }) => {
   }, [date]);
 
   // フォーマット変更 → 2020/12/26
-  const getFormatDate = (date: Date) => moment(date).format('YYYY / MM / DD');
+  const formatDate = (date: Date) => moment(date).format('YYYY / MM / DD');
 
   return (
     <ReactDatePicker
@@ -38,8 +35,15 @@ const DatePicker: FC<Props> = ({ bg }) => {
       onChange={(date: Date) => setDate(date)}
       maxDate={addDays(new Date(), 0)}
       customInput={
-        <Button shadow="base" color="black" bg={bg}>
-          {getFormatDate(date)}
+        <Button
+          bg="gray.100"
+          border="2px solid"
+          borderColor="gray.300"
+          borderRadius="30px"
+          iconSpacing={4}
+          rightIcon={<Icon as={FcCalendar} w={6} h={6} />}
+        >
+          {formatDate(date)}
         </Button>
       }
     />

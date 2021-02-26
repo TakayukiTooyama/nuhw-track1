@@ -30,12 +30,12 @@ const WeightEditDetail: FC = () => {
 
   // Local State
   const [menus, setMenus] = useState<WeightMenu[]>([]);
-    const [name, setName] = useState('');
-    const [weightNameList, setWeightNameList] = useState<WeightName[]>([]);
-    const [filterNameList, setFilterNameList] = useState<WeightName[]>([]);
-    const [toggleMenu, setToggleMenu] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
-    const [rm, setRm] = useState(3);
+  const [name, setName] = useState('');
+  const [weightNameList, setWeightNameList] = useState<WeightName[]>([]);
+  const [filterNameList, setFilterNameList] = useState<WeightName[]>([]);
+  const [toggleMenu, setToggleMenu] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [rm, setRm] = useState(3);
 
   // ページ訪問時 & 選択された日付が変わった時
   useEffect(() => {
@@ -163,7 +163,7 @@ const WeightEditDetail: FC = () => {
       <Box mb={8} />
 
       <Flex justify="space-between" align="center">
-        <DatePicker bg="blue.400" />
+        <DatePicker />
         <LinkButton label=" 終了" link={`/weight/${dateId}`} />
       </Flex>
       <Box mb={8} />
@@ -242,6 +242,9 @@ const WeightEditDetail: FC = () => {
       ) : (
         <Button
           shadow="base"
+          w="100%"
+          colorScheme="blue"
+          borderRadius="30px"
           onClick={() => setToggleMenu(true)}
           isLoading={isLoading}
         >

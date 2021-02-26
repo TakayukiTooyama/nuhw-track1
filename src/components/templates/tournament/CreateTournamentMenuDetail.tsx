@@ -101,25 +101,25 @@ const CreateTournamentMenuDetail: FC = () => {
   };
 
   // 大会リストの編集のためにそれぞれをクリックした時の処理
-  const handleClick = (id: string) => {
+  const handleClick = (menu: TournamentData) => {
     const editStartDate = new Date(
-      `${formatStartDate.slice(0, 4)}/${formatStartDate.slice(
+      `${menu.startDate.slice(0, 4)}/${menu.startDate.slice(
         4,
         6
-      )}/${formatStartDate.slice(6, 8)}`
+      )}/${menu.startDate.slice(6, 8)}`
     );
     const editEndDate = new Date(
-      `${formatEndDate.slice(0, 4)}/${formatEndDate.slice(
+      `${menu.endDate.slice(0, 4)}/${menu.endDate.slice(
         4,
         6
-      )}/${formatEndDate.slice(6, 8)}`
+      )}/${menu.endDate.slice(6, 8)}`
     );
     setToggleEdit(false);
-    setName(name);
-    setVenue(venue);
+    setName(menu.name);
+    setVenue(menu.venue);
     setStartDate(editStartDate);
     setEndDate(editEndDate);
-    setSelectedIndex(id);
+    setSelectedIndex(menu.id);
     setToggleEditMenu(true);
   };
 
@@ -145,7 +145,7 @@ const CreateTournamentMenuDetail: FC = () => {
           {menus.map((menu, idx) => {
             if (toggleEditMenu && selectedIndex === menu.id) {
               return (
-                <Stack spacing={2} key={menu.id}>
+                <Stack spacing={4} key={menu.id}>
                   <Box mb={4} />
                   <DateRangePicker
                     startDate={startDate}
@@ -188,7 +188,7 @@ const CreateTournamentMenuDetail: FC = () => {
                 align="center"
                 cursor="pointer"
                 _hover={{ bg: 'gray.50' }}
-                onClick={() => handleClick(menu.id)}
+                onClick={() => handleClick(menu)}
               >
                 <Text color="gray.400">{menu.name}</Text>
                 <Divider />
@@ -222,7 +222,12 @@ const CreateTournamentMenuDetail: FC = () => {
                 onChange={(e) => setVenue(e.target.value)}
               />
               <Box mb={4} />
-              <Button bg="green.400" shadow="base" onClick={addTournamentMenu}>
+              <Button
+                w="100%"
+                bg="green.400"
+                shadow="base"
+                onClick={addTournamentMenu}
+              >
                 追加
               </Button>
             </>

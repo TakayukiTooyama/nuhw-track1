@@ -13,18 +13,17 @@ const Statistics: FC<Props> = ({ idx, type, data, label, format }) => {
   const formatData = () => {
     if (format) {
       return format(String(data));
-    } 
-      return data;
-    
+    }
+    return data;
   };
   const statData = formatData();
 
   return (
     <>
-      {!!data && (
+      {data >= 0 && (
         <Stat>
           <StatLabel>{`${idx + 1}${label}`}</StatLabel>
-          <StatNumber>
+          <StatNumber fontSize={['18px', '20px', '22px']}>
             <StatArrow type={type} />
             {statData}
           </StatNumber>

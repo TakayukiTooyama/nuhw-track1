@@ -1,5 +1,5 @@
 import { SearchIcon } from '@chakra-ui/icons';
-import { Box, HStack, IconButton } from '@chakra-ui/react';
+import { Box, Flex, HStack, IconButton, Stack } from '@chakra-ui/react';
 import React, {
   ChangeEvent,
   Dispatch,
@@ -48,7 +48,7 @@ const WeightViewDetail: VFC = () => {
     return await teamWeithMenusRef.get().then((snapshot) => {
       const nameList = snapshot.docs.map((doc) => {
         const data = doc.data() as SearchName;
-        const {name} = data;
+        const { name } = data;
         return name;
       });
       return nameList;
@@ -112,7 +112,7 @@ const WeightViewDetail: VFC = () => {
 
     return await usersRef.get().then((snapshot) => {
       const userData = snapshot.docs.map((doc) => {
-        const {id} = doc;
+        const { id } = doc;
         const data = doc.data() as User;
         const username = data.displayName;
         return { id, username };
@@ -142,20 +142,6 @@ const WeightViewDetail: VFC = () => {
     }
   );
 
-  // クリック時にリフェッチ
-  // const { data: project } = useQuery(
-  //   ['weightMenu', ids],
-  //   fetchWeightSearchConditions,
-  //   {
-  //     enabled: !!ids && refetch,
-  //     refetchOnWindowFocus: refetch,
-  //     retry: 6,
-  //   }
-  // );
-  // const handleClick = () => {
-  //   setRefetch(true);
-  // };
-
   useEffect(() => {
     if (errorMessage === '') return;
     setErrorMessage('');
@@ -165,9 +151,10 @@ const WeightViewDetail: VFC = () => {
 
   return (
     <Box width="100%" maxW="500px" mx="auto">
-      <HStack spacing={2} align="flex-start">
+      <Stack spacing={2} align="flex-start" direction={['column', 'row']}>
         <Box width="100%">
           <InputText
+            maxW="100%"
             textAlign="center"
             value={name}
             placeholder="ウエイト種目"
@@ -178,19 +165,21 @@ const WeightViewDetail: VFC = () => {
             <SearchInBox nameList={filterNameList} setName={setName} />
           )}
         </Box>
-        <InputText
-          value={rm}
-          placeholder="RM"
-          onChange={(e) => handleChange(e, setRm)}
-          maxW="60px"
-          textAlign="center"
-        />
-        <IconButton
-          aria-label="Search database"
-          icon={<SearchIcon />}
-          onClick={() => userData && fetchWeightSearchConditions(userData)}
-        />
-      </HStack>
+        <HStack>
+          <InputText
+            value={rm}
+            placeholder="RM"
+            onChange={(e) => handleChange(e, setRm)}
+            maxW="100px"
+            textAlign="center"
+          />
+          <IconButton
+            aria-label="Search database"
+            icon={<SearchIcon />}
+            onClick={() => userData && fetchWeightSearchConditions(userData)}
+          />
+        </HStack>
+      </Stack>
       <Box mb={1} />
       <ErrorMessage message={errorMessage} textAlign="left" />
       <Box mb={8} />

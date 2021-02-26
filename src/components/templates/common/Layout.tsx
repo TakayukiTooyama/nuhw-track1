@@ -16,7 +16,7 @@ const Layout: FC<Props> = ({
   title = 'NUHW TRACK',
   noHeader = false,
 }) => (
-  <Box h="100%">
+  <Box minH="100vh">
     <Head>
       <title>{title}</title>
     </Head>
