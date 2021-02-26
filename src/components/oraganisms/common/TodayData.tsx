@@ -1,4 +1,4 @@
-import { Box, Flex, SimpleGrid, StatGroup, Text } from '@chakra-ui/react';
+import { Box, Flex, SimpleGrid, Text } from '@chakra-ui/react';
 import React, { Dispatch, SetStateAction, VFC } from 'react';
 
 import { Comparison, Menu } from '../../../models/users';

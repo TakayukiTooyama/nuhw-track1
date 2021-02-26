@@ -1,5 +1,5 @@
 import { SearchIcon } from '@chakra-ui/icons';
-import { Box, Flex, HStack, IconButton, Stack } from '@chakra-ui/react';
+import { Box, HStack, IconButton, Stack } from '@chakra-ui/react';
 import React, {
   ChangeEvent,
   Dispatch,

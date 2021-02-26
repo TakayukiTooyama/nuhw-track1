@@ -1,4 +1,4 @@
-import { Box, Divider, Heading } from '@chakra-ui/react';
+import { Box, Heading } from '@chakra-ui/react';
 import Link from 'next/link';
 import React, { useEffect, VFC } from 'react';
 import { useRecoilState } from 'recoil';
