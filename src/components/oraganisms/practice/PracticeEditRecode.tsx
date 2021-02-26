@@ -1,6 +1,6 @@
 import { DeleteIcon } from '@chakra-ui/icons';
 import { HStack, IconButton, Text, useDisclosure } from '@chakra-ui/react';
-import { FC, useEffect, useRef, useState } from 'react';
+import { FC, useRef, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import { MobileNumberKeyboard, ModalDisplayRecord } from '..';
 import { useDeviceInfo, useOutsideClick } from '../../../hooks';

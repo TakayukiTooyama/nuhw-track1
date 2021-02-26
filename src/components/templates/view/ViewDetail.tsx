@@ -2,9 +2,7 @@ import { Stack } from '@chakra-ui/react';
 import React, { VFC } from 'react';
 
 import { LinkContent } from '../../../models/users';
-import { ImageLinkButton, LinkBlock } from '../../molecules';
-
-type Props = {};
+import { ImageLinkButton } from '../../molecules';
 
 const content: LinkContent[] = [
   {
@@ -21,7 +19,7 @@ const content: LinkContent[] = [
   },
 ];
 
-const ViewDetail: VFC<Props> = () => (
+const ViewDetail: VFC = () => (
   <Stack spacing={4}>
     {content.map((item) => (
       <ImageLinkButton key={item.name} item={item} />
