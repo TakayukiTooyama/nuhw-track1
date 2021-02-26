@@ -60,23 +60,21 @@ const GraphAllData: FC<Props> = ({ data, format, label, axisLabel }) => {
         categories: xLabel,
       },
       yaxis: {
-        formatter (val: number) {
+        formatter(val: number) {
           if (format === undefined) {
             return String(val);
-          } 
-            return format(String(val));
-          
+          }
+          return format(String(val));
         },
       },
       tooltip: {
         shared: false,
         y: {
-          formatter (val: number) {
+          formatter(val: number) {
             if (format === undefined) {
               return String(val);
-            } 
-              return format(String(val));
-            
+            }
+            return format(String(val));
           },
         },
       },
@@ -86,8 +84,8 @@ const GraphAllData: FC<Props> = ({ data, format, label, axisLabel }) => {
   const createXLabel = () => {
     const xLabelAry: string[] = [];
     data.forEach((item) => {
-      item.recodes.forEach((recode, idx) => {
-        if (recode.value === '') return;
+      item.recodes.forEach((record, idx) => {
+        if (record.value === '') return;
         const strDateId = String(item.dateId);
         const formatDateId = moment(strDateId).format('MM/DD');
         xLabelAry.push(`${formatDateId} ${idx + 1}${axisLabel}`);
@@ -100,8 +98,8 @@ const GraphAllData: FC<Props> = ({ data, format, label, axisLabel }) => {
   const dailyFormula = () => {
     const array: number[] = [];
     data.forEach((menu) => {
-      menu.recodes.forEach((recode) => {
-        array.push(Number(recode.value));
+      menu.recodes.forEach((record) => {
+        array.push(Number(record.value));
       });
     });
     setDataList([{ name: `${label}`, data: array }]);

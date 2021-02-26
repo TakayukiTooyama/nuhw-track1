@@ -17,7 +17,7 @@ const BoxStyle = {
 const InputBox: VFC<Props> = (props) => {
   const {
     value,
-    maxW = '200px',
+    maxW = '255px',
     borderRadius = '0.375rem',
     textAlign = 'left',
     borderstyle = '',

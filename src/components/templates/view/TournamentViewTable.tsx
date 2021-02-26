@@ -32,7 +32,7 @@ type Data = {
   grade: string;
   date: string;
   round: Round;
-  recode: string;
+  record: string;
   wind: string;
 };
 
@@ -62,14 +62,14 @@ const TournamentViewTable: FC<Props> = ({ menus, hide, toggleSearch }) => {
       );
       const { username } = menu.user;
       const { grade } = menu.user;
-      menu.recodes.forEach((recode) => {
+      menu.recodes.forEach((record) => {
         dataAry.push({
           username,
           grade,
           date: formatDate,
-          round: recode.round,
-          recode: formatTimeNotationAtInput(recode.value),
-          wind: recode.wind,
+          round: record.round,
+          record: formatTimeNotationAtInput(record.value),
+          wind: record.wind,
         });
       });
     });
@@ -97,7 +97,7 @@ const TournamentViewTable: FC<Props> = ({ menus, hide, toggleSearch }) => {
     },
     {
       Header: '記録',
-      accessor: 'recode',
+      accessor: 'record',
     },
     {
       Header: '風速',
@@ -124,7 +124,7 @@ const TournamentViewTable: FC<Props> = ({ menus, hide, toggleSearch }) => {
     },
     {
       Header: '記録',
-      accessor: 'recode',
+      accessor: 'record',
     },
   ];
 
@@ -139,7 +139,7 @@ const TournamentViewTable: FC<Props> = ({ menus, hide, toggleSearch }) => {
     },
     {
       Header: '記録',
-      accessor: 'recode',
+      accessor: 'record',
     },
     {
       Header: '風速',
@@ -158,7 +158,7 @@ const TournamentViewTable: FC<Props> = ({ menus, hide, toggleSearch }) => {
     },
     {
       Header: '記録',
-      accessor: 'recode',
+      accessor: 'record',
     },
   ];
   const COLUMNS5: Column<Pick<Data, 'username' | 'round'>>[] = [
@@ -176,9 +176,9 @@ const TournamentViewTable: FC<Props> = ({ menus, hide, toggleSearch }) => {
   const changeColumn = () => {
     if (recodes.length) {
       const ary: string[] = [];
-      recodes.forEach((recode) => {
-        if (recode.wind !== '') {
-          ary.push(recode.wind);
+      recodes.forEach((record) => {
+        if (record.wind !== '') {
+          ary.push(record.wind);
         }
       });
       if (hide) {

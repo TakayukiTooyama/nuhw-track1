@@ -2,41 +2,44 @@ import { DeleteIcon } from '@chakra-ui/icons';
 import { HStack, IconButton, Text, useDisclosure } from '@chakra-ui/react';
 import { FC, useRef, useState } from 'react';
 import { useRecoilValue } from 'recoil';
+import { FaRunning } from 'react-icons/fa';
+import { RiTimerFill } from 'react-icons/ri';
 import { MobileNumberKeyboard, ModalDisplayRecord } from '..';
 import { useDeviceInfo, useOutsideClick } from '../../../hooks';
-
 import { db } from '../../../lib/firebase';
-import { Recode } from '../../../models/users';
+import { Record } from '../../../models/users';
 import { userState } from '../../../recoil/users/user';
 import { formatTimeNotationAtInput } from '../../../utils/formatTimeNotationAtInput';
-
 import { InputNumber, InputReadonly } from '../../molecules';
 
 type Props = {
-  menuId: string;
-  items: Recode;
-  recodes: Recode[];
-  setRecodes: React.Dispatch<React.SetStateAction<Recode[]>>;
+  name: string;
   idx: number;
   index: number;
+  menuId: string;
+  items: Record;
+  recodes: Record[];
+  setRecodes: React.Dispatch<React.SetStateAction<Record[]>>;
   setIndex: React.Dispatch<React.SetStateAction<number>>;
 };
 
 const PracticeEditRecode: FC<Props> = ({
+  name,
+  idx,
+  index,
   menuId,
   items,
   recodes,
   setRecodes,
-  index,
-  idx,
   setIndex,
 }) => {
   const user = useRecoilValue(userState);
 
-  const [recode, setRecode] = useState(items.value);
+  const [record, setRecode] = useState(items.value);
   const [editToggle, setEditToggle] = useState(items.editting);
 
   const ref = useRef<HTMLDivElement>(null);
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { deviceInfo } = useDeviceInfo();
 
@@ -102,12 +105,20 @@ const PracticeEditRecode: FC<Props> = ({
     });
   };
 
+  // モバイル端末での記録削除
+  const deleteRecodeInMobile = async (index: number) => {
+    if (user === null) return;
+    const newRecodes = recodes.filter((_item, idx) => idx !== index);
+    setRecodes(newRecodes);
+    await practicesRef.update({ recodes: newRecodes });
+  };
+
   // 編集への切り替え(recodeクリック時の処理)
   const handleClick = (idx: number, value: string) => {
     setRecode(value);
     setIndex(idx);
     const selectedIndex = recodes.findIndex(
-      (recode) => recode.recodeId === idx
+      (record) => record.recodeId === idx
     );
     recodes[selectedIndex] = { recodeId: idx, value, editting: true };
     setRecodes(recodes);
@@ -135,12 +146,12 @@ const PracticeEditRecode: FC<Props> = ({
         {editToggle ? (
           <HStack spacing={2} ref={ref}>
             <InputNumber
-              value={recode}
+              value={record}
               onChange={handleChange}
-              onKeyDown={(e) => updateRecode(e, idx, recode)}
+              onKeyDown={(e) => updateRecode(e, idx, record)}
             />
             <IconButton
-              aria-label="recode-delete"
+              aria-label="record-delete"
               bg="none"
               _hover={{ bg: 'gray.100' }}
               icon={<DeleteIcon color="red.400" />}
@@ -159,16 +170,20 @@ const PracticeEditRecode: FC<Props> = ({
         idx={index}
         isOpen={isOpen}
         onClose={onClose}
-        inputValue={recode}
+        inputValue={record}
         setInputValue={setRecode}
         writeRecode={updateRecodeInMobile}
         label="本目"
         format={formatTimeNotationAtInput}
       >
         <ModalDisplayRecord
+          name={name}
+          label="本目"
+          nameIcon={FaRunning}
+          labelIcon={RiTimerFill}
           recodes={recodes}
-          setRecodes={setRecodes}
-          menuId={menuId}
+          formatValue={formatTimeNotationAtInput}
+          deleteRecord={deleteRecodeInMobile}
         />
       </MobileNumberKeyboard>
     </>

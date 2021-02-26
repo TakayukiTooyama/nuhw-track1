@@ -18,7 +18,7 @@ const InputNumber: VFC<Props> = (props) => {
   const {
     value,
     placeholder,
-    maxW = '200px',
+    maxW = '255px',
     inputMode = 'none',
     onChange,
     onBlur,

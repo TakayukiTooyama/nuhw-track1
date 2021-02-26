@@ -72,7 +72,7 @@ export const PracticeEditDetail: VFC = () => {
             handleBlur={handleBlur}
           />
           <Box mb={1} />
-          <ErrorMessage message={errorMessage} />
+          <ErrorMessage message={errorMessage} textAlign="center" />
         </>
       ) : (
         <Button

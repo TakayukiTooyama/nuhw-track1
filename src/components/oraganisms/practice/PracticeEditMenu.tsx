@@ -8,7 +8,7 @@ import {
 } from '@chakra-ui/react';
 import React, { useEffect, useState, VFC } from 'react';
 
-import { Menu, Recode } from '../../../models/users';
+import { Menu, Record } from '../../../models/users';
 import { MenuDeleteModal, PracticeEditRecode, PracticeRecodeCreator } from '..';
 import { DeleteIcon } from '@chakra-ui/icons';
 
@@ -20,7 +20,7 @@ type Props = {
 
 const PracticeEditMenu: VFC<Props> = ({ items, setMenus, deleteMenu }) => {
   // Local State
-  const [recodes, setRecodes] = useState<Recode[]>(items.recodes);
+  const [recodes, setRecodes] = useState<Record[]>(items.recodes);
   const [index, setIndex] = useState(0);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -50,28 +50,30 @@ const PracticeEditMenu: VFC<Props> = ({ items, setMenus, deleteMenu }) => {
         </Flex>
         <Box mb={4} />
 
-        <Stack spacing={1}>
+        <Stack spacing={2}>
           {recodes &&
-            recodes.map((recode, idx) => (
+            recodes.map((record, idx) => (
               <PracticeEditRecode
-                key={`practices-${idx}-${recode.recodeId}`}
+                key={`practices-${idx}-${record.recodeId}`}
+                name={items.name}
                 menuId={items.menuId}
-                index={index}
                 idx={idx}
-                setIndex={setIndex}
-                items={recode}
+                index={index}
+                items={record}
                 recodes={recodes}
+                setIndex={setIndex}
                 setRecodes={setRecodes}
               />
             ))}
         </Stack>
-        <Box mb={1} />
+        <Box mb={4} />
 
         <PracticeRecodeCreator
+          name={items.name}
           menuId={items.menuId}
           index={index}
-          setIndex={setIndex}
           recodes={recodes}
+          setIndex={setIndex}
           setRecodes={setRecodes}
           setMenus={setMenus}
         />

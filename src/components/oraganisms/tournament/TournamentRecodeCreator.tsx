@@ -24,7 +24,7 @@ import React, {
 import { useRecoilValue } from 'recoil';
 
 import { db } from '../../../lib/firebase';
-import { Round,TournamentMenu, TournamentRecode } from '../../../models/users';
+import { Round, TournamentMenu, TournamentRecode } from '../../../models/users';
 import { userState } from '../../../recoil/users/user';
 import { ErrorMessage } from '../../molecules';
 
@@ -60,7 +60,7 @@ const TournamentRecodeCreator: FC<Props> = ({
   // ラウンド
   const [round, setRound] = useState<Round>('予選');
   // 記録
-  const [recode, setRecode] = useState('');
+  const [record, setRecode] = useState('');
   // 風速
   const [wind, setWind] = useState('');
   const [loading, setLoading] = useState(false);
@@ -79,7 +79,7 @@ const TournamentRecodeCreator: FC<Props> = ({
       menu.competitionName !== '400H' &&
       menu.competitionName !== '800M';
     // 全て入力
-    if (recode === '' || (validation && wind === '')) {
+    if (record === '' || (validation && wind === '')) {
       setErrorMessage('全ての項目を入力してください');
       return;
     }
@@ -95,16 +95,16 @@ const TournamentRecodeCreator: FC<Props> = ({
     // 10分以内(800mまでなので10分以上かからない)
     const regex1 = /[^0-9]/g;
     const regex2 = /[^0-9.-]/g;
-    const resultRecode = regex1.test(recode);
+    const resultRecode = regex1.test(record);
     const resultWind = regex2.test(wind);
     const currentWind = regex1.test(wind.slice(-3, -2));
     if (
-      recode.length > 5 ||
+      record.length > 5 ||
       resultRecode ||
       resultWind ||
       currentWind ||
       (wind.slice(0, 1) === '-' && wind.slice(-3, -2) === '.') ||
-      recode.slice(0, 1) === '0'
+      record.slice(0, 1) === '0'
     ) {
       setErrorMessage('正しい記録を入力してください');
       return;
@@ -114,7 +114,7 @@ const TournamentRecodeCreator: FC<Props> = ({
     const newData: TournamentRecode = {
       recodeId: index,
       round,
-      value: recode,
+      value: record,
       wind,
       lane,
     };
@@ -149,11 +149,15 @@ const TournamentRecodeCreator: FC<Props> = ({
   };
 
   return (
-    <HStack>
+    <>
       {toggleEdit ? (
-        <Flex direction="column">
+        <Flex direction="column" w="100%" maxW="255px">
           <Menu>
-            <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+            <MenuButton
+              as={Button}
+              rightIcon={<ChevronDownIcon />}
+              shadow="base"
+            >
               {round}
             </MenuButton>
             <MenuList>
@@ -175,8 +179,7 @@ const TournamentRecodeCreator: FC<Props> = ({
               </Flex>
             ) : null}
             <Input
-              maxW="200px"
-              value={recode}
+              value={record}
               onChange={(e) => handleChange(e, setRecode)}
               placeholder="記録"
             />
@@ -184,36 +187,34 @@ const TournamentRecodeCreator: FC<Props> = ({
             menu.competitionName !== '800M' &&
             menu.competitionName !== '400H' ? (
               <Input
-                maxW="200px"
                 value={wind}
                 onChange={(e) => handleChange(e, setWind)}
                 placeholder="風速"
               />
             ) : null}
-            <ErrorMessage message={errorMessage} />
-            <HStack>
+            <ErrorMessage message={errorMessage} textAlign="center" />
+            <HStack maxW="255px">
               <Button
-                shadow="base"
-                bg="green.300"
                 w="100%"
-                maxW="100px"
+                shadow="base"
+                colorScheme="teal"
                 onClick={addRecode}
                 isLoading={loading}
               >
                 追加
               </Button>
-              <Button shadow="base" onClick={cansel}>
-                キャンセル
+              <Button shadow="base" w="100%" onClick={cansel}>
+                閉じる
               </Button>
             </HStack>
           </Stack>
         </Flex>
       ) : (
-        <Button w="200px" shadow="base" onClick={() => setToggleEdit(true)}>
+        <Button w="255px" shadow="base" onClick={() => setToggleEdit(true)}>
           ＋
         </Button>
       )}
-    </HStack>
+    </>
   );
 };
 

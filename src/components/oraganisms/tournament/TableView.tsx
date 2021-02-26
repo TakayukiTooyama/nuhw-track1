@@ -19,7 +19,7 @@ type Props = {
 
 type Data = {
   round: Round;
-  recode: string;
+  record: string;
   wind: string;
   date: string;
   tournamentName?: string;
@@ -50,12 +50,12 @@ const TableView: FC<Props> = ({ menus, hide }) => {
         'YYYY/MM/DD'
       );
       const tournamentName = menu.data.name;
-      menu.recodes.forEach((recode) => {
+      menu.recodes.forEach((record) => {
         dataAry.push({
           date: formatDate,
-          round: recode.round,
-          recode: formatTimeNotationAtInput(recode.value),
-          wind: recode.wind,
+          round: record.round,
+          record: formatTimeNotationAtInput(record.value),
+          wind: record.wind,
           tournamentName,
         });
       });
@@ -76,7 +76,7 @@ const TableView: FC<Props> = ({ menus, hide }) => {
     },
     {
       Header: '記録',
-      accessor: 'recode',
+      accessor: 'record',
     },
     {
       Header: '風速',
@@ -99,7 +99,7 @@ const TableView: FC<Props> = ({ menus, hide }) => {
     },
     {
       Header: '記録',
-      accessor: 'recode',
+      accessor: 'record',
     },
     {
       Header: '大会名',
@@ -118,7 +118,7 @@ const TableView: FC<Props> = ({ menus, hide }) => {
     },
     {
       Header: '記録',
-      accessor: 'recode',
+      accessor: 'record',
     },
     {
       Header: '風速',
@@ -137,7 +137,7 @@ const TableView: FC<Props> = ({ menus, hide }) => {
     },
     {
       Header: '記録',
-      accessor: 'recode',
+      accessor: 'record',
     },
   ];
   const COLUMNS5: Column<Pick<Data, 'date' | 'round'>>[] = [
@@ -157,9 +157,9 @@ const TableView: FC<Props> = ({ menus, hide }) => {
   const changeColumn = () => {
     if (judgRecode) {
       const ary: string[] = [];
-      recodes.forEach((recode) => {
-        if (recode.wind !== '') {
-          ary.push(recode.wind);
+      recodes.forEach((record) => {
+        if (record.wind !== '') {
+          ary.push(record.wind);
         }
       });
       if (hide) {

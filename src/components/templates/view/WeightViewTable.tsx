@@ -1,6 +1,6 @@
 import moment from 'moment';
 import React, { useMemo, VFC } from 'react';
-import { Column,useSortBy, useTable  } from 'react-table';
+import { Column, useSortBy, useTable } from 'react-table';
 import { useRecoilValue } from 'recoil';
 
 import { WeightMenu } from '../../../models/users';
@@ -48,9 +48,9 @@ const ViewTable: VFC<Props> = ({ menus, label = '', format }) => {
         const formatDate = moment(strDateId).format('YYYY/MM/DD');
 
         const obj: Data = {};
-        menu.recodes.forEach((recode, idx) => {
-          const key = `recode${idx + 1}`;
-          const {value} = recode;
+        menu.recodes.forEach((record, idx) => {
+          const key = `record${idx + 1}`;
+          const { value } = record;
           if (format) {
             obj[key] = format(value);
           } else {
@@ -78,7 +78,7 @@ const ViewTable: VFC<Props> = ({ menus, label = '', format }) => {
     ary.forEach((_recode, idx) => {
       selectedNumberList.push({
         Header: `${idx + 1}${label}`,
-        accessor: `recode${idx + 1}`,
+        accessor: `record${idx + 1}`,
       });
     });
     return selectedNumberList;
@@ -132,10 +132,10 @@ const ViewTable: VFC<Props> = ({ menus, label = '', format }) => {
           return (
             <TableRow {...row.getRowProps()}>
               {row.cells.map((cell) => (
-                  <TableCell {...cell.getCellProps()}>
-                    {cell.render('Cell')}
-                  </TableCell>
-                ))}
+                <TableCell {...cell.getCellProps()}>
+                  {cell.render('Cell')}
+                </TableCell>
+              ))}
             </TableRow>
           );
         })}

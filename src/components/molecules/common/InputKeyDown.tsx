@@ -1,17 +1,21 @@
-import { Input, InputGroup, InputRightElement } from '@chakra-ui/react';
+import {
+  Input,
+  InputGroup,
+  InputGroupProps,
+  InputRightElement,
+} from '@chakra-ui/react';
 import React, { ChangeEvent, KeyboardEvent, VFC } from 'react';
 import { useSetRecoilState } from 'recoil';
 
 import { isComposedState } from '../../../recoil/users/user';
 
-type Props = {
+type Props = InputGroupProps & {
   value: string;
   placeholder: string;
   unit?: string;
   addFunc?: (e: KeyboardEvent<HTMLElement>) => Promise<void>;
   handleBlur?: () => void;
   handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  maxW?: string;
 };
 
 const InputKeyDown: VFC<Props> = ({
@@ -21,11 +25,11 @@ const InputKeyDown: VFC<Props> = ({
   addFunc,
   handleBlur,
   handleChange,
-  maxW = '255px',
+  ...props
 }) => {
   const setIsComposed = useSetRecoilState(isComposedState);
   return (
-    <InputGroup w="100%" maxW={maxW}>
+    <InputGroup w="100%" {...props}>
       <Input
         autoFocus
         bg="white"

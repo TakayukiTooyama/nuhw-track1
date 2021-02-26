@@ -9,39 +9,31 @@ import {
 } from '@chakra-ui/react';
 import React, { VFC } from 'react';
 import { useScreenHeight } from '../../../hooks';
-import { formatTimeNotation } from '../../../utils/formatTimeNotation';
-import { FaRunning } from 'react-icons/fa';
-import { RiTimerFill } from 'react-icons/ri';
 import { TiDelete } from 'react-icons/ti';
 import { GrEdit } from 'react-icons/gr';
-import { Recode } from '../../../models/users';
-import { userState } from '../../../recoil/users/user';
-import { useRecoilValue } from 'recoil';
-import { db } from '../../../lib/firebase';
+import { Record } from '../../../models/users';
+import { IconType } from 'react-icons/lib';
 
 type Props = {
-  recodes: Recode[];
-  setRecodes: React.Dispatch<React.SetStateAction<Recode[]>>;
-  menuId: string;
+  name: string;
+  label: string;
+  nameIcon: IconType;
+  labelIcon: IconType;
+  recodes: Record[];
+  deleteRecord: (index: number) => Promise<void>;
+  formatValue: (input: string) => string;
 };
 
-const ModalDisplayRecord: VFC<Props> = ({ recodes, setRecodes, menuId }) => {
+const ModalDisplayRecord: VFC<Props> = ({
+  name,
+  label,
+  nameIcon,
+  labelIcon,
+  recodes,
+  deleteRecord,
+  formatValue,
+}) => {
   const { screenHeight } = useScreenHeight();
-  const user = useRecoilValue(userState);
-
-  const practicesRef = db
-    .collection('users')
-    .doc(user?.uid)
-    .collection('practices')
-    .doc(menuId);
-
-  // スマホで記録削除
-  const deleteRecodeInMobile = async (index: number) => {
-    if (user === null) return;
-    const newRecodes = recodes.filter((_item, idx) => idx !== index);
-    setRecodes(newRecodes);
-    await practicesRef.update({ recodes: newRecodes });
-  };
 
   return (
     <Box maxW="400px" mx="auto">
@@ -54,8 +46,8 @@ const ModalDisplayRecord: VFC<Props> = ({ recodes, setRecodes, menuId }) => {
         bg="orange.400"
       >
         <HStack>
-          <Icon as={FaRunning} w={6} h={6} />
-          <Text fontSize="lg">100m</Text>
+          <Icon as={nameIcon} w={6} h={6} />
+          <Text fontSize="lg">{name}</Text>
         </HStack>
       </Box>
 
@@ -79,18 +71,21 @@ const ModalDisplayRecord: VFC<Props> = ({ recodes, setRecodes, menuId }) => {
                 w="100%"
               >
                 <HStack>
-                  <Icon as={RiTimerFill} w={6} h={6} color="orange.600" />
-                  <Text>{idx + 1}本目</Text>
+                  <Icon as={labelIcon} w={6} h={6} color="orange.600" />
+                  <Text>
+                    {idx + 1}
+                    {label}
+                  </Text>
                 </HStack>
                 <Spacer />
                 <HStack spacing={4}>
-                  <Text fontSize="xl">{formatTimeNotation(item.value)}</Text>
+                  <Text fontSize="xl">{formatValue(item.value)}</Text>
                   <Icon
                     as={TiDelete}
                     w={6}
                     h={6}
                     color="red.300"
-                    onClick={() => deleteRecodeInMobile(idx)}
+                    onClick={() => deleteRecord(idx)}
                   />
                 </HStack>
               </Flex>

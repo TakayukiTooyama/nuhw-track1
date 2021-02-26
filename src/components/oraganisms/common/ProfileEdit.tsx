@@ -60,7 +60,7 @@ const ProfileEdit: VFC<Props> = ({ user, setUser, setToggleEdit }) => {
           contents={blocks}
           setName={setBlockName}
         />
-        <Button shadow="base" bg="cyan.300" onClick={saveProfile}>
+        <Button shadow="base" colorScheme="cyan" onClick={saveProfile}>
           保存
         </Button>
       </Stack>

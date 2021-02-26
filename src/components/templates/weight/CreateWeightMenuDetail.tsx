@@ -172,7 +172,6 @@ const CreateWeightMenuDetail: FC = () => {
             <InputKeyDown
               value={name}
               placeholder="新しいメニュー"
-              maxW="100%"
               handleChange={handleChange}
               handleBlur={createBlur}
               addFunc={addTeamWeightMenu}

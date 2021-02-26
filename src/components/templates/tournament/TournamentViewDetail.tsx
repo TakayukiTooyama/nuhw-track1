@@ -90,13 +90,13 @@ const TournamentViewDetail: FC = () => {
     setToggleNoWind(true);
     if (name === '100M') {
       const menus100m: TournamentMenu[] = menus.map((menu) => {
-        const recodes: TournamentRecode[] = menu.recodes.map((recode) => ({
-          ...recode,
+        const recodes: TournamentRecode[] = menu.recodes.map((record) => ({
+          ...record,
           value: String(
             undo(
               CalcWind100m(
-                Number(timeNotation(recode.value)),
-                Number(recode.wind)
+                Number(timeNotation(record.value)),
+                Number(record.wind)
               )
             )
           ),
@@ -110,14 +110,14 @@ const TournamentViewDetail: FC = () => {
       setWindLessMenus(menus100m);
     } else {
       const menus200m = menus.map((menu) => {
-        const recodes: TournamentRecode[] = menu.recodes.map((recode) => ({
-          ...recode,
+        const recodes: TournamentRecode[] = menu.recodes.map((record) => ({
+          ...record,
           value: String(
             undo(
               CalcWind200m(
-                Number(timeNotation(recode.value)),
-                Number(recode.wind),
-                Number(recode.lane)
+                Number(timeNotation(record.value)),
+                Number(record.wind),
+                Number(record.lane)
               )
             )
           ),
@@ -137,11 +137,11 @@ const TournamentViewDetail: FC = () => {
   return (
     <>
       <TournamentHeader dataList={dataList} />
-      <Box mb={8} />
+      <Box mb={4} />
 
       <Flex justify="space-between" align="center">
         <SelectNameList />
-        <LinkButton label="編集" link="/tournament/edit" />
+        <LinkButton label="編集" link="/tournament/edit" ml={2} />
       </Flex>
       <Box mb={8} />
 

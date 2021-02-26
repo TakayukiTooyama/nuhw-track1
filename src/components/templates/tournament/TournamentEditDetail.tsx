@@ -249,7 +249,13 @@ const TournamentEditDetail: VFC = () => {
           )}
         </>
       ) : (
-        <Button shadow="base" onClick={() => setToggleMenu(true)}>
+        <Button
+          w="100%"
+          shadow="base"
+          colorScheme="teal"
+          borderRadius="30px"
+          onClick={() => setToggleMenu(true)}
+        >
           メニューを追加
         </Button>
       )}

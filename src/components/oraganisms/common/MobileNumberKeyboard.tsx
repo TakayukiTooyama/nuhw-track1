@@ -177,7 +177,8 @@ const MobileNumberKeyboard: FC<Props> = ({
                     onClick={() => InputOperation(value)}
                     isDisabled={
                       (disableStrings && disableStrings.includes(value)) ||
-                      (inputValue === '' && value === '0')
+                      (inputValue === '' && value === '0') ||
+                      (inputValue === '' && value === '.')
                     }
                   >
                     {value}

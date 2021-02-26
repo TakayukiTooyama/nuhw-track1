@@ -1,5 +1,4 @@
 import {
-  Box,
   Button,
   HStack,
   NumberInput,
@@ -9,25 +8,28 @@ import {
 } from '@chakra-ui/react';
 import React, { FC, useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
+import { FaRunning } from 'react-icons/fa';
+import { RiTimerFill } from 'react-icons/ri';
 import { MobileNumberKeyboard } from '..';
-
 import { db } from '../../../lib/firebase';
-import { Menu, Recode } from '../../../models/users';
+import { Menu, Record } from '../../../models/users';
 import { userState } from '../../../recoil/users/user';
 import { useDeviceInfo } from '../../../hooks';
 import { formatTimeNotationAtInput } from '../../../utils/formatTimeNotationAtInput';
 import { ModalDisplayRecord } from '..';
 
 type Props = {
+  name: string;
   index: number;
-  recodes: Recode[];
+  recodes: Record[];
   menuId: string;
   setIndex: React.Dispatch<React.SetStateAction<number>>;
-  setRecodes: React.Dispatch<React.SetStateAction<Recode[]>>;
+  setRecodes: React.Dispatch<React.SetStateAction<Record[]>>;
   setMenus: React.Dispatch<React.SetStateAction<Menu[]>>;
 };
 
 const PracticeRecodeCreator: FC<Props> = ({
+  name,
   index,
   recodes,
   menuId,
@@ -35,7 +37,7 @@ const PracticeRecodeCreator: FC<Props> = ({
   setRecodes,
 }) => {
   const user = useRecoilValue(userState);
-  const [recode, setRecode] = useState('');
+  const [record, setRecode] = useState('');
   const [isOpenInput, setIsOpenInput] = useState(false);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -64,7 +66,7 @@ const PracticeRecodeCreator: FC<Props> = ({
   const addRecode = async (e: React.KeyboardEvent<HTMLElement>) => {
     if (user === null) return;
     if (e.key === 'Enter') {
-      const newRecode = { recodeId: index, value: recode, editting: false };
+      const newRecode = { recodeId: index, value: record, editting: false };
       await practicesRef
         .update({ recodes: [...recodes, newRecode] })
         .then(() => {
@@ -94,6 +96,14 @@ const PracticeRecodeCreator: FC<Props> = ({
     }
   };
 
+  // モバイル端末での記録削除
+  const deleteRecodeInMobile = async (index: number) => {
+    if (user === null) return;
+    const newRecodes = recodes.filter((_item, idx) => idx !== index);
+    setRecodes(newRecodes);
+    await practicesRef.update({ recodes: newRecodes });
+  };
+
   // 記録を追加していって範囲外となったら範囲の一番したまでスクロール
   useEffect(() => {
     const scrollArea = document.querySelector('#scroll-area');
@@ -104,47 +114,46 @@ const PracticeRecodeCreator: FC<Props> = ({
 
   return (
     <>
-      <Box mb={4}>
-        {isOpenInput ? (
-          <HStack>
-            <Text color="gray.400" w="100%" maxW="50px">
-              {index + 1}本目
-            </Text>
-            <NumberInput
-              maxW="200px"
-              value={recode}
-              placeholder={`${index + 1}本目`}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              onKeyDown={addRecode}
-            >
-              <NumberInputField autoFocus />
-            </NumberInput>
-          </HStack>
-        ) : (
-          <HStack>
-            <Box minW="50px" />
-            <Button w="100%" maxW="200px" shadow="base" onClick={InputToggle}>
-              ＋
-            </Button>
-          </HStack>
-        )}
-      </Box>
+      {isOpenInput ? (
+        <HStack>
+          <Text color="gray.400" w="100%" maxW="50px">
+            {index + 1}本目
+          </Text>
+          <NumberInput
+            maxW="200px"
+            value={record}
+            placeholder={`${index + 1}本目`}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            onKeyDown={addRecode}
+          >
+            <NumberInputField autoFocus />
+          </NumberInput>
+        </HStack>
+      ) : (
+        <Button w="100%" maxW="259px" shadow="base" onClick={InputToggle}>
+          ＋
+        </Button>
+      )}
       <MobileNumberKeyboard
         disableStrings={['+/-', '.']}
         idx={index}
         isOpen={isOpen}
         onClose={onClose}
-        inputValue={recode}
+        inputValue={record}
         setInputValue={setRecode}
         writeRecode={addRecodeInMobile}
         label="本目"
         format={formatTimeNotationAtInput}
       >
         <ModalDisplayRecord
+          name={name}
+          label="本目"
+          nameIcon={FaRunning}
+          labelIcon={RiTimerFill}
           recodes={recodes}
-          setRecodes={setRecodes}
-          menuId={menuId}
+          formatValue={formatTimeNotationAtInput}
+          deleteRecord={deleteRecodeInMobile}
         />
       </MobileNumberKeyboard>
     </>

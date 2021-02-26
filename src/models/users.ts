@@ -56,7 +56,7 @@ export type Comparison = {
 };
 
 // 練習メニュー
-export type Recode = {
+export type Record = {
   recodeId: number;
   value: string;
   editting: boolean;
@@ -66,7 +66,7 @@ export type Menu = {
   dateId: number;
   menuId: string;
   name: string;
-  recodes: Recode[];
+  recodes: Record[];
 };
 
 // ウエイト
@@ -76,7 +76,7 @@ export type WeightMenu = {
   name: string;
   rm: number;
   setCount: number;
-  recodes: Recode[];
+  recodes: Record[];
 };
 
 export type WeightName = {

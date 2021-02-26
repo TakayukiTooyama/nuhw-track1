@@ -57,23 +57,21 @@ const GraphDailyAverage: FC<Props> = ({ data, format, label }) => {
         categories: xLabel,
       },
       yaxis: {
-        formatter (val: number) {
+        formatter(val: number) {
           if (format === undefined) {
             return String(val);
-          } 
-            return format(String(val));
-          
+          }
+          return format(String(val));
         },
       },
       tooltip: {
         shared: false,
         y: {
-          formatter (val: number) {
+          formatter(val: number) {
             if (format === undefined) {
               return String(val);
-            } 
-              return format(String(val));
-            
+            }
+            return format(String(val));
           },
         },
       },
@@ -85,7 +83,7 @@ const GraphDailyAverage: FC<Props> = ({ data, format, label }) => {
     const xLabelAry: string[] = [];
     data.forEach((item) => {
       const strDateId = String(item.dateId);
-      const formatDateId = `${strDateId.slice(4, 6)  }/${  strDateId.slice(6, 8)}`;
+      const formatDateId = `${strDateId.slice(4, 6)}/${strDateId.slice(6, 8)}`;
       xLabelAry.push(`${formatDateId}`);
     });
     setXLabel(xLabelAry);
@@ -96,8 +94,8 @@ const GraphDailyAverage: FC<Props> = ({ data, format, label }) => {
     const averageArray: number[] = [];
     data.forEach((menu) => {
       let sum = 0;
-      menu.recodes.forEach((recode) => {
-        sum += Number(recode.value);
+      menu.recodes.forEach((record) => {
+        sum += Number(record.value);
       });
       const len = menu.recodes.length;
       // 少数第二位四捨五入

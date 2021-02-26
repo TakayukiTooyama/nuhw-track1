@@ -64,14 +64,14 @@ const GraphAllData: FC<Props> = ({ data, label }) => {
         },
       },
       yaxis: {
-        formatter (val: number) {
+        formatter(val: number) {
           return val;
         },
       },
       tooltip: {
         shared: false,
         y: {
-          formatter (val: number) {
+          formatter(val: number) {
             return val;
           },
         },
@@ -83,9 +83,9 @@ const GraphAllData: FC<Props> = ({ data, label }) => {
     const xLabelAry: string[] = [];
     data.forEach((item) => {
       const date = moment(String(item.competitionDay)).format('YYYY/MM/DD');
-      item.recodes.forEach((recode) => {
+      item.recodes.forEach((record) => {
         xLabelAry.push(
-          `${item.data.name} ・ ${date} ・ ${recode.round} ・ 風${recode.wind}`
+          `${item.data.name} ・ ${date} ・ ${record.round} ・ 風${record.wind}`
         );
       });
     });
@@ -96,16 +96,15 @@ const GraphAllData: FC<Props> = ({ data, label }) => {
   const dailyFormula = () => {
     const array: number[] = [];
     data.forEach((menu) => {
-      menu.recodes.forEach((recode) => {
-        const {value} = recode;
+      menu.recodes.forEach((record) => {
+        const { value } = record;
         if (value.length > 4) {
-          const data =
-            `${String(Number(value.slice(0, 1)) * 60 + Number(value.slice(1, 3))) 
-            }.${ 
-            value.slice(3)}`;
+          const data = `${String(
+            Number(value.slice(0, 1)) * 60 + Number(value.slice(1, 3))
+          )}.${value.slice(3)}`;
           array.push(Number(data));
         } else {
-          const data = Number(`${value.slice(0, -2)  }.${  value.slice(-2)}`);
+          const data = Number(`${value.slice(0, -2)}.${value.slice(-2)}`);
           array.push(Number(data));
         }
       });

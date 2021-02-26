@@ -41,7 +41,7 @@ const GuideMenu: VFC = () => {
           <HamburgerIcon fontSize="25px" />
         )}
       </MenuButton>
-      <MenuList color="grey">
+      <MenuList color="grey" zIndex="modal">
         <MenuItem
           icon={<AiOutlineHome fontSize="20px" />}
           onClick={() => goToLink('/')}

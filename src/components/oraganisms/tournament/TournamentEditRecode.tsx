@@ -1,4 +1,4 @@
-import { ChevronDownIcon } from '@chakra-ui/icons';
+import { ChevronDownIcon, DeleteIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
@@ -15,7 +15,6 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { Dispatch, FC, SetStateAction, useState } from 'react';
-import { AiFillDelete } from 'react-icons/ai';
 import { useRecoilValue } from 'recoil';
 
 import { db } from '../../../lib/firebase';
@@ -49,7 +48,7 @@ const TournamentEditRecode: FC<Props> = ({
 
   // Local State
   const [round, setRound] = useState(items.round);
-  const [recode, setRecode] = useState(items.value);
+  const [record, setRecode] = useState(items.value);
   const [wind, setWind] = useState(items.wind);
   const [lane, setLane] = useState(items.lane);
   const [toggleRecodes, setToggleRecodes] = useState(false);
@@ -81,7 +80,7 @@ const TournamentEditRecode: FC<Props> = ({
       menu.competitionName !== '400H' &&
       menu.competitionName !== '800M';
     // 全て入力
-    if (recode === '' || (validation && wind === '')) {
+    if (record === '' || (validation && wind === '')) {
       setErrorMessage('全ての項目を入力してください');
       return;
     }
@@ -96,8 +95,8 @@ const TournamentEditRecode: FC<Props> = ({
     }
     // 10分以内(800mまでなので10分以上かからない)
     const regex = /[^0-9]/g;
-    const result = regex.test(recode);
-    if (recode.length > 5 || result || recode.slice(0, 1) === '0') {
+    const result = regex.test(record);
+    if (record.length > 5 || result || record.slice(0, 1) === '0') {
       setErrorMessage('正しい記録を入力してください');
       return;
     }
@@ -121,7 +120,7 @@ const TournamentEditRecode: FC<Props> = ({
     setIndex(items.recodeId);
     setToggleEdit(false);
     const selectedIndex = recodes.findIndex(
-      (recode) => recode.recodeId === items.recodeId
+      (record) => record.recodeId === items.recodeId
     );
     recodes[selectedIndex] = {
       recodeId: items.recodeId,
@@ -137,7 +136,7 @@ const TournamentEditRecode: FC<Props> = ({
   // 編集を離れた時
   const handleBlur = () => {
     const selectedIndex = recodes.findIndex(
-      (recode) => recode.recodeId === items.recodeId
+      (record) => record.recodeId === items.recodeId
     );
     recodes[selectedIndex] = {
       recodeId: items.recodeId,
@@ -169,7 +168,7 @@ const TournamentEditRecode: FC<Props> = ({
       .doc(user.uid)
       .collection('tournaments')
       .doc(menuId);
-    const newRecodes = recodes.filter((recode) => recode.recodeId !== id);
+    const newRecodes = recodes.filter((record) => record.recodeId !== id);
     await tournamentsRef.update({ recodes: newRecodes }).then(() => {
       setRecodes(newRecodes);
     });
@@ -180,25 +179,32 @@ const TournamentEditRecode: FC<Props> = ({
       {toggleRecodes ? (
         <>
           <Flex direction="column">
-            <Box mb={4} />
-            <Menu>
-              <MenuButton
-                as={Button}
-                rightIcon={<ChevronDownIcon />}
-                w="100%"
-                maxW="200px"
-              >
-                {round}
-              </MenuButton>
-              <MenuList>
-                {roundList.map((round) => (
-                  <MenuItem key={round} onClick={() => setRound(round)}>
-                    {round}
-                  </MenuItem>
-                ))}
-              </MenuList>
-            </Menu>
-            <Box mb={2} />
+            <HStack mb={2} w="100%" maxW="255px">
+              <Menu>
+                <MenuButton
+                  w="100%"
+                  shadow="base"
+                  as={Button}
+                  rightIcon={<ChevronDownIcon />}
+                >
+                  {round}
+                </MenuButton>
+                <MenuList>
+                  {roundList.map((round) => (
+                    <MenuItem key={round} onClick={() => setRound(round)}>
+                      {round}
+                    </MenuItem>
+                  ))}
+                </MenuList>
+              </Menu>
+              <IconButton
+                aria-label="menu-delete"
+                shadow="inner"
+                bg="red.200"
+                onClick={() => deleteRecode(items.recodeId)}
+                icon={<DeleteIcon />}
+              />
+            </HStack>
             {menu.competitionName !== '800M' ? (
               <Flex justify="flex-start" align="center">
                 <PinInput
@@ -213,7 +219,7 @@ const TournamentEditRecode: FC<Props> = ({
             ) : null}
             <Box mb={2} />
             <Stack>
-              <InputNumber value={recode} onChange={changeRecode} />
+              <InputNumber value={record} onChange={changeRecode} />
               {menu.competitionName !== '400M' &&
               menu.competitionName !== '800M' &&
               menu.competitionName !== '400H' ? (
@@ -223,26 +229,18 @@ const TournamentEditRecode: FC<Props> = ({
             <Box mb={2} />
             <ErrorMessage message={errorMessage} />
             <Box mb={2} />
-            <HStack>
+            <HStack maxW="255px">
               <Button
-                bg="green.300"
-                shadow="base"
                 w="100%"
-                maxW="100px"
-                onClick={() => updateRecode(round, recode, wind, lane)}
+                shadow="base"
+                colorScheme="teal"
+                onClick={() => updateRecode(round, record, wind, lane)}
               >
                 更新
               </Button>
-              <Button shadow="base" w="100%" maxW="100px" onClick={handleBlur}>
-                キャンセル
+              <Button shadow="base" w="100%" onClick={handleBlur}>
+                閉じる
               </Button>
-              <IconButton
-                aria-label="menu-delete"
-                shadow="inner"
-                bg="red.300"
-                onClick={() => deleteRecode(items.recodeId)}
-                icon={<AiFillDelete fontSize="20px" />}
-              />
             </HStack>
             <Box mb={4} />
           </Flex>
@@ -255,12 +253,12 @@ const TournamentEditRecode: FC<Props> = ({
           border="1px solid"
           borderColor="inherit"
           borderRadius="0.375rem"
+          cursor="pointer"
         >
           <Flex>
             <InputBox
               bg="gray.100"
               value={items.round}
-              maxW="100%"
               textAlign="center"
               borderRadius="none"
               borderstyle="none"
@@ -269,7 +267,6 @@ const TournamentEditRecode: FC<Props> = ({
               <InputBox
                 bg="gray.100"
                 value={`${items.lane}レーン`}
-                maxW="100%"
                 textAlign="center"
                 borderRadius="none"
                 borderstyle="none"
@@ -279,7 +276,6 @@ const TournamentEditRecode: FC<Props> = ({
           <Flex>
             <InputBox
               value={formatTimeNotationAtInput(items.value)}
-              maxW="100%"
               textAlign="center"
               borderRadius="none"
               borderstyle="none"
@@ -289,7 +285,6 @@ const TournamentEditRecode: FC<Props> = ({
             menu.competitionName !== '400H' ? (
               <InputBox
                 value={items.wind}
-                maxW="100%"
                 textAlign="center"
                 borderRadius="none"
                 borderstyle="none"
