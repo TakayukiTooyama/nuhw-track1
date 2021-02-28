@@ -22,7 +22,7 @@ type Props = {
   onClose: () => void;
   inputValue: string;
   setInputValue: Dispatch<SetStateAction<string>>;
-  writeRecode: (inputValue: string, idx: number) => void;
+  writeRecord: (inputValue: string, idx: number) => void;
   label: string;
   format?: (input: string) => string;
 };
@@ -42,7 +42,7 @@ const MobileNumberKeyboard: FC<Props> = ({
   onClose,
   inputValue,
   setInputValue,
-  writeRecode,
+  writeRecord,
   format,
   label,
   children,
@@ -102,8 +102,10 @@ const MobileNumberKeyboard: FC<Props> = ({
         setInputValue('');
         break;
       case 'confirm':
-        writeRecode(inputValue, idx);
-        setInputValue('');
+        if (inputValue !== '') {
+          writeRecord(inputValue, idx);
+          setInputValue('');
+        }
         break;
       default:
         inputValue.length >= 5
@@ -177,7 +179,6 @@ const MobileNumberKeyboard: FC<Props> = ({
                     onClick={() => InputOperation(value)}
                     isDisabled={
                       (disableStrings && disableStrings.includes(value)) ||
-                      (inputValue === '' && value === '0') ||
                       (inputValue === '' && value === '.')
                     }
                   >

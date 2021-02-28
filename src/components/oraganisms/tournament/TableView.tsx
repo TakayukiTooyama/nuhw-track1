@@ -27,7 +27,7 @@ type Data = {
 
 const TableView: FC<Props> = ({ menus, hide }) => {
   const name = menus[0].competitionName;
-  const { recodes } = menus[0];
+  const { records } = menus[0];
 
   // 入力された文字列をタイム表記に変換
   const formatTimeNotationAtInput = (input: string) => {
@@ -50,7 +50,7 @@ const TableView: FC<Props> = ({ menus, hide }) => {
         'YYYY/MM/DD'
       );
       const tournamentName = menu.data.name;
-      menu.recodes.forEach((record) => {
+      menu.records?.forEach((record) => {
         dataAry.push({
           date: formatDate,
           round: record.round,
@@ -152,12 +152,12 @@ const TableView: FC<Props> = ({ menus, hide }) => {
   ];
   const data = useMemo(() => DATA, [menus]);
 
-  const judgRecode = menus.some((menu) => menu.recodes.length);
+  const judgRecord = menus.some((menu) => menu.records?.length);
 
   const changeColumn = () => {
-    if (judgRecode) {
+    if (judgRecord) {
       const ary: string[] = [];
-      recodes.forEach((record) => {
+      records?.forEach((record) => {
         if (record.wind !== '') {
           ary.push(record.wind);
         }

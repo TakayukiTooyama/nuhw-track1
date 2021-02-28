@@ -97,7 +97,7 @@ const WeightEditDetail: FC = () => {
       name: selectedName,
       rm,
       setCount: 3,
-      recodes: [],
+      records: [],
     };
     await weightsRef
       .doc(menuId)

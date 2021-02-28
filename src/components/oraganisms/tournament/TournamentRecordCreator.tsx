@@ -4,7 +4,6 @@ import {
   Button,
   Flex,
   HStack,
-  Input,
   Menu,
   MenuButton,
   MenuItem,
@@ -14,40 +13,34 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react';
-import React, {
-  ChangeEvent,
-  Dispatch,
-  FC,
-  SetStateAction,
-  useState,
-} from 'react';
+import React, { Dispatch, FC, SetStateAction, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 
 import { db } from '../../../lib/firebase';
-import { Round, TournamentMenu, TournamentRecode } from '../../../models/users';
+import { Round, TournamentMenu, TournamentRecord } from '../../../models/users';
 import { userState } from '../../../recoil/users/user';
-import { ErrorMessage } from '../../molecules';
+import { ErrorMessage, InputNumber } from '../../molecules';
 
 type Props = {
   index: number;
   menuId: string;
-  recodes: TournamentRecode[];
+  records: TournamentRecord[];
   menu: TournamentMenu;
   setIndex: Dispatch<SetStateAction<number>>;
-  setRecodes: Dispatch<SetStateAction<TournamentRecode[]>>;
+  setRecords: Dispatch<SetStateAction<TournamentRecord[]>>;
   toggleEdit: boolean;
   setToggleEdit: Dispatch<SetStateAction<boolean>>;
   errorMessage: string;
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const TournamentRecodeCreator: FC<Props> = ({
+const TournamentRecordCreator: FC<Props> = ({
   index,
   menuId,
-  recodes,
+  records,
   menu,
   setIndex,
-  setRecodes,
+  setRecords,
   toggleEdit,
   setToggleEdit,
   errorMessage,
@@ -60,7 +53,7 @@ const TournamentRecodeCreator: FC<Props> = ({
   // ラウンド
   const [round, setRound] = useState<Round>('予選');
   // 記録
-  const [record, setRecode] = useState('');
+  const [record, setRecord] = useState('');
   // 風速
   const [wind, setWind] = useState('');
   const [loading, setLoading] = useState(false);
@@ -69,7 +62,7 @@ const TournamentRecodeCreator: FC<Props> = ({
   const roundList: Round[] = ['予選', '準決勝', '決勝'];
 
   // 大会結果を追加
-  const addRecode = async () => {
+  const addRecord = async () => {
     if (user === null) return;
     const usersRef = db.collection('users').doc(user.uid);
     const tournamentsRef = usersRef.collection('tournaments').doc(menuId);
@@ -95,12 +88,12 @@ const TournamentRecodeCreator: FC<Props> = ({
     // 10分以内(800mまでなので10分以上かからない)
     const regex1 = /[^0-9]/g;
     const regex2 = /[^0-9.-]/g;
-    const resultRecode = regex1.test(record);
+    const resultRecord = regex1.test(record);
     const resultWind = regex2.test(wind);
     const currentWind = regex1.test(wind.slice(-3, -2));
     if (
       record.length > 5 ||
-      resultRecode ||
+      resultRecord ||
       resultWind ||
       currentWind ||
       (wind.slice(0, 1) === '-' && wind.slice(-3, -2) === '.') ||
@@ -111,18 +104,18 @@ const TournamentRecodeCreator: FC<Props> = ({
     }
     setLoading(true);
 
-    const newData: TournamentRecode = {
-      recodeId: index,
+    const newData: TournamentRecord = {
+      recordId: index,
       round,
       value: record,
       wind,
       lane,
     };
     await tournamentsRef
-      .update({ recodes: [...recodes, newData] })
+      .update({ records: [...records, newData] })
       .then(async () => {
-        setRecodes((prev) => [...prev, newData]);
-        setRecode('');
+        setRecords((prev) => [...prev, newData]);
+        setRecord('');
         setRound('予選');
         setWind('');
         setLane('1');
@@ -131,11 +124,12 @@ const TournamentRecodeCreator: FC<Props> = ({
       });
   };
 
-  const handleChange = (
-    e: ChangeEvent<HTMLInputElement>,
-    setValue: Dispatch<SetStateAction<string>>
-  ) => {
-    setValue(e.target.value);
+  const handleChangeRecord = (valueAsString: string) => {
+    setRecord(valueAsString);
+    setErrorMessage('');
+  };
+  const handleChangeWind = (valueAsString: string) => {
+    setWind(valueAsString);
     setErrorMessage('');
   };
 
@@ -143,7 +137,7 @@ const TournamentRecodeCreator: FC<Props> = ({
     setToggleEdit(false);
     setRound('予選');
     setLane('1');
-    setRecode('');
+    setRecord('');
     setWind('');
     setErrorMessage('');
   };
@@ -178,17 +172,19 @@ const TournamentRecodeCreator: FC<Props> = ({
                 <Text color="gray.400">レーン</Text>
               </Flex>
             ) : null}
-            <Input
+            <InputNumber
+              inputMode="numeric"
               value={record}
-              onChange={(e) => handleChange(e, setRecode)}
+              onChange={handleChangeRecord}
               placeholder="記録"
             />
             {menu.competitionName !== '400M' &&
             menu.competitionName !== '800M' &&
             menu.competitionName !== '400H' ? (
-              <Input
+              <InputNumber
                 value={wind}
-                onChange={(e) => handleChange(e, setWind)}
+                inputMode="decimal"
+                onChange={handleChangeWind}
                 placeholder="風速"
               />
             ) : null}
@@ -198,7 +194,7 @@ const TournamentRecodeCreator: FC<Props> = ({
                 w="100%"
                 shadow="base"
                 colorScheme="teal"
-                onClick={addRecode}
+                onClick={addRecord}
                 isLoading={loading}
               >
                 追加
@@ -218,4 +214,4 @@ const TournamentRecodeCreator: FC<Props> = ({
   );
 };
 
-export default TournamentRecodeCreator;
+export default TournamentRecordCreator;

@@ -57,7 +57,7 @@ export type Comparison = {
 
 // 練習メニュー
 export type Record = {
-  recodeId: number;
+  recordId: number;
   value: string;
   editting: boolean;
 };
@@ -66,7 +66,7 @@ export type Menu = {
   dateId: number;
   menuId: string;
   name: string;
-  recodes: Record[];
+  records: Record[];
 };
 
 // ウエイト
@@ -76,7 +76,7 @@ export type WeightMenu = {
   name: string;
   rm: number;
   setCount: number;
-  recodes: Record[];
+  records: Record[];
 };
 
 export type WeightName = {
@@ -87,8 +87,8 @@ export type WeightName = {
 // 大会結果
 export type Round = '予選' | '準決勝' | '決勝';
 
-export type TournamentRecode = {
-  recodeId: number;
+export type TournamentRecord = {
+  recordId: number;
   value: string;
   round: Round;
   wind: string;
@@ -100,7 +100,7 @@ export type TournamentMenu = {
   competitionName: string;
   competitionDay: number;
   data: TournamentData;
-  recodes: TournamentRecode[];
+  records: TournamentRecord[];
 };
 
 export type TournamentData = {

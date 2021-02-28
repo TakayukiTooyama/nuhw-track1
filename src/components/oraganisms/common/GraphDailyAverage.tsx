@@ -94,10 +94,10 @@ const GraphDailyAverage: FC<Props> = ({ data, format, label }) => {
     const averageArray: number[] = [];
     data.forEach((menu) => {
       let sum = 0;
-      menu.recodes.forEach((record) => {
+      menu.records?.forEach((record) => {
         sum += Number(record.value);
       });
-      const len = menu.recodes.length;
+      const len = menu.records?.length;
       // 少数第二位四捨五入
       const average = Math.floor(sum / len);
       averageArray.push(average);

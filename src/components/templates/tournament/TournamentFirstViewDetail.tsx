@@ -46,6 +46,7 @@ const TournamentFirstViewDetail: VFC = () => {
           <TournamentDataTable dataList={data} />
           <Box mb={4} />
           <LinkButton
+            w="100%"
             label="追加したい大会がない場合"
             link="/tournament/create"
           />

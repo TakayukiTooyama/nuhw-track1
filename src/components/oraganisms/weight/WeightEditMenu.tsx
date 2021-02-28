@@ -6,28 +6,31 @@ import {
   InputGroup,
   InputRightElement,
   Stack,
+  useDisclosure,
 } from '@chakra-ui/react';
 import React, { FC, useEffect, useState } from 'react';
 import { DeleteIcon } from '@chakra-ui/icons';
 
 import { WeightMenu } from '../../../models/users';
-import { WeightEditRecode, WeightRecodeCreator } from '..';
+import { MenuDeleteModal, WeightEditRecord, WeightRecordCreator } from '..';
 
 type Props = {
   items: WeightMenu;
   setMenus: React.Dispatch<React.SetStateAction<WeightMenu[]>>;
-  deleteMenu: (menuId: string) => void;
+  deleteMenu: (menuId: string) => Promise<void>;
 };
 
 const WeightEditMenu: FC<Props> = ({ items, setMenus, deleteMenu }) => {
   // Local State
-  const [recodes, setRecodes] = useState(items.recodes);
+  const [records, setRecords] = useState(items.records);
   const [index, setIndex] = useState(0);
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   // リフレッシュ後でもインデックスを続きから始めるための処理
   useEffect(() => {
-    setIndex(recodes.length);
-  }, [recodes.length]);
+    setIndex(records?.length);
+  }, [records?.length]);
 
   return (
     <Box bg="white" w="100%" p={4} rounded={5} shadow="base">
@@ -44,38 +47,43 @@ const WeightEditMenu: FC<Props> = ({ items, setMenus, deleteMenu }) => {
           aria-label="menu-delete"
           shadow="inner"
           bg="red.200"
-          onClick={() => deleteMenu(items.menuId)}
+          onClick={onOpen}
           icon={<DeleteIcon />}
         />
       </Flex>
       <Box mb={4} />
 
-      {recodes.length > 0 && (
-        <Stack spacing={2} mb={4}>
-          {recodes.map((record, idx) => (
-            <WeightEditRecode
-              key={`practices-${idx}-${record.recodeId}`}
+      <Stack spacing={2} mb={4}>
+        {records &&
+          records.map((record, idx) => (
+            <WeightEditRecord
+              key={`practices-${idx}-${record.recordId}`}
               name={items.name}
               items={record}
               idx={idx}
               index={index}
               menuId={items.menuId}
               setIndex={setIndex}
-              recodes={recodes}
-              setRecodes={setRecodes}
+              records={records}
+              setRecords={setRecords}
             />
           ))}
-        </Stack>
-      )}
+      </Stack>
 
-      <WeightRecodeCreator
+      <WeightRecordCreator
         name={items.name}
         index={index}
         menuId={items.menuId}
-        recodes={recodes}
+        records={records}
         setIndex={setIndex}
-        setRecodes={setRecodes}
+        setRecords={setRecords}
         setMenus={setMenus}
+      />
+      <MenuDeleteModal
+        title={items.name}
+        isOpen={isOpen}
+        onClose={onClose}
+        onDelete={() => deleteMenu(items.menuId)}
       />
     </Box>
   );

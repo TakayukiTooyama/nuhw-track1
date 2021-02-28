@@ -13,13 +13,14 @@ import { TiDelete } from 'react-icons/ti';
 import { GrEdit } from 'react-icons/gr';
 import { Record } from '../../../models/users';
 import { IconType } from 'react-icons/lib';
+import { useRouter } from 'next/router';
 
 type Props = {
   name: string;
   label: string;
   nameIcon: IconType;
   labelIcon: IconType;
-  recodes: Record[];
+  records: Record[];
   deleteRecord: (index: number) => Promise<void>;
   formatValue: (input: string) => string;
 };
@@ -29,11 +30,13 @@ const ModalDisplayRecord: VFC<Props> = ({
   label,
   nameIcon,
   labelIcon,
-  recodes,
+  records,
   deleteRecord,
   formatValue,
 }) => {
   const { screenHeight } = useScreenHeight();
+  const router = useRouter();
+  const path = router.asPath.split('/')[1];
 
   return (
     <Box maxW="400px" mx="auto">
@@ -43,7 +46,7 @@ const ModalDisplayRecord: VFC<Props> = ({
         w="100%"
         borderTopLeftRadius="10px"
         borderTopRightRadius="10px"
-        bg="orange.400"
+        bg={path === 'practice' ? 'orange.400' : 'blue.400'}
       >
         <HStack>
           <Icon as={nameIcon} w={6} h={6} />
@@ -59,11 +62,11 @@ const ModalDisplayRecord: VFC<Props> = ({
         maxH={`calc(${screenHeight}px - 450px)`}
         overflow="auto"
       >
-        {recodes.length ? (
-          recodes.map((item, idx) => (
-            <Box key={`${item.recodeId}-${idx}`}>
+        {records?.length ? (
+          records.map((item, idx) => (
+            <Box key={`${item.recordId}-${idx}`}>
               <Flex
-                key={item.recodeId}
+                key={item.recordId}
                 px={4}
                 align="center"
                 bg="white"
@@ -71,7 +74,7 @@ const ModalDisplayRecord: VFC<Props> = ({
                 w="100%"
               >
                 <HStack>
-                  <Icon as={labelIcon} w={6} h={6} color="orange.600" />
+                  <Icon as={labelIcon} w={6} h={6} color="gray.600" />
                   <Text>
                     {idx + 1}
                     {label}

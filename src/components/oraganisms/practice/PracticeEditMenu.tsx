@@ -9,7 +9,7 @@ import {
 import React, { useEffect, useState, VFC } from 'react';
 
 import { Menu, Record } from '../../../models/users';
-import { MenuDeleteModal, PracticeEditRecode, PracticeRecodeCreator } from '..';
+import { MenuDeleteModal, PracticeEditRecord, PracticeRecordCreator } from '..';
 import { DeleteIcon } from '@chakra-ui/icons';
 
 type Props = {
@@ -20,14 +20,14 @@ type Props = {
 
 const PracticeEditMenu: VFC<Props> = ({ items, setMenus, deleteMenu }) => {
   // Local State
-  const [recodes, setRecodes] = useState<Record[]>(items.recodes);
+  const [records, setRecords] = useState<Record[]>(items.records);
   const [index, setIndex] = useState(0);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   // リフレッシュ後でもインデックスを続きから始めるための処理
   useEffect(() => {
-    setIndex(recodes.length);
-  }, [recodes.length]);
+    setIndex(records?.length);
+  }, [records?.length]);
 
   return (
     <>
@@ -44,37 +44,37 @@ const PracticeEditMenu: VFC<Props> = ({ items, setMenus, deleteMenu }) => {
             bg="red.200"
             aria-label="menu-delete"
             shadow="inner"
-            onClick={() => onOpen()}
+            onClick={onOpen}
             icon={<DeleteIcon fontSize="20px" />}
           />
         </Flex>
         <Box mb={4} />
 
         <Stack spacing={2}>
-          {recodes &&
-            recodes.map((record, idx) => (
-              <PracticeEditRecode
-                key={`practices-${idx}-${record.recodeId}`}
+          {records &&
+            records.map((record, idx) => (
+              <PracticeEditRecord
+                key={`practices-${idx}-${record.recordId}`}
                 name={items.name}
                 menuId={items.menuId}
                 idx={idx}
                 index={index}
                 items={record}
-                recodes={recodes}
+                records={records}
                 setIndex={setIndex}
-                setRecodes={setRecodes}
+                setRecords={setRecords}
               />
             ))}
         </Stack>
         <Box mb={4} />
 
-        <PracticeRecodeCreator
+        <PracticeRecordCreator
           name={items.name}
           menuId={items.menuId}
           index={index}
-          recodes={recodes}
+          records={records}
           setIndex={setIndex}
-          setRecodes={setRecodes}
+          setRecords={setRecords}
           setMenus={setMenus}
         />
       </Box>

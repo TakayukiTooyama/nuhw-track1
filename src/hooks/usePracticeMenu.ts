@@ -57,7 +57,7 @@ const usePracticeMenu = (menusData: Menu[]) => {
         .doc(user.uid)
         .collection('practices');
       const menuId = practicesRef.doc().id;
-      const newData = { dateId, menuId, name: `${name}M`, recodes: [] };
+      const newData = { dateId, menuId, name: `${name}M`, records: [] };
       await practicesRef
         .doc(menuId)
         .set(newData)

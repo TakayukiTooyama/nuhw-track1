@@ -23,23 +23,23 @@ type Props = {
   index: number;
   menuId: string;
   items: Record;
-  recodes: Record[];
-  setRecodes: React.Dispatch<React.SetStateAction<Record[]>>;
+  records: Record[];
+  setRecords: React.Dispatch<React.SetStateAction<Record[]>>;
   setIndex: React.Dispatch<React.SetStateAction<number>>;
 };
 
-const WeightEditRecode: FC<Props> = ({
+const WeightEditRecord: FC<Props> = ({
   name,
   items,
   idx,
   menuId,
-  recodes,
-  setRecodes,
+  records,
+  setRecords,
   setIndex,
 }) => {
   const user = useRecoilValue(userState);
 
-  const [record, setRecode] = useState(items.value);
+  const [record, setRecord] = useState(items.value);
   const [editToggle, setEditToggle] = useState(items.editting);
 
   const ref = useRef<HTMLDivElement>(null);
@@ -55,76 +55,76 @@ const WeightEditRecode: FC<Props> = ({
 
   // 新しく追加するための入力処理
   const handleChange = (valueAsString: string, _valueAsNumber: number) => {
-    setRecode(valueAsString);
+    setRecord(valueAsString);
   };
 
   // 記録の編集処理
-  const updateRecode = async (
+  const updateRecord = async (
     e: React.KeyboardEvent<HTMLElement>,
     idx: number,
     value: string
   ) => {
     if (user === null) return;
     if (e.key === 'Enter') {
-      const newRecodes = recodes;
-      recodes[idx] = { recodeId: idx, value, editting: false };
-      await weightsRef.update({ recodes: newRecodes }).then(() => {
-        setRecodes(newRecodes);
-        setIndex(recodes.length);
+      const newRecords = records;
+      records[idx] = { recordId: idx, value, editting: false };
+      await weightsRef.update({ records: newRecords }).then(() => {
+        setRecords(newRecords);
+        setIndex(records?.length);
         setEditToggle(false);
-        setRecode('');
+        setRecord('');
       });
     }
   };
 
   // スマホでの編集処理
-  const updateRecodeInMobile = async (inputValue: string, idx: number) => {
+  const updateRecordInMobile = async (inputValue: string, idx: number) => {
     if (user === null) return;
-    if (idx === recodes.length) {
-      const newRecode = { recodeId: idx, value: inputValue, editting: false };
-      setRecodes((prev) => [...prev, newRecode]);
+    if (idx === records?.length) {
+      const newRecord = { recordId: idx, value: inputValue, editting: false };
+      setRecords((prev) => [...prev, newRecord]);
       setIndex(idx + 1);
-      setRecode('');
-      await weightsRef.update({ recodes: [...recodes, newRecode] });
+      setRecord('');
+      await weightsRef.update({ records: [...records, newRecord] });
     } else {
-      const newRecodes = recodes;
-      recodes[idx] = { recodeId: idx, value: inputValue, editting: false };
-      setRecodes(newRecodes);
-      setIndex(recodes.length);
-      setRecode('');
-      await weightsRef.update({ recodes: newRecodes });
+      const newRecords = records;
+      records[idx] = { recordId: idx, value: inputValue, editting: false };
+      setRecords(newRecords);
+      setIndex(records?.length);
+      setRecord('');
+      await weightsRef.update({ records: newRecords });
     }
   };
 
   // 記録の削除
-  const deleteRecode = async (recodeId: number) => {
-    const newRecodes = recodes.filter((_recode, idx) => idx !== recodeId);
+  const deleteRecord = async (recordId: number) => {
+    const newRecords = records.filter((_Record, idx) => idx !== recordId);
     if (user === null) return;
     const weightsRef = db
       .collection('users')
       .doc(user.uid)
       .collection('weights')
       .doc(menuId);
-    await weightsRef.update({ recodes: newRecodes }).then(() => {
-      setRecodes(newRecodes);
+    await weightsRef.update({ records: newRecords }).then(() => {
+      setRecords(newRecords);
     });
   };
 
   // モバイル端末での記録削除
-  const deleteRecodeInMobile = async (index: number) => {
+  const deleteRecordInMobile = async (index: number) => {
     if (user === null) return;
-    const newRecodes = recodes.filter((_item, idx) => idx !== index);
-    setRecodes(newRecodes);
-    await weightsRef.update({ recodes: newRecodes });
+    const newRecords = records.filter((_item, idx) => idx !== index);
+    setRecords(newRecords);
+    await weightsRef.update({ records: newRecords });
   };
 
-  // 編集への切り替え(recodeクリック時の処理)
+  // 編集への切り替え(Recordクリック時の処理)
   const handleClick = (id: number, value: string) => {
-    setRecode(value);
+    setRecord(value);
     setIndex(id);
-    const selectedIndex = recodes.findIndex((record) => record.recodeId === id);
-    recodes[selectedIndex] = { recodeId: id, value, editting: true };
-    setRecodes(recodes);
+    const selectedIndex = records.findIndex((record) => record.recordId === id);
+    records[selectedIndex] = { recordId: id, value, editting: true };
+    setRecords(records);
 
     if (deviceInfo === 'Mobile') {
       onOpen();
@@ -136,7 +136,7 @@ const WeightEditRecode: FC<Props> = ({
   // 編集を離れた時
   const handleBlur = () => {
     if (deviceInfo === 'Desktop') {
-      setRecodes(recodes);
+      setRecords(records);
       setEditToggle(false);
     }
   };
@@ -153,7 +153,7 @@ const WeightEditRecode: FC<Props> = ({
                 w="100%"
                 value={record}
                 onChange={handleChange}
-                onKeyDown={(e) => updateRecode(e, idx, record)}
+                onKeyDown={(e) => updateRecord(e, idx, record)}
               >
                 <NumberInputField autoFocus />
               </NumberInput>
@@ -165,7 +165,7 @@ const WeightEditRecode: FC<Props> = ({
               aria-label="record-delete"
               bg="none"
               icon={<DeleteIcon color="red.400" />}
-              onClick={() => deleteRecode(idx)}
+              onClick={() => deleteRecord(idx)}
             />
           </HStack>
         ) : (
@@ -181,7 +181,7 @@ const WeightEditRecode: FC<Props> = ({
             borderRadius="0.375rem"
             border="1px solid"
             borderColor="inherit"
-            onClick={() => handleClick(items.recodeId, items.value)}
+            onClick={() => handleClick(items.recordId, items.value)}
           >
             <Text>{items.value}</Text>
             <Text color="gray.400">kg</Text>
@@ -194,8 +194,8 @@ const WeightEditRecode: FC<Props> = ({
         isOpen={isOpen}
         onClose={onClose}
         inputValue={record}
-        setInputValue={setRecode}
-        writeRecode={updateRecodeInMobile}
+        setInputValue={setRecord}
+        writeRecord={updateRecordInMobile}
         label="セット目"
       >
         <ModalDisplayRecord
@@ -203,13 +203,13 @@ const WeightEditRecode: FC<Props> = ({
           label="セット目"
           nameIcon={GiWeightLiftingUp}
           labelIcon={GiWeight}
-          recodes={recodes}
+          records={records}
           formatValue={(input: string) => `${input}kg`}
-          deleteRecord={deleteRecodeInMobile}
+          deleteRecord={deleteRecordInMobile}
         />
       </MobileNumberKeyboard>
     </>
   );
 };
 
-export default WeightEditRecode;
+export default WeightEditRecord;

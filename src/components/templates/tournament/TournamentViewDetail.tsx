@@ -8,7 +8,7 @@ import { fetchAnnualTournamentData } from '../../../lib/firestore/users';
 import {
   TournamentData,
   TournamentMenu,
-  TournamentRecode,
+  TournamentRecord,
 } from '../../../models/users';
 import {
   makedMenuNameListState,
@@ -90,7 +90,7 @@ const TournamentViewDetail: FC = () => {
     setToggleNoWind(true);
     if (name === '100M') {
       const menus100m: TournamentMenu[] = menus.map((menu) => {
-        const recodes: TournamentRecode[] = menu.recodes.map((record) => ({
+        const records: TournamentRecord[] = menu.records.map((record) => ({
           ...record,
           value: String(
             undo(
@@ -104,13 +104,13 @@ const TournamentViewDetail: FC = () => {
         }));
         return {
           ...menu,
-          recodes,
+          records,
         };
       });
       setWindLessMenus(menus100m);
     } else {
       const menus200m = menus.map((menu) => {
-        const recodes: TournamentRecode[] = menu.recodes.map((record) => ({
+        const records: TournamentRecord[] = menu.records.map((record) => ({
           ...record,
           value: String(
             undo(
@@ -125,7 +125,7 @@ const TournamentViewDetail: FC = () => {
         }));
         return {
           ...menu,
-          recodes,
+          records,
         };
       });
       setWindLessMenus(menus200m);

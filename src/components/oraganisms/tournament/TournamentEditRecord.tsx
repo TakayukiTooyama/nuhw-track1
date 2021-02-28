@@ -18,7 +18,7 @@ import { Dispatch, FC, SetStateAction, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 
 import { db } from '../../../lib/firebase';
-import { Round, TournamentMenu, TournamentRecode } from '../../../models/users';
+import { Round, TournamentMenu, TournamentRecord } from '../../../models/users';
 import { userState } from '../../../recoil/users/user';
 import { formatTimeNotationAtInput } from '../../../utils/formatTimeNotationAtInput';
 import { ErrorMessage, InputNumber } from '../../molecules';
@@ -26,20 +26,20 @@ import InputBox from '../../molecules/common/InputBox';
 
 type Props = {
   menuId: string;
-  items: TournamentRecode;
-  recodes: TournamentRecode[];
+  items: TournamentRecord;
+  records: TournamentRecord[];
   menu: TournamentMenu;
-  setRecodes: Dispatch<SetStateAction<TournamentRecode[]>>;
+  setRecords: Dispatch<SetStateAction<TournamentRecord[]>>;
   setIndex: Dispatch<SetStateAction<number>>;
   setToggleEdit: Dispatch<SetStateAction<boolean>>;
 };
 
-const TournamentEditRecode: FC<Props> = ({
+const TournamentEditRecord: FC<Props> = ({
   items,
   menuId,
-  recodes,
+  records,
   menu,
-  setRecodes,
+  setRecords,
   setIndex,
   setToggleEdit,
 }) => {
@@ -48,14 +48,14 @@ const TournamentEditRecode: FC<Props> = ({
 
   // Local State
   const [round, setRound] = useState(items.round);
-  const [record, setRecode] = useState(items.value);
+  const [record, setRecord] = useState(items.value);
   const [wind, setWind] = useState(items.wind);
   const [lane, setLane] = useState(items.lane);
-  const [toggleRecodes, setToggleRecodes] = useState(false);
+  const [toggleRecords, setToggleRecords] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
   // 記録の編集処理
-  const updateRecode = async (
+  const updateRecord = async (
     round: Round,
     value: string,
     wind: string,
@@ -67,9 +67,9 @@ const TournamentEditRecode: FC<Props> = ({
       .doc(user.uid)
       .collection('tournaments')
       .doc(menuId);
-    const newRecodes = recodes;
-    recodes[items.recodeId] = {
-      recodeId: items.recodeId,
+    const newRecords = records;
+    records[items.recordId] = {
+      recordId: items.recordId,
       round,
       value,
       wind,
@@ -100,59 +100,59 @@ const TournamentEditRecode: FC<Props> = ({
       setErrorMessage('正しい記録を入力してください');
       return;
     }
-    await weightsRef.update({ recodes: newRecodes }).then(() => {
-      setRecodes(newRecodes);
-      setToggleRecodes(false);
-      setIndex(recodes.length);
+    await weightsRef.update({ records: newRecords }).then(() => {
+      setRecords(newRecords);
+      setToggleRecords(false);
+      setIndex(records?.length);
       setRound('予選');
-      setRecode('');
+      setRecord('');
       setWind('');
       setLane('1');
     });
   };
 
-  // 編集への切り替え(recodeクリック時の処理)
+  // 編集への切り替え(Recordクリック時の処理)
   const handleClick = () => {
     setRound(items.round);
-    setRecode(items.value);
+    setRecord(items.value);
     setWind(items.wind);
     setLane(items.lane);
-    setIndex(items.recodeId);
+    setIndex(items.recordId);
     setToggleEdit(false);
-    const selectedIndex = recodes.findIndex(
-      (record) => record.recodeId === items.recodeId
+    const selectedIndex = records.findIndex(
+      (record) => record.recordId === items.recordId
     );
-    recodes[selectedIndex] = {
-      recodeId: items.recodeId,
+    records[selectedIndex] = {
+      recordId: items.recordId,
       round: items.round,
       value: items.value,
       wind: items.wind,
       lane: items.lane,
     };
-    setRecodes(recodes);
-    setToggleRecodes(true);
+    setRecords(records);
+    setToggleRecords(true);
   };
 
   // 編集を離れた時
   const handleBlur = () => {
-    const selectedIndex = recodes.findIndex(
-      (record) => record.recodeId === items.recodeId
+    const selectedIndex = records.findIndex(
+      (record) => record.recordId === items.recordId
     );
-    recodes[selectedIndex] = {
-      recodeId: items.recodeId,
+    records[selectedIndex] = {
+      recordId: items.recordId,
       value: items.value,
       round: items.round,
       wind: items.wind,
       lane: items.lane,
     };
-    setToggleRecodes(false);
-    setRecodes(recodes);
+    setToggleRecords(false);
+    setRecords(records);
   };
 
   const roundList: Round[] = ['予選', '準決勝', '決勝'];
 
-  const changeRecode = (valueAsString: string) => {
-    setRecode(valueAsString);
+  const changeRecord = (valueAsString: string) => {
+    setRecord(valueAsString);
     setErrorMessage('');
   };
   const changeWind = (valueAsString: string) => {
@@ -161,22 +161,22 @@ const TournamentEditRecode: FC<Props> = ({
   };
 
   // 大会結果削除
-  const deleteRecode = async (id: number) => {
+  const deleteRecord = async (id: number) => {
     if (user === null) return;
     const tournamentsRef = db
       .collection('users')
       .doc(user.uid)
       .collection('tournaments')
       .doc(menuId);
-    const newRecodes = recodes.filter((record) => record.recodeId !== id);
-    await tournamentsRef.update({ recodes: newRecodes }).then(() => {
-      setRecodes(newRecodes);
+    const newRecords = records.filter((record) => record.recordId !== id);
+    await tournamentsRef.update({ records: newRecords }).then(() => {
+      setRecords(newRecords);
     });
   };
 
   return (
     <>
-      {toggleRecodes ? (
+      {toggleRecords ? (
         <>
           <Flex direction="column">
             <HStack mb={2} w="100%" maxW="255px">
@@ -201,7 +201,7 @@ const TournamentEditRecode: FC<Props> = ({
                 aria-label="menu-delete"
                 shadow="inner"
                 bg="red.200"
-                onClick={() => deleteRecode(items.recodeId)}
+                onClick={() => deleteRecord(items.recordId)}
                 icon={<DeleteIcon />}
               />
             </HStack>
@@ -219,11 +219,21 @@ const TournamentEditRecode: FC<Props> = ({
             ) : null}
             <Box mb={2} />
             <Stack>
-              <InputNumber value={record} onChange={changeRecode} />
+              <InputNumber
+                value={record}
+                inputMode="numeric"
+                onChange={changeRecord}
+                placeholder="記録"
+              />
               {menu.competitionName !== '400M' &&
               menu.competitionName !== '800M' &&
               menu.competitionName !== '400H' ? (
-                <InputNumber value={wind} onChange={changeWind} />
+                <InputNumber
+                  value={wind}
+                  inputMode="decimal"
+                  onChange={changeWind}
+                  placeholder="風速"
+                />
               ) : null}
             </Stack>
             <Box mb={2} />
@@ -234,7 +244,7 @@ const TournamentEditRecode: FC<Props> = ({
                 w="100%"
                 shadow="base"
                 colorScheme="teal"
-                onClick={() => updateRecode(round, record, wind, lane)}
+                onClick={() => updateRecord(round, record, wind, lane)}
               >
                 更新
               </Button>
@@ -297,4 +307,4 @@ const TournamentEditRecode: FC<Props> = ({
   );
 };
 
-export default TournamentEditRecode;
+export default TournamentEditRecord;

@@ -89,13 +89,13 @@ const WeightViewDetail: FC = () => {
       const comparisonAry2: number[] = [];
 
       if (sortMenus[lastIndex]) {
-        sortMenus[lastIndex].recodes.forEach((record) => {
+        sortMenus[lastIndex].records?.forEach((record) => {
           comparisonAry1.push(Number(record.value));
         });
       }
 
       if (sortMenus[lastIndex - 1]) {
-        sortMenus[lastIndex - 1].recodes.forEach((record) => {
+        sortMenus[lastIndex - 1].records?.forEach((record) => {
           comparisonAry2.push(Number(record.value));
         });
       }
@@ -106,9 +106,9 @@ const WeightViewDetail: FC = () => {
         const number = comparisonAry1[i] - comparisonAry2[i];
         const firstLetter = number.toString().slice(0, 1);
         if (firstLetter === '-') {
-          newAry.push({ type: 'increase', data: Math.abs(number) });
-        } else {
           newAry.push({ type: 'decrease', data: Math.abs(number) });
+        } else {
+          newAry.push({ type: 'increase', data: Math.abs(number) });
         }
       }
       if (!sortMenus[lastIndex - 1]) {

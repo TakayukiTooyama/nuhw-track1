@@ -83,7 +83,7 @@ const GraphAllData: FC<Props> = ({ data, label }) => {
     const xLabelAry: string[] = [];
     data.forEach((item) => {
       const date = moment(String(item.competitionDay)).format('YYYY/MM/DD');
-      item.recodes.forEach((record) => {
+      item.records?.forEach((record) => {
         xLabelAry.push(
           `${item.data.name} ・ ${date} ・ ${record.round} ・ 風${record.wind}`
         );
@@ -96,7 +96,7 @@ const GraphAllData: FC<Props> = ({ data, label }) => {
   const dailyFormula = () => {
     const array: number[] = [];
     data.forEach((menu) => {
-      menu.recodes.forEach((record) => {
+      menu.records?.forEach((record) => {
         const { value } = record;
         if (value.length > 4) {
           const data = `${String(

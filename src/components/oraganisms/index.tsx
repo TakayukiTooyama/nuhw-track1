@@ -19,22 +19,22 @@ export { default as SignInTop } from './auth/SignInTop';
 
 // 練習タイム
 export { default as PracticeEditMenu } from './practice/PracticeEditMenu';
-export { default as PracticeEditRecode } from './practice/PracticeEditRecode';
+export { default as PracticeEditRecord } from './practice/PracticeEditRecord';
 export { default as PracticeMonthlyData } from './practice/PracticeMonthlyData';
-export { default as PracticeRecodeCreator } from './practice/PracticeRecodeCreator';
+export { default as PracticeRecordCreator } from './practice/PracticeRecordCreator';
 export { default as PracticeTodayData } from './practice/PracticeTodayData';
 
 // ウエイト
 export { default as WeightEditMenu } from './weight/WeightEditMenu';
-export { default as WeightEditRecode } from './weight/WeightEditRecode';
+export { default as WeightEditRecord } from './weight/WeightEditRecord';
 export { default as WeightMonthlyData } from './weight/WeightMonthlyData';
-export { default as WeightRecodeCreator } from './weight/WeightRecodeCreator';
+export { default as WeightRecordCreator } from './weight/WeightRecordCreator';
 
 // 大会結果
 export { default as TournamentDataTable } from './tournament/TournamentDataTable';
 export { default as TournamentEditMenu } from './tournament/TournamentEditMenu';
-export { default as TournamentEditRecode } from './tournament/TournamentEditRecode';
+export { default as TournamentEditRecord } from './tournament/TournamentEditRecord';
 export { default as TournamentHeader } from './tournament/TournamentHeader';
-export { default as TournamentRecodeCreator } from './tournament/TournamentRecodeCreator';
+export { default as TournamentRecordCreator } from './tournament/TournamentRecordCreator';
 export { default as TournamentTodayData } from './tournament/TournamentTodayData';
 export { default as TournamentYearData } from './tournament/TournamentYearData';

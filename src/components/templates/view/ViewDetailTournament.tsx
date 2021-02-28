@@ -202,7 +202,7 @@ const TournamentViewDetail: VFC = () => {
     menus.length > 0 &&
     menus.map((menu) => ({
       ...menu,
-      recodes: menu.recodes.filter((record) => Number(record.wind) <= 2.0),
+      records: menu.records.filter((record) => Number(record.wind) <= 2.0),
     }));
 
   const tableMenu = [

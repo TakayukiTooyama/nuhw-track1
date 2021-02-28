@@ -84,7 +84,7 @@ const GraphAllData: FC<Props> = ({ data, format, label, axisLabel }) => {
   const createXLabel = () => {
     const xLabelAry: string[] = [];
     data.forEach((item) => {
-      item.recodes.forEach((record, idx) => {
+      item.records?.forEach((record, idx) => {
         if (record.value === '') return;
         const strDateId = String(item.dateId);
         const formatDateId = moment(strDateId).format('MM/DD');
@@ -98,7 +98,7 @@ const GraphAllData: FC<Props> = ({ data, format, label, axisLabel }) => {
   const dailyFormula = () => {
     const array: number[] = [];
     data.forEach((menu) => {
-      menu.recodes.forEach((record) => {
+      menu.records?.forEach((record) => {
         array.push(Number(record.value));
       });
     });

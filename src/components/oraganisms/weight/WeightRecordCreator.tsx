@@ -20,26 +20,26 @@ import { InputNumber } from '../../molecules';
 type Props = {
   name: string;
   index: number;
-  recodes: Record[];
+  records: Record[];
   menuId: string;
   setIndex: React.Dispatch<React.SetStateAction<number>>;
-  setRecodes: React.Dispatch<React.SetStateAction<Record[]>>;
+  setRecords: React.Dispatch<React.SetStateAction<Record[]>>;
   setMenus: React.Dispatch<React.SetStateAction<WeightMenu[]>>;
 };
 
-const WeightRecodeCreator: FC<Props> = ({
+const WeightRecordCreator: FC<Props> = ({
   name,
   index,
-  recodes,
+  records,
   menuId,
   setIndex,
-  setRecodes,
+  setRecords,
 }) => {
   // Global State
   const user = useRecoilValue(userState);
 
   // Local State
-  const [record, setRecode] = useState('');
+  const [record, setRecord] = useState('');
   const [isOpenInput, setIsOpenInput] = useState(false);
 
   // hooks
@@ -56,40 +56,40 @@ const WeightRecodeCreator: FC<Props> = ({
   const handleBlur = async () => {
     if (deviceInfo === 'Desktop') {
       setIsOpenInput(false);
-      setRecode('');
+      setRecord('');
     }
   };
 
   // 記録入力処理
   const handleChange = (valueAsString: string) => {
-    setRecode(valueAsString);
+    setRecord(valueAsString);
   };
 
   // PCで新しく記録を追加
-  const addRecode = async (e: React.KeyboardEvent<HTMLElement>) => {
+  const addRecord = async (e: React.KeyboardEvent<HTMLElement>) => {
     if (user === null) return;
     if (e.key === 'Enter') {
-      const newRecode = { recodeId: index, value: record, editting: false };
-      await weightsRef.update({ recodes: [...recodes, newRecode] }).then(() => {
-        setRecodes((prev) => [...prev, newRecode]);
+      const newRecord = { recordId: index, value: record, editting: false };
+      await weightsRef.update({ records: [...records, newRecord] }).then(() => {
+        setRecords((prev) => [...prev, newRecord]);
         setIndex(index + 1);
-        setRecode('');
+        setRecord('');
       });
     }
   };
 
   // スマホで新しく記録を追加
-  const addRecodeInMobile = async (inputValue: string, _index: number) => {
+  const addRecordInMobile = async (inputValue: string, _index: number) => {
     if (user === null) return;
-    const newRecode = { recodeId: index, value: inputValue, editting: false };
-    setRecodes((prev) => [...prev, newRecode]);
+    const newRecord = { recordId: index, value: inputValue, editting: false };
+    setRecords((prev) => [...prev, newRecord]);
     setIndex(index + 1);
-    await weightsRef.update({ recodes: [...recodes, newRecode] });
+    await weightsRef.update({ records: [...records, newRecord] });
   };
 
   // 入力モードへ切り替え & indexを戻す
   const InputToggle = () => {
-    setIndex(recodes.length);
+    setIndex(records?.length);
     if (deviceInfo === 'Mobile') {
       onOpen();
     } else {
@@ -98,11 +98,11 @@ const WeightRecodeCreator: FC<Props> = ({
   };
 
   // モバイル端末での記録削除
-  const deleteRecodeInMobile = async (index: number) => {
+  const deleteRecordInMobile = async (index: number) => {
     if (user === null) return;
-    const newRecodes = recodes.filter((_item, idx) => idx !== index);
-    setRecodes(newRecodes);
-    await weightsRef.update({ recodes: newRecodes });
+    const newRecords = records.filter((_item, idx) => idx !== index);
+    setRecords(newRecords);
+    await weightsRef.update({ records: newRecords });
   };
 
   // 記録を追加していって範囲外となったら範囲の一番したまでスクロール
@@ -126,7 +126,7 @@ const WeightRecodeCreator: FC<Props> = ({
             placeholder="重量"
             onChange={handleChange}
             onBlur={handleBlur}
-            onKeyDown={addRecode}
+            onKeyDown={addRecord}
           />
           <Box w="100%" maxW="40px" h="40px" ml={1} />
         </Flex>
@@ -144,8 +144,8 @@ const WeightRecodeCreator: FC<Props> = ({
         isOpen={isOpen}
         onClose={onClose}
         inputValue={record}
-        setInputValue={setRecode}
-        writeRecode={addRecodeInMobile}
+        setInputValue={setRecord}
+        writeRecord={addRecordInMobile}
         label="セット目"
       >
         <ModalDisplayRecord
@@ -153,13 +153,13 @@ const WeightRecodeCreator: FC<Props> = ({
           label="セット目"
           nameIcon={GiWeightLiftingUp}
           labelIcon={GiWeight}
-          recodes={recodes}
+          records={records}
           formatValue={(input: string) => `${input}kg`}
-          deleteRecord={deleteRecodeInMobile}
+          deleteRecord={deleteRecordInMobile}
         />
       </MobileNumberKeyboard>
     </>
   );
 };
 
-export default WeightRecodeCreator;
+export default WeightRecordCreator;

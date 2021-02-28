@@ -9,6 +9,7 @@ import {
   Spinner,
   Stack,
   Text,
+  useDisclosure,
 } from '@chakra-ui/react';
 import moment from 'moment';
 import React, { FC, useEffect, useState } from 'react';
@@ -19,6 +20,7 @@ import { fetchTournamentMenu } from '../../../lib/firestore/teams';
 import { TournamentData } from '../../../models/users';
 import { userState } from '../../../recoil/users/user';
 import { DateRangePicker, Heading1, LinkButton } from '../../molecules';
+import { MenuDeleteModal } from '../../oraganisms';
 
 const CreateTournamentMenuDetail: FC = () => {
   // moment.js
@@ -36,6 +38,8 @@ const CreateTournamentMenuDetail: FC = () => {
   const [startDate, setStartDate] = useState(date);
   const [endDate, setEndDate] = useState(date);
   const [selectedIndex, setSelectedIndex] = useState('');
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const formatStartDate = moment(startDate).format('YYYYMMDD');
   const formatEndDate = moment(endDate).format('YYYYMMDD');
@@ -100,6 +104,21 @@ const CreateTournamentMenuDetail: FC = () => {
       });
   };
 
+  // チーム内の大会リストを削除する処理
+  const deleteTournamentMenu = async (id: string) => {
+    if (user === null) return;
+    const tournamentsRef = db
+      .collection('teams')
+      .doc(user.teamInfo.teamId)
+      .collection('tournamentMenus')
+      .doc(id);
+
+    await tournamentsRef.delete().then(() => {
+      const newTournamentMenu = menus.filter((item) => item.id !== id);
+      setMenus(newTournamentMenu);
+    });
+  };
+
   // 大会リストの編集のためにそれぞれをクリックした時の処理
   const handleClick = (menu: TournamentData) => {
     const editStartDate = new Date(
@@ -134,7 +153,7 @@ const CreateTournamentMenuDetail: FC = () => {
   return (
     <div>
       <Flex justify="space-between" align="center">
-        <Heading1 label="大会の追加" />
+        <Heading1 label="大会追加" />
         <LinkButton label="戻る" link="/tournament/search" />
       </Flex>
       <Box mb={8} />
@@ -145,8 +164,7 @@ const CreateTournamentMenuDetail: FC = () => {
           {menus.map((menu, idx) => {
             if (toggleEditMenu && selectedIndex === menu.id) {
               return (
-                <Stack spacing={4} key={menu.id}>
-                  <Box mb={4} />
+                <Stack key={menu.id} my={4}>
                   <DateRangePicker
                     startDate={startDate}
                     endDate={endDate}
@@ -165,17 +183,31 @@ const CreateTournamentMenuDetail: FC = () => {
                   />
                   <HStack>
                     <Button
-                      bg="green.400"
+                      w="100%"
+                      colorScheme="teal"
                       shadow="base"
                       onClick={() => editTournamentMenu(menu.id, idx)}
                     >
                       更新
                     </Button>
-                    <Button onClick={cansel} shadow="base">
-                      キャンセル
+                    <Button
+                      w="100%"
+                      colorScheme="red"
+                      shadow="base"
+                      onClick={onOpen}
+                    >
+                      削除
+                    </Button>
+                    <Button shadow="base" w="100%" onClick={cansel}>
+                      閉じる
                     </Button>
                   </HStack>
-                  <Box mb={4} />
+                  <MenuDeleteModal
+                    title={menu.name}
+                    isOpen={isOpen}
+                    onClose={onClose}
+                    onDelete={() => deleteTournamentMenu(menu.id)}
+                  />
                 </Stack>
               );
             }
@@ -224,7 +256,7 @@ const CreateTournamentMenuDetail: FC = () => {
               <Box mb={4} />
               <Button
                 w="100%"
-                bg="green.400"
+                colorScheme="teal"
                 shadow="base"
                 onClick={addTournamentMenu}
               >
@@ -233,8 +265,9 @@ const CreateTournamentMenuDetail: FC = () => {
             </>
           ) : (
             <Button
-              shadow="base"
               w="100%"
+              colorScheme="teal"
+              shadow="base"
               onClick={() => setToggleEdit(true)}
               disabled={toggleEditMenu}
             >

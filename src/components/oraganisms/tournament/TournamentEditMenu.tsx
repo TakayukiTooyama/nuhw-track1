@@ -1,8 +1,19 @@
-import { Box, Flex, IconButton, Input, Stack } from '@chakra-ui/react';
+import {
+  Box,
+  Flex,
+  IconButton,
+  Input,
+  Stack,
+  useDisclosure,
+} from '@chakra-ui/react';
 import React, { FC, useEffect, useState } from 'react';
 
-import { TournamentMenu, TournamentRecode } from '../../../models/users';
-import { TournamentEditRecode, TournamentRecodeCreator } from '..';
+import { TournamentMenu, TournamentRecord } from '../../../models/users';
+import {
+  MenuDeleteModal,
+  TournamentEditRecord,
+  TournamentRecordCreator,
+} from '..';
 import { DeleteIcon } from '@chakra-ui/icons';
 
 type Props = {
@@ -12,14 +23,17 @@ type Props = {
 
 const TournamentEditMenu: FC<Props> = ({ items, deleteMenu }) => {
   // Local State
-  const [recodes, setRecodes] = useState<TournamentRecode[]>(items.recodes);
+  const [records, setRecords] = useState<TournamentRecord[]>(items.records);
   const [toggleEdit, setToggleEdit] = useState(false);
   const [index, setIndex] = useState(0);
   const [errorMessage, setErrorMessage] = useState('');
 
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  console.log(records);
   useEffect(() => {
-    setIndex(recodes.length);
-  }, [recodes.length]);
+    setIndex(records?.length);
+  }, [records]);
 
   return (
     <>
@@ -36,39 +50,45 @@ const TournamentEditMenu: FC<Props> = ({ items, deleteMenu }) => {
             aria-label="menu-delete"
             shadow="inner"
             bg="red.200"
-            onClick={() => deleteMenu(items.menuId)}
+            onClick={onOpen}
             icon={<DeleteIcon />}
           />
         </Flex>
 
-        {recodes.length > 0 && (
+        {records && records?.length > 0 && (
           <Stack spacing={2} mb={4}>
-            {recodes.map((record, idx) => (
-              <TournamentEditRecode
-                key={`tournament-${idx}-${record.recodeId}`}
+            {records.map((record, idx) => (
+              <TournamentEditRecord
+                key={`tournament-${idx}-${record.recordId}`}
                 items={record}
                 menu={items}
                 menuId={items.menuId}
                 setIndex={setIndex}
-                recodes={recodes}
-                setRecodes={setRecodes}
+                records={records}
+                setRecords={setRecords}
                 setToggleEdit={setToggleEdit}
               />
             ))}
           </Stack>
         )}
 
-        <TournamentRecodeCreator
+        <TournamentRecordCreator
           index={index}
           menuId={items.menuId}
-          recodes={recodes}
+          records={records}
           setIndex={setIndex}
-          setRecodes={setRecodes}
+          setRecords={setRecords}
           menu={items}
           toggleEdit={toggleEdit}
           setToggleEdit={setToggleEdit}
           errorMessage={errorMessage}
           setErrorMessage={setErrorMessage}
+        />
+        <MenuDeleteModal
+          title={items.competitionName}
+          isOpen={isOpen}
+          onClose={onClose}
+          onDelete={() => deleteMenu(items.menuId)}
         />
       </Box>
     </>

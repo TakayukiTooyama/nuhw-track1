@@ -48,7 +48,7 @@ const ViewTable: VFC<Props> = ({ menus, label = '', format }) => {
         const formatDate = moment(strDateId).format('YYYY/MM/DD');
 
         const obj: Data = {};
-        menu.recodes.forEach((record, idx) => {
+        menu.records?.forEach((record, idx) => {
           const key = `record${idx + 1}`;
           const { value } = record;
           if (format) {
@@ -75,7 +75,7 @@ const ViewTable: VFC<Props> = ({ menus, label = '', format }) => {
       ary.push(Math.random());
     }
     const selectedNumberList: any = [];
-    ary.forEach((_recode, idx) => {
+    ary.forEach((_Record, idx) => {
       selectedNumberList.push({
         Header: `${idx + 1}${label}`,
         accessor: `record${idx + 1}`,

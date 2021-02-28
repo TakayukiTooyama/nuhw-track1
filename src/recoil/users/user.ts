@@ -89,7 +89,7 @@ export const selectedTournamentDataState = atom<TournamentData>({
   key: 'tournamentName',
   default: {
     id: '',
-    name: '選択してください',
+    name: '大会を選択してください',
     venue: '',
     startDate: '',
     endDate: '',

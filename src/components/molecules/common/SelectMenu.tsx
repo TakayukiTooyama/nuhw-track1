@@ -39,7 +39,9 @@ const SelectMenu: FC<Props> = ({ name, dataList }) => {
         w="100%"
         textAlign="center"
         fontSize={['lg', 'xl']}
-        borderRadius={toggleMenu ? '0px' : '5px'}
+        border="2px solid"
+        borderColor="gray.300"
+        borderRadius="30px"
         onClick={() => setToggleMenu(!toggleMenu)}
       >
         {name}

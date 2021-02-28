@@ -21,23 +21,23 @@ import { ModalDisplayRecord } from '..';
 type Props = {
   name: string;
   index: number;
-  recodes: Record[];
+  records: Record[];
   menuId: string;
   setIndex: React.Dispatch<React.SetStateAction<number>>;
-  setRecodes: React.Dispatch<React.SetStateAction<Record[]>>;
+  setRecords: React.Dispatch<React.SetStateAction<Record[]>>;
   setMenus: React.Dispatch<React.SetStateAction<Menu[]>>;
 };
 
-const PracticeRecodeCreator: FC<Props> = ({
+const PracticeRecordCreator: FC<Props> = ({
   name,
   index,
-  recodes,
+  records,
   menuId,
   setIndex,
-  setRecodes,
+  setRecords,
 }) => {
   const user = useRecoilValue(userState);
-  const [record, setRecode] = useState('');
+  const [record, setRecord] = useState('');
   const [isOpenInput, setIsOpenInput] = useState(false);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -53,42 +53,42 @@ const PracticeRecodeCreator: FC<Props> = ({
   const handleBlur = () => {
     if (deviceInfo === 'Desktop') {
       setIsOpenInput(false);
-      setRecode('');
+      setRecord('');
     }
   };
 
   // 記録入力処理
   const handleChange = (valueAsString: string, _valueAsNumber: number) => {
-    setRecode(valueAsString);
+    setRecord(valueAsString);
   };
 
   // PCで新しく記録を追加
-  const addRecode = async (e: React.KeyboardEvent<HTMLElement>) => {
+  const addRecord = async (e: React.KeyboardEvent<HTMLElement>) => {
     if (user === null) return;
     if (e.key === 'Enter') {
-      const newRecode = { recodeId: index, value: record, editting: false };
+      const newRecord = { recordId: index, value: record, editting: false };
       await practicesRef
-        .update({ recodes: [...recodes, newRecode] })
+        .update({ records: [...records, newRecord] })
         .then(() => {
-          setRecodes((prev) => [...prev, newRecode]);
+          setRecords((prev) => [...prev, newRecord]);
           setIndex(index + 1);
-          setRecode('');
+          setRecord('');
         });
     }
   };
 
   // スマホで新しく記録を追加
-  const addRecodeInMobile = async (inputValue: string, _index: number) => {
+  const addRecordInMobile = async (inputValue: string, _index: number) => {
     if (user === null) return;
-    const newRecode = { recodeId: index, value: inputValue, editting: false };
-    setRecodes((prev) => [...prev, newRecode]);
+    const newRecord = { recordId: index, value: inputValue, editting: false };
+    setRecords((prev) => [...prev, newRecord]);
     setIndex(index + 1);
-    await practicesRef.update({ recodes: [...recodes, newRecode] });
+    await practicesRef.update({ records: [...records, newRecord] });
   };
 
   // 入力モードへ切り替え & indexを戻す
   const InputToggle = () => {
-    setIndex(recodes.length);
+    setIndex(records?.length);
     if (deviceInfo === 'Mobile') {
       onOpen();
     } else {
@@ -97,11 +97,11 @@ const PracticeRecodeCreator: FC<Props> = ({
   };
 
   // モバイル端末での記録削除
-  const deleteRecodeInMobile = async (index: number) => {
+  const deleteRecordInMobile = async (index: number) => {
     if (user === null) return;
-    const newRecodes = recodes.filter((_item, idx) => idx !== index);
-    setRecodes(newRecodes);
-    await practicesRef.update({ recodes: newRecodes });
+    const newRecords = records.filter((_item, idx) => idx !== index);
+    setRecords(newRecords);
+    await practicesRef.update({ records: newRecords });
   };
 
   // 記録を追加していって範囲外となったら範囲の一番したまでスクロール
@@ -125,7 +125,7 @@ const PracticeRecodeCreator: FC<Props> = ({
             placeholder={`${index + 1}本目`}
             onChange={handleChange}
             onBlur={handleBlur}
-            onKeyDown={addRecode}
+            onKeyDown={addRecord}
           >
             <NumberInputField autoFocus />
           </NumberInput>
@@ -141,8 +141,8 @@ const PracticeRecodeCreator: FC<Props> = ({
         isOpen={isOpen}
         onClose={onClose}
         inputValue={record}
-        setInputValue={setRecode}
-        writeRecode={addRecodeInMobile}
+        setInputValue={setRecord}
+        writeRecord={addRecordInMobile}
         label="本目"
         format={formatTimeNotationAtInput}
       >
@@ -151,13 +151,13 @@ const PracticeRecodeCreator: FC<Props> = ({
           label="本目"
           nameIcon={FaRunning}
           labelIcon={RiTimerFill}
-          recodes={recodes}
+          records={records}
           formatValue={formatTimeNotationAtInput}
-          deleteRecord={deleteRecodeInMobile}
+          deleteRecord={deleteRecordInMobile}
         />
       </MobileNumberKeyboard>
     </>
   );
 };
 
-export default PracticeRecodeCreator;
+export default PracticeRecordCreator;

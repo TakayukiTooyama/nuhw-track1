@@ -38,7 +38,7 @@ type Data = {
 
 const TournamentViewTable: FC<Props> = ({ menus, hide, toggleSearch }) => {
   const name = menus[0].competitionName;
-  const { recodes } = menus[0];
+  const { records } = menus[0];
 
   // 入力された文字列をタイム表記に変換
   const formatTimeNotationAtInput = (input: string) => {
@@ -62,7 +62,7 @@ const TournamentViewTable: FC<Props> = ({ menus, hide, toggleSearch }) => {
       );
       const { username } = menu.user;
       const { grade } = menu.user;
-      menu.recodes.forEach((record) => {
+      menu.records?.forEach((record) => {
         dataAry.push({
           username,
           grade,
@@ -174,9 +174,9 @@ const TournamentViewTable: FC<Props> = ({ menus, hide, toggleSearch }) => {
   const data = useMemo(() => DATA, [menus]);
 
   const changeColumn = () => {
-    if (recodes.length) {
+    if (records?.length) {
       const ary: string[] = [];
-      recodes.forEach((record) => {
+      records?.forEach((record) => {
         if (record.wind !== '') {
           ary.push(record.wind);
         }

@@ -4,9 +4,12 @@ import {
   Center,
   Divider,
   Flex,
+  HStack,
   Input,
   Spinner,
+  Stack,
   Text,
+  useDisclosure,
 } from '@chakra-ui/react';
 import React, { FC, useEffect, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
@@ -19,11 +22,13 @@ import {
   userState,
 } from '../../../recoil/users/user';
 import { Heading1, InputKeyDown, LinkButton } from '../../molecules';
+import { MenuDeleteModal } from '../../oraganisms';
 
 const CreateWeightMenuDetail: FC = () => {
   const user = useRecoilValue(userState);
   const [isComposed, setIsComposed] = useRecoilState(isComposedState);
   const dateId = useRecoilValue(selectedDateIdState);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   // Local State
   const [menus, setMenus] = useState<WeightName[]>([]);
@@ -118,6 +123,21 @@ const CreateWeightMenuDetail: FC = () => {
     setToggleEditMenu(true);
   };
 
+  // メニュー削除処理
+  const deleteWeightMenu = async (id: string) => {
+    if (user === null) return;
+    const weightsRef = db
+      .collection('teams')
+      .doc(user.teamInfo.teamId)
+      .collection('weightMenus')
+      .doc(id);
+
+    await weightsRef.delete().then(() => {
+      const newWeightMenu = menus.filter((item) => item.id !== id);
+      setMenus(newWeightMenu);
+    });
+  };
+
   const editBlur = () => {
     setToggleEditMenu(false);
     setName('');
@@ -136,17 +156,37 @@ const CreateWeightMenuDetail: FC = () => {
           {menus.map((menu, idx) => {
             if (toggleEditMenu && selectedIndex === menu.id) {
               return (
-                <Input
-                  textAlign="center"
-                  autoFocus
-                  key={menu.id}
-                  value={name}
-                  onChange={handleChange}
-                  onKeyDown={(e) => editWeigthMenu(e, menu.id, idx)}
-                  onBlur={editBlur}
-                  onCompositionStart={() => setIsComposed(true)}
-                  onCompositionEnd={() => setIsComposed(false)}
-                />
+                <Stack my={4}>
+                  <Input
+                    textAlign="center"
+                    autoFocus
+                    key={menu.id}
+                    value={name}
+                    onChange={handleChange}
+                    onKeyDown={(e) => editWeigthMenu(e, menu.id, idx)}
+                    onCompositionStart={() => setIsComposed(true)}
+                    onCompositionEnd={() => setIsComposed(false)}
+                  />
+                  <HStack>
+                    <Button
+                      onClick={onOpen}
+                      w="100%"
+                      shadow="base"
+                      colorScheme="red"
+                    >
+                      削除
+                    </Button>
+                    <Button onClick={editBlur} w="100%" shadow="base">
+                      閉じる
+                    </Button>
+                  </HStack>
+                  <MenuDeleteModal
+                    title={menu.name}
+                    isOpen={isOpen}
+                    onClose={onClose}
+                    onDelete={() => deleteWeightMenu(menu.id)}
+                  />
+                </Stack>
               );
             }
             return (
@@ -177,7 +217,13 @@ const CreateWeightMenuDetail: FC = () => {
               addFunc={addTeamWeightMenu}
             />
           ) : (
-            <Button shadow="base" w="100%" onClick={() => setToggleEdit(true)}>
+            <Button
+              shadow="base"
+              w="100%"
+              colorScheme="blue"
+              onClick={() => setToggleEdit(true)}
+              disabled={toggleEditMenu}
+            >
               メニュー追加
             </Button>
           )}

@@ -71,12 +71,12 @@ export const fetchLastTimeData = (
     const comparisonAry2: number[] = [];
 
     if (sortMenus[lastIndex]) {
-      sortMenus[lastIndex].recodes.forEach((record) => {
+      sortMenus[lastIndex].records?.forEach((record) => {
         comparisonAry1.push(+record.value);
       });
     }
     if (sortMenus[lastIndex - 1]) {
-      sortMenus[lastIndex - 1].recodes.forEach((record) => {
+      sortMenus[lastIndex - 1].records?.forEach((record) => {
         comparisonAry2.push(+record.value);
       });
     }

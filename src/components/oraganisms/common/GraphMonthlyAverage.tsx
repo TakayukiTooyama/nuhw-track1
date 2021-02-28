@@ -175,7 +175,7 @@ const GraphMonthlyAverage: FC<Props> = ({ data, format, label }) => {
     let sum = 0;
     const totalAry: string[] = [];
     monthlyData.forEach((data) => {
-      data.recodes.forEach((record) => {
+      data.records?.forEach((record) => {
         totalAry.push(record.value);
         sum += Number(record.value);
       });
