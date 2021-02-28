@@ -204,7 +204,6 @@ const TournamentEditDetail: VFC = () => {
     setErrorMessage('');
     setName(e.target.value);
   };
-  console.log(selectedData);
 
   return (
     <>
@@ -220,57 +219,46 @@ const TournamentEditDetail: VFC = () => {
       </Flex>
       <Box mb={4} />
 
-      {filterMenus.length > 0 ? (
+      <Stack spacing={4} mb={4}>
+        {filterMenus &&
+          filterMenus.map((menu) => (
+            <TournamentEditMenu
+              key={menu.menuId}
+              items={menu}
+              deleteMenu={deleteMenu}
+            />
+          ))}
+      </Stack>
+      {toggleMenu ? (
         <>
-          <Stack spacing={4} mb={4}>
-            {filterMenus.map((menu) => (
-              <TournamentEditMenu
-                key={menu.menuId}
-                items={menu}
-                deleteMenu={deleteMenu}
-              />
-            ))}
-          </Stack>
-          {toggleMenu ? (
-            <>
-              {loading ? (
-                <Box align="center">
-                  <Spinner color="gray.200" size="lg" />
-                </Box>
-              ) : (
-                <>
-                  <InputKeyDown
-                    value={name}
-                    placeholder="種目 (例 100, 400H)"
-                    handleChange={handleChange}
-                    handleBlur={handleBlur}
-                    addFunc={addMenu}
-                  />
-                  <Box mb={1} />
-                  <ErrorMessage message={errorMessage} />
-                </>
-              )}
-            </>
+          {loading ? (
+            <Box align="center">
+              <Spinner color="gray.200" size="lg" />
+            </Box>
           ) : (
-            <Button
-              w="100%"
-              shadow="base"
-              colorScheme="teal"
-              borderRadius="30px"
-              onClick={() => setToggleMenu(true)}
-            >
-              種目追加
-            </Button>
+            <>
+              <InputKeyDown
+                value={name}
+                placeholder="種目 (例 100, 400H)"
+                handleChange={handleChange}
+                handleBlur={handleBlur}
+                addFunc={addMenu}
+              />
+              <Box mb={1} />
+              <ErrorMessage message={errorMessage} />
+            </>
           )}
         </>
       ) : (
-        <Box align="center">
-          {selectedData.id === '' ? (
-            <Text>まだ大会が選択されていません</Text>
-          ) : (
-            <Spinner color="gray.200" size="lg" />
-          )}
-        </Box>
+        <Button
+          w="100%"
+          shadow="base"
+          colorScheme="teal"
+          borderRadius="30px"
+          onClick={() => setToggleMenu(true)}
+        >
+          種目追加
+        </Button>
       )}
     </>
   );
