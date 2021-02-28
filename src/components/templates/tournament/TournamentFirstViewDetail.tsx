@@ -1,4 +1,4 @@
-import { Box } from '@chakra-ui/react';
+import { Box, Text } from '@chakra-ui/react';
 import React, { VFC } from 'react';
 import { QueryFunctionContext, useQuery } from 'react-query';
 import { useRecoilValue } from 'recoil';
@@ -40,18 +40,18 @@ const TournamentFirstViewDetail: VFC = () => {
   return (
     <>
       <Heading1 label="大会一覧" />
-      <Box mb={8} />
-      {data && (
-        <>
+      <Box my={8}>
+        {data && data?.length > 0 ? (
           <TournamentDataTable dataList={data} />
-          <Box mb={4} />
-          <LinkButton
-            w="100%"
-            label="追加したい大会がない場合"
-            link="/tournament/create"
-          />
-        </>
-      )}
+        ) : (
+          <Text textAlign="center">まだ大会が登録されていません。</Text>
+        )}
+      </Box>
+      <LinkButton
+        w="100%"
+        label="追加したい大会がない場合"
+        link="/tournament/create"
+      />
     </>
   );
 };

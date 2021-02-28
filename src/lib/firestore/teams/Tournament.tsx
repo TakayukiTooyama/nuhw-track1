@@ -11,7 +11,6 @@ export const fetchTournamentMenu = async (
   setMenus: Dispatch<SetStateAction<TournamentData[]>>
 ): Promise<void> => {
   if (user === null) return;
-
   const tournamentsRef = teamsRef
     .doc(user.teamInfo.teamId)
     .collection('tournamentMenus')

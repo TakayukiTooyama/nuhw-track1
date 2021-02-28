@@ -1,6 +1,6 @@
 import Router from 'next/router';
 import React, { FC, useEffect, useMemo, useState } from 'react';
-import { Column,useSortBy, useTable  } from 'react-table';
+import { Column, useSortBy, useTable } from 'react-table';
 import { useSetRecoilState } from 'recoil';
 
 import { TournamentData } from '../../../models/users';
@@ -24,10 +24,11 @@ type Data = {
 };
 
 // YYYY/MM/DDに変換
-const format1 = (date: string) => `${date.slice(0, 4)  }/${  date.slice(4, 6)  }/${  date.slice(6, 8)}`;
+const format1 = (date: string) =>
+  `${date.slice(0, 4)}/${date.slice(4, 6)}/${date.slice(6, 8)}`;
 
 // MM/DDに変換
-const format2 = (date: string) => `${date.slice(4, 6)  }/${  date.slice(6, 8)}`;
+const format2 = (date: string) => `${date.slice(4, 6)}/${date.slice(6, 8)}`;
 
 const TournamentDataTable: FC<Props> = ({ dataList }) => {
   // Global State
@@ -42,7 +43,7 @@ const TournamentDataTable: FC<Props> = ({ dataList }) => {
     dataList.length > 0 &&
       dataList.forEach((data) => {
         const date = `${format1(data.startDate)} 〜 ${format2(data.endDate)}`;
-        const {name} = data;
+        const { name } = data;
         tableDataList.push({ date, name });
       });
     return tableDataList;
@@ -83,9 +84,7 @@ const TournamentDataTable: FC<Props> = ({ dataList }) => {
   };
 
   useEffect(() => {
-    if (routeId === '') {
-      
-    } else {
+    if (routeId !== '') {
       Router.push(`/tournament`);
       setRouteId('');
     }
@@ -118,10 +117,10 @@ const TournamentDataTable: FC<Props> = ({ dataList }) => {
               onClick={() => selectTableRow(row.original)}
             >
               {row.cells.map((cell) => (
-                  <TableCell {...cell.getCellProps()}>
-                    {cell.render('Cell')}
-                  </TableCell>
-                ))}
+                <TableCell {...cell.getCellProps()}>
+                  {cell.render('Cell')}
+                </TableCell>
+              ))}
             </TableRow>
           );
         })}
