@@ -19,8 +19,10 @@ const SignInBottom: VFC = () => {
   };
 
   const signInButton = {
+    w: '100%',
     bg: 'white',
     shadow: 'base',
+    borderRadius: '30px',
     mt: 5,
     mb: 7,
   };

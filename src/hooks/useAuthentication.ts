@@ -18,12 +18,10 @@ const useAuthentication = (): {
       }
       // 認証完了 or GlobalStateに何も入っていない時
       if (userAuth === null) {
-        if (firebaseUser.photoURL === null) return;
-        if (firebaseUser.displayName === null) return;
         setUserAuth({
           uid: firebaseUser.uid,
-          photoURL: firebaseUser.photoURL,
-          displayName: firebaseUser.displayName,
+          photoURL: firebaseUser.photoURL ?? '',
+          displayName: firebaseUser.displayName ?? '',
         });
       }
     });

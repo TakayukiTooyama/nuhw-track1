@@ -1,4 +1,4 @@
-import { Box, Button, Img, Stack } from '@chakra-ui/react';
+import { Button, Stack } from '@chakra-ui/react';
 import React, { Dispatch, SetStateAction, useState, VFC } from 'react';
 import { SetterOrUpdater } from 'recoil';
 
@@ -39,32 +39,18 @@ const ProfileEdit: VFC<Props> = ({ user, setUser, setToggleEdit }) => {
   };
 
   return (
-    <Box direction="column" align="center">
-      <Img
-        borderRadius="full"
-        boxSize="150px"
-        boxShadow="base"
-        alt={user.displayName}
-        src={user.photoURL}
+    <Stack spacing={6} maxW="350px" mx="auto">
+      <InputText
+        value={name}
+        textAlign="center"
+        onChange={(e) => setName(e.target.value)}
       />
-      <Box mb={4} />
-      <Stack spacing={6} maxW="350px" mx="auto">
-        <InputText
-          value={name}
-          textAlign="center"
-          onChange={(e) => setName(e.target.value)}
-        />
-        <SelectMenu label={grade} contents={gradeContents} setName={setGrade} />
-        <SelectMenu
-          label={blockName}
-          contents={blocks}
-          setName={setBlockName}
-        />
-        <Button shadow="base" colorScheme="cyan" onClick={saveProfile}>
-          保存
-        </Button>
-      </Stack>
-    </Box>
+      <SelectMenu label={grade} contents={gradeContents} setName={setGrade} />
+      <SelectMenu label={blockName} contents={blocks} setName={setBlockName} />
+      <Button shadow="base" colorScheme="cyan" onClick={saveProfile}>
+        保存
+      </Button>
+    </Stack>
   );
 };
 

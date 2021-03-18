@@ -1,5 +1,5 @@
 import { CloseIcon, EditIcon } from '@chakra-ui/icons';
-import { Box, Divider, IconButton, Img, Stack, Text } from '@chakra-ui/react';
+import { Box, Divider, IconButton, Stack, Text, Image } from '@chakra-ui/react';
 import React, { useState, VFC } from 'react';
 import { useRecoilState } from 'recoil';
 
@@ -22,23 +22,23 @@ const ProfileDetail: VFC = () => {
       >
         {toggleEdit ? <CloseIcon /> : <EditIcon />}
       </IconButton>
-      {user &&
-        (toggleEdit ? (
-          <ProfileEdit
-            user={user}
-            setUser={setUser}
-            setToggleEdit={setToggleEdit}
+      {user && (
+        <Box direction="column" align="center">
+          <Image
+            src={user.photoURL ?? '/no-profile.png'}
+            width="150px"
+            height="150px"
+            borderRadius="full"
+            alt={user.displayName}
           />
-        ) : (
-          <Box direction="column" align="center">
-            <Img
-              borderRadius="full"
-              boxSize="150px"
-              boxShadow="base"
-              alt={user.displayName}
-              src={user.photoURL}
+          <Box mb={4} />
+          {toggleEdit ? (
+            <ProfileEdit
+              user={user}
+              setUser={setUser}
+              setToggleEdit={setToggleEdit}
             />
-            <Box mb={4} />
+          ) : (
             <Stack spacing={6}>
               <Divider />
               <Text>{user.displayName}</Text>
@@ -48,8 +48,9 @@ const ProfileDetail: VFC = () => {
               <Text>{user.blockName}</Text>
               <Divider />
             </Stack>
-          </Box>
-        ))}
+          )}
+        </Box>
+      )}
     </Box>
   );
 };
