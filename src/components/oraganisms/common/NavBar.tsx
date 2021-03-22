@@ -15,7 +15,7 @@ const NavBar: VFC = () => (
     pos="fixed"
     bottom="0"
     w="100%"
-    h="50px"
+    h="60px"
     alignItems="center"
     textAlign="center"
     display={['flex', 'none']}

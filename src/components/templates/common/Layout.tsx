@@ -21,7 +21,7 @@ const Layout: FC<Props> = ({
       <title>{title}</title>
     </Head>
     {noHeader ? null : <Header />}
-    <Container pt="32px" pb="82px" minH="clac(100vh - 110px)">
+    <Container pt="16px" pb="76px" minH="clac(100vh - 120px)">
       {children}
     </Container>
     {noHeader ? null : <NavBar />}

@@ -13,7 +13,7 @@ const NavTab: VFC<Props> = ({ name, icon, link }) => (
   <Link href={link} passHref text-align="center">
     <Box
       flex="1"
-      py={2}
+      py={3}
       cursor="pointer"
       _hover={{ bg: 'gray.100' }}
       bg="white"
