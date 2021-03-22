@@ -10,20 +10,20 @@ type Props = {
 };
 
 const NavTab: VFC<Props> = ({ name, icon, link }) => (
-    <Link href={link} passHref text-align="center">
-      <Box
-        flex="1"
-        cursor="pointer"
-        h="40px"
-        _hover={{ bg: 'gray.100' }}
-        bg="white"
-      >
-        <Icon as={icon} fontSize="20px" />
-        <Text variant="sub" fontSize="8px">
-          {name}
-        </Text>
-      </Box>
-    </Link>
-  );
+  <Link href={link} passHref text-align="center">
+    <Box
+      flex="1"
+      py={2}
+      cursor="pointer"
+      _hover={{ bg: 'gray.100' }}
+      bg="white"
+    >
+      <Icon as={icon} fontSize="20px" />
+      <Text variant="sub" fontSize="8px">
+        {name}
+      </Text>
+    </Box>
+  </Link>
+);
 
 export default NavTab;

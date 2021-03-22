@@ -19,7 +19,16 @@ const Header: VFC = () => {
   }, [userAuth, setUser, user]);
 
   return (
-    <Box color="grey" bg="black" boxShadow="0 0 10px rgba(0, 0, 0, 0.6)">
+    <Box
+      w="100%"
+      color="grey"
+      bg="black"
+      boxShadow="0 0 10px rgba(0, 0, 0, 0.6)"
+      position="relative"
+      top="0"
+      left="0"
+      zIndex={2}
+    >
       <Box
         px={4}
         h="60px"

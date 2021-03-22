@@ -16,16 +16,16 @@ const Layout: FC<Props> = ({
   title = 'NUHW TRACK',
   noHeader = false,
 }) => (
-  <Box minH="100vh">
+  <>
     <Head>
       <title>{title}</title>
     </Head>
     {noHeader ? null : <Header />}
-    <Container pt={8} pb={16} zIndex={2}>
+    <Container pt="32px" pb="82px" minH="clac(100vh - 110px)">
       {children}
     </Container>
     {noHeader ? null : <NavBar />}
-  </Box>
+  </>
 );
 
 export default Layout;

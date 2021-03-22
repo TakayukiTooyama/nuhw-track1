@@ -15,13 +15,13 @@ const NavBar: VFC = () => (
     pos="fixed"
     bottom="0"
     w="100%"
-    h="40px"
+    h="50px"
     alignItems="center"
     textAlign="center"
     display={['flex', 'none']}
     borderTop="1px solid"
     borderColor="gray.100"
-    zIndex="2"
+    zIndex={2}
     overflow="hidden"
   >
     {navList.map((item) => (
