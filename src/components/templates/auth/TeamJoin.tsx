@@ -36,6 +36,7 @@ const TeamJoin: FC = () => {
         setSubmitting(true);
         userJoinToTeam(
           values.password,
+          values.teamName,
           userAuth,
           setSubmitting,
           setSubmitErrorMessage

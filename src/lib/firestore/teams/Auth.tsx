@@ -12,6 +12,7 @@ const usersRef = db.collection('users');
 // 団体参加処理(パスワード検証)
 export const userJoinToTeam = async (
   password: string,
+  teamName: string,
   userAuth: UserAuth | null,
   setSubmitting: (isSubmitting: boolean) => void,
   setSubmitErrorMessage: React.Dispatch<React.SetStateAction<string>>
@@ -20,22 +21,28 @@ export const userJoinToTeam = async (
   setSubmitErrorMessage('');
 
   await teamsRef
-    .doc('e2ZQAbPvnqMvTFUktAGC')
+    .where('teamName', '==', teamName)
+    .where('password', '==', password)
     .get()
-    .then(async (doc) => {
-      const data = doc.data() as Team;
-      const { teamId } = data;
-
-      if (data.password === password) {
-        await usersRef
-          .doc(userAuth.uid)
-          .update({ teamInfo: { teamId, teamName: '新潟医療福祉大学' } })
-          .then(() => {
-            Router.push('/teams/profile');
-          });
-      } else {
-        setSubmitting(false);
-        setSubmitErrorMessage('パスワードが間違っています');
-      }
+    .then(async (snapshot) => {
+      const teamInfo = snapshot.docs.map((doc) => {
+        const data = doc.data() as Team;
+        return data;
+      });
+      await usersRef
+        .doc(userAuth.uid)
+        .update({
+          teamInfo: {
+            teamId: teamInfo[0].teamId,
+            teamName: teamInfo[0].teamName,
+          },
+        })
+        .then(() => {
+          Router.push('/teams/profile');
+        });
+    })
+    .catch(() => {
+      setSubmitting(false);
+      setSubmitErrorMessage('パスワードもしくはチーム名が間違っています');
     });
 };

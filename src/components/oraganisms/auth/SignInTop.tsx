@@ -3,7 +3,7 @@ import React, { VFC } from 'react';
 
 const SignInTop: VFC = () => {
   const topBox = {
-    h: { base: '50vh', md: '100vh' },
+    h: { base: '60vh', md: '100vh' },
     w: { base: '100％', md: '100vh' },
     pt: 10,
     align: 'center',
@@ -35,7 +35,7 @@ const SignInTop: VFC = () => {
         </Text>
         <Box {...textBox}>
           <Text color="grey.200">
-            スポーツをする上で高い意識・熱量を維持し続けることはとても重要である。しかし、多くの人は「継続」することができない。CIPを使うことで一人でも多くの方の競技力が向上することを願っている。
+            スポーツをする上で高い意識・熱量を維持し続けることはとても重要である。しかし、多くの人は「継続」することができない。このアプリを使うことでそれを解決することができる。一人でも多くの方の競技力が向上することを願っている。
           </Text>
         </Box>
       </Box>

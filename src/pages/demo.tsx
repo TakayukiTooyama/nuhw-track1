@@ -8,7 +8,7 @@ import { User } from '../models/users';
 const Demo: VFC = () => {
   const [loading, setLoading] = useState(false);
   const inner = {
-    w: '80%',
+    w: '70%',
     top: '50%',
     left: '50%',
     transform: 'translateY(-50%) translateX(-50%)',
@@ -43,8 +43,8 @@ const Demo: VFC = () => {
           grade: '3年',
           gender: '男',
           teamInfo: {
-            teamId: 'demo',
-            teamName: 'チームDemo',
+            teamId: 'ezopVoUOsuhOn92fJATg',
+            teamName: 'デモ大学',
           },
         };
         await usersRef
@@ -62,12 +62,12 @@ const Demo: VFC = () => {
       <SignInTop />
       <Box {...bottomBox} pos="relative">
         <Box {...inner} pos="absolute">
-          <Heading size="2xl">Sign In</Heading>
+          <Heading size="xl">Sign In</Heading>
           <Button {...signInButton} onClick={singIn} isLoading={loading}>
             こちらをクリック
           </Button>
-          <Text color="gray.400">
-            こちらはDemoとなるため認証やチーム登録、プロフィール登録は省略され、事前に準備されたユーザーを使うことになります。
+          <Text>
+            こちらはDemoとなるため匿名認証となります。また、チーム登録、プロフィール登録は省略されます。
           </Text>
         </Box>
       </Box>
