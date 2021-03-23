@@ -14,7 +14,10 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 
 import { db } from '../../../lib/firebase';
 import { fetchTournamentData } from '../../../lib/firestore/teams';
-import { fetchAnnualTournamentData } from '../../../lib/firestore/users';
+import {
+  fetchAnnualTournamentData,
+  fetchTournamentRecord,
+} from '../../../lib/firestore/users';
 import { TournamentData, TournamentMenu } from '../../../models/users';
 import {
   isComposedState,
@@ -57,7 +60,11 @@ const TournamentEditDetail: VFC = () => {
   useEffect(() => {
     fetchAnnualTournamentData(user, year, setNameList, setMenus);
     fetchTournamentData(user, setDataList);
-  }, [user, setNameList, year]);
+  }, [user]);
+
+  useEffect(() => {
+    fetchTournamentRecord(user, setMenus, selectedData);
+  }, [day]);
 
   // 大会日数
   const period =

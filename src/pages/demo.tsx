@@ -2,7 +2,7 @@ import { Box, Button, Flex, Heading, Text } from '@chakra-ui/react';
 import Router from 'next/router';
 import React, { useState, VFC } from 'react';
 import { SignInTop } from '../components/oraganisms';
-import { auth, db } from '../lib/firebase';
+import { db } from '../lib/firebase';
 import { User } from '../models/users';
 
 const Demo: VFC = () => {
@@ -32,29 +32,25 @@ const Demo: VFC = () => {
 
   const singIn = async () => {
     setLoading(true);
-    auth.signInAnonymously().then(async (res) => {
-      if (res.user) {
-        const usersRef = db.collection('users');
-        const userData: Omit<User, 'tournamentIds'> = {
-          uid: res.user.uid,
-          displayName: 'デモ太朗',
-          photoURL: '/no-profile.png',
-          blockName: '短距離',
-          grade: '3年',
-          gender: '男',
-          teamInfo: {
-            teamId: 'ezopVoUOsuhOn92fJATg',
-            teamName: 'デモ大学',
-          },
-        };
-        await usersRef
-          .doc(userData.uid)
-          .set(userData)
-          .then(() => {
-            Router.push('/');
-          });
-      }
-    });
+    const usersRef = db.collection('users');
+    const userData: Omit<User, 'tournamentIds'> = {
+      uid: 'tClWvHJnGYfvOnyAf0IP',
+      displayName: 'デモ太朗',
+      photoURL: '/no-profile.png',
+      blockName: '短距離',
+      grade: '3年',
+      gender: '男',
+      teamInfo: {
+        teamId: 'ezopVoUOsuhOn92fJATg',
+        teamName: 'デモ大学',
+      },
+    };
+    await usersRef
+      .doc(userData.uid)
+      .set(userData, { merge: true })
+      .then(() => {
+        Router.push('/');
+      });
   };
 
   return (
@@ -67,7 +63,7 @@ const Demo: VFC = () => {
             こちらをクリック
           </Button>
           <Text>
-            こちらはDemoとなるため匿名認証となります。また、チーム登録、プロフィール登録は省略されます。
+            こちらはDemoとなるため、チーム登録、プロフィール登録は省略され、事前に準備したユーザーとなります。
           </Text>
         </Box>
       </Box>

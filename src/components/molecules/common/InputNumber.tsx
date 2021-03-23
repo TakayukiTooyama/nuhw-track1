@@ -7,37 +7,33 @@ import React, { VFC } from 'react';
 
 type Props = NumberInputProps & {
   value: string;
+  type?: string;
   placeholder?: string;
-  maxW?: string;
   onChange?: (valueAsString: string) => void;
   onBlur?: (e: React.FocusEvent<HTMLDivElement>) => void;
   onKeyDown?: (e: React.KeyboardEvent<HTMLDivElement>) => void;
 };
 
-const InputNumber: VFC<Props> = (props) => {
-  const {
-    value,
-    placeholder,
-    maxW = '255px',
-    inputMode = 'none',
-    onChange,
-    onBlur,
-    onKeyDown,
-  } = props;
-  return (
-    <NumberInput
-      value={value}
-      w="100%"
-      maxW={maxW}
-      type="number"
-      inputMode={inputMode}
-      onChange={onChange}
-      onBlur={onBlur}
-      onKeyDown={onKeyDown}
-    >
-      <NumberInputField autoFocus placeholder={placeholder} />
-    </NumberInput>
-  );
-};
+const InputNumber: VFC<Props> = ({
+  value,
+  type = 'number',
+  placeholder,
+  onChange,
+  onBlur,
+  onKeyDown,
+  ...props
+}) => (
+  <NumberInput
+    value={value}
+    w="100%"
+    maxW="255px"
+    onChange={onChange}
+    onBlur={onBlur}
+    onKeyDown={onKeyDown}
+    {...props}
+  >
+    <NumberInputField autoFocus placeholder={placeholder} type={type} />
+  </NumberInput>
+);
 
 export default InputNumber;

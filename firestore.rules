@@ -14,14 +14,10 @@ service cloud.firestore {
       return isAuth() && request.auth.uid == userId;
     }
 
-    // function isTeamAuth(teamId) {
-    //   return request.resource.data.teamInfo.teamId == teamId;
-    // }
-
     match /users/{userId} {
       allow read: if isAuth();
       allow create;
-      allow update: if isUserAuth(userId);
+      allow update;
       allow delete: if isUserAuth(userId);
 
       match /practices/{practiceId} {

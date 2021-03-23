@@ -30,7 +30,6 @@ const TournamentEditMenu: FC<Props> = ({ items, deleteMenu }) => {
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  console.log(records);
   useEffect(() => {
     setIndex(records?.length);
   }, [records]);

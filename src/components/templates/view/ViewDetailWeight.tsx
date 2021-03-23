@@ -1,5 +1,12 @@
 import { SearchIcon } from '@chakra-ui/icons';
-import { Box, HStack, IconButton, Stack } from '@chakra-ui/react';
+import {
+  Box,
+  HStack,
+  IconButton,
+  Spinner,
+  Stack,
+  Text,
+} from '@chakra-ui/react';
 import React, {
   ChangeEvent,
   Dispatch,
@@ -36,6 +43,7 @@ const WeightViewDetail: VFC = () => {
   const [rm, setRm] = useState('');
   const [menus, setMenus] = useState<WeightViewData[]>([]);
   const [errorMessage, setErrorMessage] = useState('');
+  const [loading, setLoading] = useState(false);
 
   // チーム内のウエイトメニューを取得
   const fetchTeamWeightMenu = async (context: QueryFunctionContext<string>) => {
@@ -80,6 +88,8 @@ const WeightViewDetail: VFC = () => {
       setErrorMessage('RMを入力してください。');
       return;
     }
+    setLoading(true);
+
     // 検索結果を初期化
     setMenus([]);
 
@@ -98,6 +108,9 @@ const WeightViewDetail: VFC = () => {
           return { ...data, user: item };
         });
         setMenus((prev) => prev.concat(weightMenus));
+        setTimeout(() => {
+          setLoading(false);
+        }, 600);
       });
     });
   };
@@ -150,7 +163,7 @@ const WeightViewDetail: VFC = () => {
   const format = (input: string) => `${input}kg`;
 
   return (
-    <Box width="100%" maxW="500px" mx="auto">
+    <Box width="100%">
       <Stack spacing={2} align="flex-start" direction={['column', 'row']}>
         <Box width="100%">
           <InputText
@@ -183,9 +196,22 @@ const WeightViewDetail: VFC = () => {
       <Box mb={1} />
       <ErrorMessage message={errorMessage} textAlign="left" />
       <Box mb={8} />
-      {menus.length ? (
-        <WeightViewTable menus={menus} label="セット" format={format} />
-      ) : null}
+      {loading ? (
+        <Box align="center" pt={6}>
+          <Spinner color="gray.400" />
+        </Box>
+      ) : (
+        <>
+          {menus && menus.length > 0 && (
+            <WeightViewTable menus={menus} label="セット" format={format} />
+          )}
+          {menus && menus.length === 0 && (
+            <Text textAlign="center" pt={6}>
+              この種目の記録はありません
+            </Text>
+          )}
+        </>
+      )}
       <TopScrollButton />
     </Box>
   );

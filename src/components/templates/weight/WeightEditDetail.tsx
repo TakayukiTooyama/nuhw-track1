@@ -226,6 +226,7 @@ const WeightEditDetail: FC = () => {
                   lineHeight="35px"
                   _hover={{ bg: 'gray.100' }}
                   onClick={() => addMenu(item.name)}
+                  cursor="pointer"
                 >
                   <Text color="gray.400">{item.name}</Text>
                   <Divider />

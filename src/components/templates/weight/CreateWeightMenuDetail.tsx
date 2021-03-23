@@ -35,6 +35,7 @@ const CreateWeightMenuDetail: FC = () => {
   const [toggleEdit, setToggleEdit] = useState(false);
   const [toggleEditMenu, setToggleEditMenu] = useState(false);
   const [name, setName] = useState('');
+  const [loading, setLoading] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState('');
 
   useEffect(() => {
@@ -43,18 +44,24 @@ const CreateWeightMenuDetail: FC = () => {
 
   const fetchTeamWeightMenu = async () => {
     if (user === null) return;
+    setLoading(true);
     const weightsRef = db
       .collection('teams')
       .doc(user.teamInfo.teamId)
       .collection('weightMenus')
       .orderBy('name', 'asc');
     await weightsRef.get().then((snapshot) => {
+      if (snapshot.empty) {
+        setMenus([]);
+        setLoading(false);
+      }
       const weightMenus: WeightName[] = [];
       snapshot.forEach((doc) => {
         const data = doc.data() as WeightName;
         weightMenus.push(data);
       });
       setMenus(weightMenus);
+      setLoading(false);
     });
   };
 
@@ -135,6 +142,8 @@ const CreateWeightMenuDetail: FC = () => {
     await weightsRef.delete().then(() => {
       const newWeightMenu = menus.filter((item) => item.id !== id);
       setMenus(newWeightMenu);
+      setToggleEditMenu(false);
+      setName('');
     });
   };
 
@@ -150,63 +159,75 @@ const CreateWeightMenuDetail: FC = () => {
         <LinkButton label="戻る" link={`/weight/edit/${dateId}`} />
       </Flex>
       <Box mb={8} />
-      {menus.length ? (
+      {loading ? (
+        <Center>
+          <Spinner color="gray.200" />
+        </Center>
+      ) : (
         <>
-          <Divider />
-          {menus.map((menu, idx) => {
-            if (toggleEditMenu && selectedIndex === menu.id) {
-              return (
-                <Stack my={4}>
-                  <Input
-                    textAlign="center"
-                    autoFocus
+          {menus.length > 0 ? (
+            <>
+              <Divider />
+              {menus.map((menu, idx) => {
+                if (toggleEditMenu && selectedIndex === menu.id) {
+                  return (
+                    <Stack my={4}>
+                      <Input
+                        textAlign="center"
+                        autoFocus
+                        key={menu.id}
+                        value={name}
+                        onChange={handleChange}
+                        onKeyDown={(e) => editWeigthMenu(e, menu.id, idx)}
+                        onCompositionStart={() => setIsComposed(true)}
+                        onCompositionEnd={() => setIsComposed(false)}
+                      />
+                      <HStack>
+                        <Button
+                          onClick={onOpen}
+                          w="100%"
+                          shadow="base"
+                          colorScheme="red"
+                        >
+                          削除
+                        </Button>
+                        <Button onClick={editBlur} w="100%" shadow="base">
+                          閉じる
+                        </Button>
+                      </HStack>
+                      <MenuDeleteModal
+                        title={menu.name}
+                        isOpen={isOpen}
+                        onClose={onClose}
+                        onDelete={() => deleteWeightMenu(menu.id)}
+                      />
+                    </Stack>
+                  );
+                }
+                return (
+                  <Box
                     key={menu.id}
-                    value={name}
-                    onChange={handleChange}
-                    onKeyDown={(e) => editWeigthMenu(e, menu.id, idx)}
-                    onCompositionStart={() => setIsComposed(true)}
-                    onCompositionEnd={() => setIsComposed(false)}
-                  />
-                  <HStack>
-                    <Button
-                      onClick={onOpen}
-                      w="100%"
-                      shadow="base"
-                      colorScheme="red"
-                    >
-                      削除
-                    </Button>
-                    <Button onClick={editBlur} w="100%" shadow="base">
-                      閉じる
-                    </Button>
-                  </HStack>
-                  <MenuDeleteModal
-                    title={menu.name}
-                    isOpen={isOpen}
-                    onClose={onClose}
-                    onDelete={() => deleteWeightMenu(menu.id)}
-                  />
-                </Stack>
-              );
-            }
-            return (
-              <Box
-                key={menu.id}
-                h="40px"
-                bg="white"
-                lineHeight="40px"
-                textAlign="center"
-                overflow="hidden"
-                borderBottom="1px solid"
-                borderColor="gray.200"
-                cursor="pointer"
-                _hover={{ bg: 'gray.50' }}
-                onClick={() => handleClick(menu.id, menu.name)}
-              >
-                <Text color="gray.400">{menu.name}</Text>
-              </Box>
-            );
-          })}
+                    h="40px"
+                    bg="white"
+                    lineHeight="40px"
+                    textAlign="center"
+                    overflow="hidden"
+                    borderBottom="1px solid"
+                    borderColor="gray.200"
+                    cursor="pointer"
+                    _hover={{ bg: 'gray.50' }}
+                    onClick={() => handleClick(menu.id, menu.name)}
+                  >
+                    <Text color="gray.400">{menu.name}</Text>
+                  </Box>
+                );
+              })}
+            </>
+          ) : (
+            <Box py={8}>
+              <Text textAlign="center">メニューがありません</Text>
+            </Box>
+          )}
           <Box mb={8} />
           {toggleEdit ? (
             <InputKeyDown
@@ -228,10 +249,6 @@ const CreateWeightMenuDetail: FC = () => {
             </Button>
           )}
         </>
-      ) : (
-        <Center>
-          <Spinner color="gray.200" />
-        </Center>
       )}
     </>
   );

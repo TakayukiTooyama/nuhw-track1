@@ -231,6 +231,7 @@ const TournamentEditRecord: FC<Props> = ({
                 <InputNumber
                   value={wind}
                   inputMode="decimal"
+                  step={0.1}
                   onChange={changeWind}
                   placeholder="風速"
                 />

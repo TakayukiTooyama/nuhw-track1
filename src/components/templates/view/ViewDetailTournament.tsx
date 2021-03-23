@@ -12,6 +12,7 @@ import {
   Flex,
   HStack,
   IconButton,
+  Spinner,
   Stack,
   Text,
 } from '@chakra-ui/react';
@@ -69,6 +70,7 @@ const TournamentViewDetail: VFC = () => {
   const [judgAllResult, setJudgAllResult] = useState(false);
   const [toggleSearch, setToggleSearch] = useState(false);
   const [toggleMenu, setToggleMenu] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   // チーム内の大会情報を取得
   const fetchTeamTournamentMenu = async (
@@ -101,7 +103,7 @@ const TournamentViewDetail: VFC = () => {
   const eventData = ['100M', '200M', '400M', '800M', '100H', '110H', '400H'];
 
   const fetchTournamentSearchConditions = (
-    userData: { id: string; username: string; grade: string }[]
+    userData: { id: string; username: string; grade: string; gender: string }[]
   ) => {
     if (data && data.every((item) => item !== name)) {
       setErrorMessage('登録してある大会名の中からお選びください。');
@@ -115,52 +117,63 @@ const TournamentViewDetail: VFC = () => {
       setErrorMessage('性別を選択してください。');
       return;
     }
+    setLoading(true);
+
     // 検索結果を初期化
     setMenus([]);
-    userData.forEach(async (item) => {
-      const tournamentsRef = db
-        .collection('users')
-        .doc(item.id)
-        .collection('tournaments');
 
-      // 全試合と全種目の場合分け
-      const tournamentMenusRef =
-        name === '全試合'
-          ? tournamentsRef.where('competitionName', '==', event)
-          : tournamentsRef
-              .where('competitionName', '==', event)
-              .where('data.name', '==', name);
+    const genderFilter = userData.filter((data) => data.gender === gender);
+    if (genderFilter.length > 0) {
+      genderFilter.forEach(async (item) => {
+        const tournamentsRef = db
+          .collection('users')
+          .doc(item.id)
+          .collection('tournaments');
 
-      await tournamentMenusRef.get().then((snapshot) => {
-        const tournamentMenus = snapshot.docs.map((doc) => {
-          const data = doc.data() as TournamentMenu;
-          return { ...data, user: item };
+        // 全試合と全種目の場合分け
+        const tournamentMenusRef =
+          name === '全試合'
+            ? tournamentsRef.where('competitionName', '==', event)
+            : tournamentsRef
+                .where('competitionName', '==', event)
+                .where('data.name', '==', name);
+
+        await tournamentMenusRef.get().then((snapshot) => {
+          const tournamentMenus = snapshot.docs.map((doc) => {
+            const data = doc.data() as TournamentMenu;
+            return { ...data, user: item };
+          });
+          setMenus((prev) => prev.concat(tournamentMenus));
+          if (name === '全試合') {
+            setJudgAllResult(true);
+          } else {
+            setJudgAllResult(false);
+          }
+          setTimeout(() => {
+            setLoading(false);
+          }, 600);
         });
-        setMenus((prev) => prev.concat(tournamentMenus));
-        if (name === '全試合') {
-          setJudgAllResult(true);
-        } else {
-          setJudgAllResult(false);
-        }
       });
-    });
+    } else {
+      setTimeout(() => {
+        setLoading(false);
+      }, 600);
+    }
   };
 
   const fetchId = async (context: QueryFunctionContext<string>) => {
     const teamId = context.queryKey[1];
-    const gender = context.queryKey[2];
     const usersRef = db
       .collection('users')
-      .where('teamInfo.teamId', '==', teamId)
-      .where('gender', '==', gender);
+      .where('teamInfo.teamId', '==', teamId);
 
     return await usersRef.get().then((snapshot) => {
       const userData = snapshot.docs.map((doc) => {
         const { id } = doc;
         const data = doc.data() as User;
         const username = data.displayName;
-        const { grade } = data;
-        return { id, username, grade };
+        const { grade, gender } = data;
+        return { id, username, grade, gender };
       });
       return userData;
     });
@@ -183,9 +196,9 @@ const TournamentViewDetail: VFC = () => {
   if (isError) return <ErrorMessage message="エラー" />;
 
   const { data: userData } = useQuery<
-    { id: string; username: string; grade: string }[]
-  >(['userId', teamId, gender], fetchId, {
-    enabled: !!teamId && !!gender,
+    { id: string; username: string; grade: string; gender: string }[]
+  >(['userId', teamId], fetchId, {
+    enabled: !!teamId,
     refetchOnWindowFocus: false,
   });
 
@@ -194,16 +207,12 @@ const TournamentViewDetail: VFC = () => {
     setErrorMessage('');
   }, [name, event, gender]);
 
-  const startDate =
-    menus.length && moment(`${menus[0].data.startDate}`).format('YYYY/MM/DD');
-  const endDate =
-    menus.length && moment(`${menus[0].data.startDate}`).format('MM/DD');
-  const filterMenus =
-    menus.length > 0 &&
-    menus.map((menu) => ({
-      ...menu,
-      records: menu.records?.filter((record) => Number(record.wind) <= 2.0),
-    }));
+  const startDate = moment(`${menus[0]?.data.startDate}`).format('YYYY/MM/DD');
+  const endDate = moment(`${menus[0]?.data.startDate}`).format('MM/DD');
+  const filterMenus = menus?.map((menu) => ({
+    ...menu,
+    records: menu.records?.filter((record) => Number(record.wind) <= 2.0),
+  }));
 
   const tableMenu = [
     { toggle: hide, setToggle: setHide, label: '日付・学年', top: '40px' },
@@ -222,7 +231,7 @@ const TournamentViewDetail: VFC = () => {
   ];
 
   return (
-    <Box width="100%" maxW="500px" mx="auto">
+    <Box width="100%">
       <Stack spacing={2} align="flex-start" direction={['column', 'row']}>
         <Box width="100%">
           <InputText
@@ -290,97 +299,102 @@ const TournamentViewDetail: VFC = () => {
       </Stack>
       <Box mb={1} />
       <ErrorMessage message={errorMessage} textAlign="left" />
-      <Box mb={8} />
-      {menus.length && filterMenus ? (
+      <Box mb={6} />
+      {loading ? (
+        <Box align="center" pt={[8, 6]}>
+          <Spinner color="gray.400" />
+        </Box>
+      ) : (
         <>
-          {(name === '全試合' && judgAllResult) || judgAllResult ? null : (
+          {filterMenus && filterMenus.length > 0 && (
             <>
-              <Flex
-                justify={['flex-start', 'space-between']}
-                direction={['column', 'row']}
-                textAlign={['center', 'left']}
-              >
-                <Box {...boxStyle} p={[1, 2]} shadow="sm">
-                  <Text color="gray.400">{`${startDate} 〜 ${endDate}`}</Text>
-                </Box>
-                <Box mr={[1, 0]} mb={[1, 0]} />
-                <Box {...boxStyle} p={[1, 2]} shadow="sm">
+              {(name === '全試合' && judgAllResult) || judgAllResult ? null : (
+                <Box align="center" mb={[0, 6]} fontSize="18px">
                   <Text color="gray.400">
                     {menus.length && menus[0].data.venue}
                   </Text>
+                  <Text color="gray.400">
+                    {startDate.slice(5) === endDate
+                      ? `${startDate}`
+                      : `${startDate} 〜 ${endDate}`}
+                  </Text>
                 </Box>
-              </Flex>
+              )}
+              <Box display={['none', 'flex']} justifyContent="space-between">
+                <Button
+                  leftIcon={hide ? <ViewOffIcon /> : <ViewIcon />}
+                  {...boxStyle}
+                  onClick={() => setHide((prev) => !prev)}
+                >
+                  日付・学年
+                </Button>
+                <Button
+                  leftIcon={toggleSearch ? <ViewIcon /> : <ViewOffIcon />}
+                  {...boxStyle}
+                  onClick={() => setToggleSearch((prev) => !prev)}
+                >
+                  絞り込み
+                </Button>
+                <Button
+                  leftIcon={toggleOfficial ? <ViewIcon /> : <ViewOffIcon />}
+                  {...boxStyle}
+                  onClick={() => setToggleOfficial((prev) => !prev)}
+                >
+                  公式タイム
+                </Button>
+              </Box>
+              <Box
+                display={['flex', 'none']}
+                justifyContent="flex-end"
+                pos="relative"
+              >
+                <IconButton
+                  aria-label="menu"
+                  shadow="base"
+                  icon={toggleMenu ? <CloseIcon /> : <HamburgerIcon />}
+                  onClick={() => setToggleMenu((prev) => !prev)}
+                />
+                {toggleMenu ? (
+                  <>
+                    <Stack pos="absolute" spacing={0} top="42px" zIndex="1">
+                      {tableMenu.map((item) => (
+                        <Flex
+                          key={item.label}
+                          {...boxStyle}
+                          h="40px"
+                          w="180px"
+                          align="center"
+                          justify="space-between"
+                          px={4}
+                          borderRadius="0px"
+                        >
+                          {item.toggle ? <ViewIcon /> : <ViewOffIcon />}
+                          {item.label}
+                          <Checkbox
+                            isChecked={item.toggle}
+                            onChange={() => item.setToggle((prev) => !prev)}
+                          />
+                        </Flex>
+                      ))}
+                    </Stack>
+                  </>
+                ) : null}
+              </Box>
               <Box mb={4} />
+              <TournamentViewTable
+                menus={toggleOfficial ? filterMenus : menus}
+                hide={hide}
+                toggleSearch={toggleSearch}
+              />
             </>
           )}
-          <Box display={['none', 'flex']} justifyContent="space-between">
-            <Button
-              leftIcon={hide ? <ViewOffIcon /> : <ViewIcon />}
-              {...boxStyle}
-              onClick={() => setHide((prev) => !prev)}
-            >
-              日付・学年
-            </Button>
-            <Button
-              leftIcon={toggleSearch ? <ViewIcon /> : <ViewOffIcon />}
-              {...boxStyle}
-              onClick={() => setToggleSearch((prev) => !prev)}
-            >
-              絞り込み
-            </Button>
-            <Button
-              leftIcon={toggleOfficial ? <ViewIcon /> : <ViewOffIcon />}
-              {...boxStyle}
-              onClick={() => setToggleOfficial((prev) => !prev)}
-            >
-              公式タイム
-            </Button>
-          </Box>
-          <Box
-            display={['flex', 'none']}
-            justifyContent="flex-end"
-            pos="relative"
-          >
-            <IconButton
-              aria-label="menu"
-              shadow="base"
-              icon={toggleMenu ? <CloseIcon /> : <HamburgerIcon />}
-              onClick={() => setToggleMenu((prev) => !prev)}
-            />
-            {toggleMenu ? (
-              <>
-                <Stack pos="absolute" spacing={0} top="42px" zIndex="1">
-                  {tableMenu.map((item) => (
-                    <Flex
-                      key={item.label}
-                      {...boxStyle}
-                      h="40px"
-                      w="180px"
-                      align="center"
-                      justify="space-between"
-                      px={4}
-                      borderRadius="0px"
-                    >
-                      {item.toggle ? <ViewIcon /> : <ViewOffIcon />}
-                      {item.label}
-                      <Checkbox
-                        isChecked={item.toggle}
-                        onChange={() => item.setToggle((prev) => !prev)}
-                      />
-                    </Flex>
-                  ))}
-                </Stack>
-              </>
-            ) : null}
-          </Box>
-          <Box mb={4} />
-          <TournamentViewTable
-            menus={toggleOfficial ? filterMenus : menus}
-            hide={!hide}
-            toggleSearch={toggleSearch}
-          />
+          {filterMenus && filterMenus.length === 0 && (
+            <Text textAlign="center" pt={6}>
+              この種目の記録はありません
+            </Text>
+          )}
         </>
-      ) : null}
+      )}
       <TopScrollButton />
     </Box>
   );

@@ -173,8 +173,8 @@ const TournamentRecordCreator: FC<Props> = ({
               </Flex>
             ) : null}
             <InputNumber
-              inputMode="numeric"
               value={record}
+              inputMode="numeric"
               onChange={handleChangeRecord}
               placeholder="記録"
             />
@@ -184,6 +184,8 @@ const TournamentRecordCreator: FC<Props> = ({
               <InputNumber
                 value={wind}
                 inputMode="decimal"
+                type="text"
+                step={0.1}
                 onChange={handleChangeWind}
                 placeholder="風速"
               />

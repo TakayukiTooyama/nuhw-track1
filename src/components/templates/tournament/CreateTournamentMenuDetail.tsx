@@ -66,6 +66,7 @@ const CreateTournamentMenuDetail: FC = () => {
       .doc(id)
       .set(newData, { merge: true })
       .then(() => {
+        onClose();
         setMenus((prev) => [...prev, newData]);
         setToggleEdit(false);
         setName('');
@@ -82,17 +83,25 @@ const CreateTournamentMenuDetail: FC = () => {
       .collection('teams')
       .doc(user.teamInfo.teamId)
       .collection('tournamentMenus');
+
+    menus[idx] = {
+      id,
+      name,
+      venue,
+      startDate: formatStartDate,
+      endDate: formatEndDate,
+    };
+
     await tournamentsRef
       .doc(id)
-      .update({ name, venue, startDate, endDate })
+      .update({
+        name,
+        venue,
+        startDate: formatStartDate,
+        endDate: formatEndDate,
+      })
       .then(() => {
-        menus[idx] = {
-          id,
-          name,
-          venue,
-          startDate: formatStartDate,
-          endDate: formatEndDate,
-        };
+        onClose();
         setMenus(menus);
         setToggleEditMenu(false);
         setName('');
@@ -113,7 +122,13 @@ const CreateTournamentMenuDetail: FC = () => {
 
     await tournamentsRef.delete().then(() => {
       const newTournamentMenu = menus.filter((item) => item.id !== id);
+      onClose();
       setMenus(newTournamentMenu);
+      setName('');
+      setVenue('');
+      setStartDate(new Date());
+      setEndDate(new Date());
+      setToggleEditMenu(false);
     });
   };
 

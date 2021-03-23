@@ -25,10 +25,22 @@ const MenuDeleteModal: VFC<Props> = ({ title, isOpen, onClose, onDelete }) => {
         </ModalHeader>
 
         <ModalFooter p={0}>
-          <Button shadow="base" mr={3} onClick={onClose}>
+          <Button
+            w="100%"
+            borderRadius="30px"
+            shadow="base"
+            mr={3}
+            onClick={onClose}
+          >
             閉じる
           </Button>
-          <Button shadow="base" bg="red.300" onClick={onDelete}>
+          <Button
+            w="100%"
+            borderRadius="30px"
+            shadow="base"
+            colorScheme="red"
+            onClick={onDelete}
+          >
             削除
           </Button>
         </ModalFooter>
