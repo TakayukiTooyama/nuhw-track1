@@ -1,5 +1,5 @@
 import { Box, Spinner, Stack, Text } from '@chakra-ui/react';
-import React, { useState, VFC } from 'react';
+import React, { VFC } from 'react';
 import { QueryFunctionContext, useQuery } from 'react-query';
 import { useRecoilValue } from 'recoil';
 
@@ -13,9 +13,6 @@ const TournamentFirstViewDetail: VFC = () => {
   // Global State
   const user = useRecoilValue(userState);
   const teamId = user?.teamInfo.teamId;
-
-  // Local State
-  const [loading, setLoading] = useState(false);
 
   // team内で登録されている大会の情報を取得
   const fetchTournametData = async (context: QueryFunctionContext<string>) => {
